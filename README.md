@@ -20,4 +20,6 @@ Dental Division S/W Team Deputy General Manager, Yonghyun Lim
 
 ## SoftWare Dependencies
 - librealsense (https://github.com/IntelRealSense/librealsense/tree/master)
-- PointCloud Library **1.8.0** (http://pointclouds.org/, http://unanancyowen.com/en/pcl18/)
+- PointCloud Library **1.8.0** (http://pointclouds.org/, http://unanancyowen.com/en/pcl18/)  
+ \* PCL 1.8.0 All-in-one Installer include below Dependencies  
+ \- Boost, Eigen, FLANN, VTK, OpenNI2

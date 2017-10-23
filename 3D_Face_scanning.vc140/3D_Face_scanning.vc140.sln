@@ -16,6 +16,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw3", "..\third_party\glfw\msvc140\glfw3.vcxproj", "{979D0ADD-6AB7-403A-BB17-5434615E4446}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scan_depth", "scan_depth\scan_depth.vcxproj", "{128B3142-8772-4E99-84B6-4FB30275718E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1AE4CEB5-9A0B-4B9F-9505-824FD56BB41F} = {1AE4CEB5-9A0B-4B9F-9505-824FD56BB41F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
