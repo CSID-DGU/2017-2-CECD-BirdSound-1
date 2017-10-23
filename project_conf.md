@@ -1,9 +1,10 @@
 # Project Configure
-프로젝트 - 속성
+플랫폼 : Windows 8.1  
+도구집합 : Visual Studio 2015 (v140)  
 
 ## General(일반)
 출력 디렉터리 :
-```..\..\bin\$(Platform)\```  
+```..\..\bin\$(Platform)\ ```  
 **\* 위 디렉토리에 OpenNI2.dll와 realsense-d.dll가 있어야함.**
 
 ## C/C++
