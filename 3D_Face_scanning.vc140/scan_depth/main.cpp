@@ -4,7 +4,6 @@ using namespace std;
 using namespace rs;
 using namespace pcl;
 using namespace io;
-//git Test
 int main() try {
 	PointCloud<PointXYZ> cloud;
 	context ctx;
@@ -27,15 +26,100 @@ int main() try {
 	cloud.points.resize(cloud.width * cloud.height);
 	cout << "PCL 로 변환중..." << endl;
 
-	for (size_t i = 0; i < cloud.points.size(); ++i) {
-		cloud.points[i].x = -points->x;
-		cloud.points[i].y = -points->y;
-		cloud.points[i].z = -points->z;
-		++points;
+	int center_point = cloud.width*cloud.height / 2 + cloud.width / 2;
+
+	printf("%d %d", cloud.points.size(), center_point);
+
+	int w, e, n, s, we_center;
+	for (int i = 0; i < cloud.width / 2; i++) {	//west
+		int idx = center_point - i;
+		int flag = 0;
+		if (points[idx].x == 0.0) {
+			flag = 1;
+			for (int c = 0; c < 4; c++) {
+				if (points[idx - c].x != 0.0) {
+					flag = 0;
+				}
+			}
+			if (flag == 1) {
+				w = idx;
+				printf("W\n");
+				break;
+			}
+		}
 	}
+	for (int i = 0; i < cloud.width / 2; i++) { //east
+		int idx = center_point + i;
+		int flag = 0;
+		if (points[idx].x == 0.0) {
+			flag = 1;
+			for (int c = 0; c < 4; c++) {
+				if (points[idx + c].x != 0.0) {
+					flag = 0;
+				}
+			}
+			if (flag == 1) {
+				e = idx;
+				printf("E\n");
+				break;
+			}
+		}
+	}
+	we_center = (w + e) / 2;
+	for (int i = 0; i < cloud.height / 2; i++) { //north
+		int idx = we_center - (i * cloud.width);
+		int flag = 0;
+		if (points[idx].x == 0.0) {
+			flag = 1;
+			for (int c = 0; c < 4; c++) {
+				if (points[idx - (c * cloud.width)].x != 0.0) {
+					flag = 0;
+				}
+			}
+			if (flag == 1) {
+				n = idx;
+				printf("N\n");
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < cloud.height / 2; i++) { //south
+		int idx = we_center + (i * cloud.width);
+		int flag = 0;
+		if (points[idx].x == 0.0) {
+			flag = 1;
+			for (int c = 0; c < 4; c++) {
+				if (points[idx + (c * cloud.width)].x != 0.0) {
+					flag = 0;
+
+				}
+			}
+
+			if (flag == 1) {
+				s = idx;
+				printf("S\n");
+				break;
+			}
+		}
+	}
+	for (int row = 0; row < center_point; row += cloud.width) {
+		for (int i = n - (e - w) / 2 + row; i < n + (e - w) / 2 + row; i++) {
+			int idx = i;
+			cloud.points[idx].x = -2 * points[idx].x;
+			cloud.points[idx].y = -2 * points[idx].y;
+			cloud.points[idx].z = -2 * points[idx].z;
+		}
+	}
+	for (size_t i = w; i < e; i++) {
+		//cloud.points[i].x = -points[i].x;
+		//cloud.points[i].y = -points[i].y;
+		//cloud.points[i].z = -points[i].z;
+		printf("\n%f %f %f", cloud.points[i].x, cloud.points[i].y, cloud.points[i].z);
+	}
+	++points;
 
 	cout << "파일로 저장 중..." << endl;
-	savePCDFileASCII("test_pcd.pcd", cloud);
+	//savePCDFileASCII("test_pcd.pcd", cloud);
 	cout << "저장완료" << endl;
 
 	pcl::visualization::CloudViewer viewer("PCL Viewer");
