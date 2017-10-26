@@ -31,7 +31,7 @@ int main() try {
 	printf("%d %d", cloud.points.size(), center_point);
 
 	int w, e, n, s, we_center;
-	for (int i = 0; i < cloud.width / 2; i++) {	//west
+	for (int i = 0; i < cloud.width / 2; i++) {	//West
 		int idx = center_point - i;
 		int flag = 0;
 		if (points[idx].x == 0.0) {
