@@ -35,8 +35,8 @@ int main() try {
 
 	} while (EndPoints.isRightEndPointPosition() == true);
 
-	for (int row = 0; row < EndPoints.Img_CenterPoint; row += cloud.width) {
-		for (int i = EndPoints.N - (EndPoints.E - EndPoints.W) / 2 + row; i < EndPoints.N + (EndPoints.E - EndPoints.W) / 2 + row; i++) {
+	for (int row = 0; row < EndPoints.Img_CenterPoint.Idx; row += cloud.width) {
+		for (int i = EndPoints.N.Idx - (EndPoints.E.Idx - EndPoints.W.Idx) / 2 + row; i < EndPoints.N.Idx + (EndPoints.E.Idx - EndPoints.W.Idx) / 2 + row; i++) {
 			int idx = i;
 			cloud.points[idx].x = -2 * EndPoints.points[idx].x;
 			cloud.points[idx].y = -2 * EndPoints.points[idx].y;
