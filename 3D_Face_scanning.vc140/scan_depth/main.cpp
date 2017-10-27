@@ -1,16 +1,39 @@
 #include "stdafx.h"
 #include "EndPoint.h"
+#include"DrawWindow.h"
 using namespace std;
 using namespace rs;
 using namespace pcl;
 using namespace io;
 int main() try {
+	
+
 	PointCloud<PointXYZ> cloud;
 	context ctx;
 	device * dev = ctx.get_device(0);
+
+	////////////////////////////////////////////////////////////////////////
+	std::vector<rs::device *> devices;
+
+	for (int i = 0; i<ctx.get_device_count(); ++i)devices.push_back(ctx.get_device(i));
+	// Configure and start our devices
+	for (auto dev : devices)
+	{
+		std::cout << "Starting " << dev->get_name() << "... ";
+		dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
+		dev->enable_stream(rs::stream::color, rs::preset::best_quality);
+		dev->start();
+	}
+
+	std::cout << ctx.get_device_count() << "\n";
+	DrawWindows win(1280, 960, "Your Face", ctx.get_device_count() * 2);
+	win.init(dev, devices);
+	/////////////////////////////////////////////////////////
+
+
 	cout << "리얼센스 활성화 중..." << endl;
-	dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
-	dev->start();
+	//dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
+	//dev->start();
 
 	EndPoint EndPoints;
 
