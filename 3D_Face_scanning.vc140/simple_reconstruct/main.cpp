@@ -7,7 +7,7 @@ using namespace pcl;
 using namespace io;
 
 int main() try {
-
+	 
 	// Load input file into a PointCloud<T> with an appropriate type
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 	pcl::PCLPointCloud2 cloud_blob; 
