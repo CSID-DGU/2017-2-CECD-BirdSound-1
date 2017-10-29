@@ -1,50 +1,26 @@
 #include "stdafx.h"
 #include "EndPoint.h"
 #include"DrawWindow.h"
+//#include"Neural.h"
+#include"Device.h"
+
 using namespace std;
 using namespace rs;
 using namespace pcl;
 using namespace io;
 int main() try {
-	
-
+	Device realSense;
 	PointCloud<PointXYZ> cloud;
-	context ctx;
-	device * dev = ctx.get_device(0);
-
-	////////////////////////////////////////////////////////////////////////
-	std::vector<rs::device *> devices;
-
-	for (int i = 0; i<ctx.get_device_count(); ++i)devices.push_back(ctx.get_device(i));
-	// Configure and start our devices
-	for (auto dev : devices)
-	{
-		std::cout << "Starting " << dev->get_name() << "... ";
-		dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
-		dev->enable_stream(rs::stream::color, rs::preset::best_quality);
-		dev->start();
-	}
-
-	std::cout << ctx.get_device_count() << "\n";
-	DrawWindows win(1280, 960, "Your Face", ctx.get_device_count() * 2);
-	win.init(dev, devices);
-	/////////////////////////////////////////////////////////
-
+	DrawWindows win(1280, 960, "Your Face", realSense.ctx.get_device_count() * 2);
+	win.init(realSense.dev, realSense.devices);
 
 	cout << "리얼센스 활성화 중..." << endl;
-	//dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
-	//dev->start();
 
 	EndPoint EndPoints;
-
-
-	EndPoints.setOriginPoints(dev);
+	EndPoints.setOriginPoints(realSense.dev);
 	do {
 		///depth 이미지 촬영
 		EndPoints.initPoint();
-		//cout << "리얼센스 활성화 완료" << endl;
-		//cout << "촬영합니다! 김치!!!!" << endl;
-		//cout << "촬영일자 : " << dev->get_frame_timestamp(rs::stream::depth) << endl;
 		rs::intrinsics depth_intrin = EndPoints.getDepthImage();
 
 
@@ -58,7 +34,9 @@ int main() try {
 
 	} while (EndPoints.isRightEndPointPosition() == true);
 
-	for (int row = 0; row < EndPoints.Img_CenterPoint.Idx; row += cloud.width) {
+
+	for (int row = 0; row < EndPoints.Img_CenterPoint.Idx; row += cloud.width) 
+	{
 		for (int i = EndPoints.N.Idx - (EndPoints.E.Idx - EndPoints.W.Idx) / 2 + row; i < EndPoints.N.Idx + (EndPoints.E.Idx - EndPoints.W.Idx) / 2 + row; i++) {
 			int idx = i;
 			cloud.points[idx].x = -2 * EndPoints.points[idx].x;
@@ -66,9 +44,6 @@ int main() try {
 			cloud.points[idx].z = -2 * EndPoints.points[idx].z;
 		}
 	}
-
-
-	//cout << "파일로 저장 중..." << endl; savePCDFileASCII("test_pcd.pcd", cloud); 	cout << "저장완료" << endl;
 
 	pcl::visualization::CloudViewer viewer("PCL Viewer");
 	viewer.showCloud(cloud.makeShared());

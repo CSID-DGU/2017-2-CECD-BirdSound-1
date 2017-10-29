@@ -27,10 +27,16 @@
     <ClInclude Include="DrawWindow.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="example.hpp">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="stb_easy_font.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="example.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Neural.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
