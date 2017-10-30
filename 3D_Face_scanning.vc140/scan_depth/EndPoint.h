@@ -17,8 +17,9 @@ public:
 		std::cout<<"(" << Row << ", " << Col << ")";
 	};
 }typedef Pos;
+
 class EndPoint {
-public:
+public:	
 	PointCloud<PointXYZ> *cloud;
 	int width, height;
 	Pos Img_CenterPoint, WE_MidPoint;
@@ -44,8 +45,12 @@ public:
 		cloud = a_cloud;
 		width = cloud->width;
 		height = cloud->height;
-		setPosition('C', cloud->width*cloud->height / 2 + cloud->width / 2);
 
+		Img_CenterPoint.Col = cloud->width / 2;
+		Img_CenterPoint.Row = cloud->height / 2;
+		Img_CenterPoint.Idx = cloud->width*cloud->height / 2 + cloud->width / 2;
+
+		std::cout << " Center Point is set" << std::endl;
 	}
 	rs::intrinsics getDepthImage() {
 		dev->wait_for_frames();
@@ -54,65 +59,6 @@ public:
 		points = Points;
 		return depth_intrin;
 	}
-	void setResolution(int a_width, int a_height) {
-		width = a_width;
-		height = a_height;
-	}
-	void setPosition(char direction, int a_pos) {
-		switch (direction) {
-		case 'W':
-		case 'w':
-			W.Idx = a_pos;
-			W.Row = (W.Idx +1) / width;
-			W.Col = W.Idx % width;
-			std::cout << " End Point W is set" << std::endl;
-			break;
-
-		case 'E':
-		case 'e':
-			E.Idx = a_pos;
-			E.Row = (E.Idx + 1) / width;
-			E.Col = E.Idx % width;
-			std::cout << " End Point E is set" << std::endl;
-			break;
-
-		case 'S':
-		case 's':
-			S.Idx = a_pos;
-			S.Row = (S.Idx + 1) / width;
-			S.Col = S.Idx % width;
-			std::cout << " End Point S is set" << std::endl;
-			break;
-
-		case 'N':
-		case 'n':
-			N.Idx = a_pos;
-			N.Row = (N.Idx + 1) / width;
-			N.Col = N.Idx % width;
-			std::cout << " End Point N is set" << std::endl;
-			break;
-		case 'M':
-		case 'm':
-			WE_MidPoint.Row = (W.Row + E.Row) / 2;
-			WE_MidPoint.Col = (W.Col + E.Col) / 2;
-			WE_MidPoint.Idx = (W.Idx + E.Idx) / 2;
-			std::cout << " Mid Point is set" << std::endl;
-			break;
-		case 'C':
-		case 'c':
-			Img_CenterPoint.Col = cloud->width / 2;
-			Img_CenterPoint.Row = cloud->height / 2;
-			Img_CenterPoint.Idx = cloud->width*cloud->height / 2 + cloud->width / 2;
-
-			std::cout << " Center Point is set" << std::endl;
-			break;
-		default:
-			ErrorPrint(1);
-			std::cout << "[ Error ] : Undefined character " << std::endl;
-			break;
-		}
-	}
-	bool isRightEndPointPosition();
 	void ErrorPrint(int number) {
 		std::cout << "[ Error ] : ";
 		switch (number) {
@@ -122,92 +68,358 @@ public:
 
 		}
 	}
+	void setPosition(char direction, int a_pos) {
+		switch (direction) {
+		case 'W':
+		case 'w':
+			W.Idx = a_pos;
+			W.Row = getRow(W.Idx);
+			W.Col = getCol(W.Idx);
+			std::cout << " End Point W is set" << std::endl;
+			break;
+
+		case 'E':
+		case 'e':
+			E.Idx = a_pos;
+			E.Row = getRow(E.Idx);
+			E.Col = getCol(E.Idx);
+			std::cout << " End Point E is set" << std::endl;
+			break;
+
+		case 'S':
+		case 's':
+			S.Idx = a_pos;
+			S.Row = getRow(S.Idx);
+			S.Col = getCol(S.Idx);
+			std::cout << " End Point S is set" << std::endl;
+			break;
+
+		case 'N':
+		case 'n':
+			N.Idx = a_pos;
+			N.Row = getRow(N.Idx);
+			N.Col = getCol(N.Idx);
+			std::cout << " End Point N is set" << std::endl;
+			break;
+		case 'M':
+		case 'm':
+			WE_MidPoint.Idx = a_pos;
+			WE_MidPoint.Row = getRow(WE_MidPoint.Idx);
+			WE_MidPoint.Col = getCol(WE_MidPoint.Idx);
+			std::cout << " Mid Point is set" << std::endl;
+			break;
+		default:
+			ErrorPrint(1);
+			std::cout << "[ Error ] : Undefined character " << std::endl;
+			break;
+		}
+	}
+
+	virtual int getEastEndPointPosition() = NULL;
+	virtual int getWestEndPointPosition() = NULL;
+	virtual int getSouthEndPointPosition() = NULL;
+	virtual int getNorthEndPointPosition() = NULL;
+
+	int getRow(int idx) {
+		return (idx + 1) / width;
+	}
+	int getCol(int Idx) {
+		return Idx % width;
+	}
 };
 
-bool EndPoint::isRightEndPointPosition() {
-	//printf("%d %d\n", cloud->points.size(), Img_CenterPoint);
-	int idx;
-	int flag;
-	for (int i = 0; i < cloud->width / 2; i++) {	//West
-		idx = Img_CenterPoint.Idx - i;
-		flag = 0;
-		if (points[idx].x == 0.0) {
-			flag = 1;
-			for (int c = 0; c < 6; c++) {
-				if (points[idx - c].x != 0.0) {
-					flag = 0;
+class FrontEndPoint : public EndPoint{
+public:
+	int getEastEndPointPosition() {
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->width / 2; i++) { //east
+			idx = Img_CenterPoint.Idx + i;
+			flag = 0;
+			if (points[idx].x == 0.0) {
+				flag = 1;
+				for (int c = 0; c < 3; c++) {
+					if (points[idx + c].x != 0.0) {
+						flag = 0;
+					}
 				}
-			}
-			if (flag == 1) {
-				setPosition('W', idx);
-				break;
+				if (flag == 1) {
+					return idx + 5;
+					break;
+				}
 			}
 		}
 	}
-	for (int i = 0; i < cloud->width / 2; i++) { //east
-		idx = Img_CenterPoint.Idx + i;
-		flag = 0;
-		if (points[idx].x == 0.0) {
-			flag = 1;
-			for (int c = 0; c < 6; c++) {
-				if (points[idx + c].x != 0.0) {
-					flag = 0;
+	int getWestEndPointPosition() {
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->width / 2; i++) {	//West
+			idx = Img_CenterPoint.Idx - i;
+			flag = 0;
+			if (points[idx].x == 0.0) {
+				flag = 1;
+				for (int c = 0; c < 3; c++) {
+					if (points[idx - c].x != 0.0) {
+						flag = 0;
+					}
 				}
-			}
-			if (flag == 1) {
-				setPosition('E', idx);
-				break;
-			}
-		}
-	}
-	setPosition('M', NULL);
-	for (int i = 0; i < cloud->height / 2; i++) { //north
-		idx = WE_MidPoint.Idx - (i * cloud->width);
-		flag = 0;
-		if (points[idx].x == 0.0) {
-			flag = 1;
-			for (int c = 0; c < 4; c++) {
-				if (points[idx - (c * cloud->width)].x != 0.0) {
-					flag = 0;
+				if (flag == 1) {
+					return idx;
+					break;
 				}
-			}
-			if (flag == 1) {
-				setPosition('N', idx);
-				break;
-			}
-		}
-	}
-	for (int i = 0; i < cloud->height / 2; i++) { //south
-		idx = WE_MidPoint.Idx + (i * cloud->width);
-		flag = 0; 
-		if (points[idx].x == 0.0) {
-			flag = 1;
-			for (int c = 0; c < 4; c++) {
-				if (points[idx + (c * cloud->width)].x != 0.0) {
-					flag = 0;
-				}
-			}
-			if (flag == 1) {
-				setPosition('S', idx);
-				break;
 			}
 		}
 	}
 
-	std::cout << " W : "; W.toString();
-	std::cout << " E : "; E.toString();
-	std::cout << " N : "; N.toString();
-	std::cout << " S : "; S.toString();
-	std::cout << "\n";
-
-	std::cout << " E-W : " << E.Col - W.Col << " S-N : " << (S.Row - N.Row) << std::endl;
-
-	if (W.Idx!= -1 && E.Idx != -1 && S.Idx != -1 && N.Idx != -1 && S.Idx != N.Idx) { // 초기값을 구하고 상단점과 하단점을 구했을 경우 
-		double ratio = ((double)S.Row - N.Row) / ((double)E.Col - W.Col);
-		std::cout <<"Width / Height ratio : "<<ratio<<std::endl;
-		if (2.0 > ratio && ratio > 1.2) {
-			return false;
+	int getNorthEndPointPosition() {
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->height / 2; i++) { //north
+			if ((WE_MidPoint.Idx - (i * cloud->width)) > 0) {
+				idx = WE_MidPoint.Idx - (i * cloud->width);
+				flag = 0;
+				if (points[idx].x == 0.0) {
+					flag = 1;
+					for (int c = 0; c < 3; c++) {
+						if (points[idx - (c * cloud->width)].z != 0.0) {
+							flag = 0;
+						}
+					}
+					if (flag == 1) {
+						return idx + cloud->width;
+						break;
+					}
+				}
+			}
+			else {
+				std::cout << "얼굴이 너무 위로올라 갔습니다.\n" << std::endl;
+				exit(1);
+			}
 		}
 	}
-	return true;
+	int getSouthEndPointPosition() {
+		int idx = 0;
+		int flag = 0;
+
+		double prev = 0;
+		double gradient = 0;
+		for (int i = 0; i < cloud->height / 2; i++) { //south
+			idx = WE_MidPoint.Idx + (i * cloud->width);
+			flag = 0;
+			if (points[idx].x == 0.0) {
+				flag = 1;
+				for (int c = 0; c < 3; c++) {
+					if (points[idx + (c * cloud->width)].x != 0.0) {
+						flag = 0;
+					}
+				}
+				if (flag == 1) {
+					return idx + 4 * cloud->width;
+					break;
+				}
+			}
+		}
+	}
+	bool isRightEndPointPosition() {
+		setPosition('E', getEastEndPointPosition());
+		setPosition('W', getWestEndPointPosition());
+
+		setPosition('M', NULL);
+		setPosition('N', getNorthEndPointPosition());
+		setPosition('S', getSouthEndPointPosition());
+		//setPosition('S', WE_MidPoint.Idx+1);
+
+		std::cout << " W : "; W.toString();
+		std::cout << " E : "; E.toString();
+		std::cout << " N : "; N.toString();
+		std::cout << " S : "; S.toString();
+		std::cout << "\n";
+
+		std::cout << " E-W : " << E.Col - W.Col << " S-N : " << (S.Row - N.Row) << std::endl;
+
+		if (W.Idx != -1 && E.Idx != -1 && S.Idx != -1 && N.Idx != -1 && S.Idx != N.Idx) { // 초기값을 구하고 상단점과 하단점을 구했을 경우 
+			double ratio = ((double)S.Row - N.Row) / ((double)E.Col - W.Col);
+			std::cout << "Width / Height ratio : " << ratio << std::endl;
+			if (2.0 > ratio && ratio >= 1.0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+};
+
+class RightEndPoint : public EndPoint {
+public:
+	int Frame_W=200, Frame_H=200;
+	void setFrameSize(int W, int H) {
+		Frame_W = W;
+		Frame_H = H;
+	}
+	int getEastEndPointPosition() {	//Front와 같음 
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->width / 2; i++) { //east
+			idx = Img_CenterPoint.Idx + i;
+			flag = 0;
+			if (points[idx].x == 0.0) {
+				flag = 1;
+				for (int c = 0; c < 3; c++) {
+					if (points[idx + c].x != 0.0) {
+						flag = 0;
+					}
+				}
+				if (flag == 1) {
+					return idx+5;
+					break;
+				}
+			}
+		}
+	}
+	int getWestEndPointPosition() { 
+		return E.Idx - Frame_W;
+	}
+	int getSouthEndPointPosition() {
+		return N.Idx + Frame_H * cloud->width;
+	}
+	int getNorthEndPointPosition()
+	{
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->height / 2; i++) { //Front랑 Mid에서 움직일지 
+			if ((Img_CenterPoint.Idx - (i * cloud->width)) > 0) {
+				idx = Img_CenterPoint.Idx - (i * cloud->width);
+				flag = 0;
+				if (points[idx].x == 0.0) {
+					flag = 1;
+					for (int c = 0; c < 3; c++) {
+						if (points[idx - (c * cloud->width)].z != 0.0) {
+							flag = 0;
+						}
+					}
+					if (flag == 1) {
+						return idx - 5 * cloud->width;
+						break;
+					}
+				}
+			}
+			else {
+				std::cout << "[Right] : 얼굴이 너무 위로올라 갔습니다.\n" << std::endl;
+				exit(1);
+			}
+		}
+	}
+
+	bool isRightEndPointPosition() {
+		setPosition('E', getEastEndPointPosition());
+		setPosition('N', getNorthEndPointPosition());
+
+		setPosition('W', getWestEndPointPosition());
+		setPosition('S', getSouthEndPointPosition());
+		//setPosition('S', WE_MidPoint.Idx+1);
+
+		std::cout << " W : "; W.toString();
+		std::cout << " E : "; E.toString();
+		std::cout << " N : "; N.toString();
+		std::cout << " S : "; S.toString();
+		std::cout << "\n";
+
+		std::cout << " E-W : " << E.Col - W.Col << " S-N : " << (S.Row - N.Row) << std::endl;
+
+		if (W.Idx != -1 && E.Idx != -1 && S.Idx != -1 && N.Idx != -1 && S.Idx != N.Idx) { // 초기값을 구하고 상단점과 하단점을 구했을 경우 
+			double ratio = ((double)S.Row - N.Row) / ((double)E.Col - W.Col);
+			std::cout << "Width / Height ratio : " << ratio << std::endl;
+			if (2.0 > ratio && ratio >= 1.0) {
+				return false;
+			}
+		}
+		return true;
+	}
+};
+class LeftEndPoint : public EndPoint {
+public:
+	int Frame_W = 200, Frame_H = 200;
+	void setFrameSize(int W, int H) {
+		Frame_W = W;
+		Frame_H = H;
+	}
+	int getEastEndPointPosition() {	//Front와 같음 
+		return W.Idx + Frame_W;
+	}
+	int getWestEndPointPosition() {
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->width / 2; i++) {	//West
+			idx = Img_CenterPoint.Idx - i;
+			flag = 0;
+			if (points[idx].x == 0.0) {
+				flag = 1;
+				for (int c = 0; c < 3; c++) {
+					if (points[idx - c].x != 0.0) {
+						flag = 0;
+					}
+				}
+				if (flag == 1) {
+					return idx;
+					break;
+				}
+			}
+		}
+	}
+	int getSouthEndPointPosition() {
+		return N.Idx + Frame_H * cloud->width;
+	}
+	int getNorthEndPointPosition()
+	{
+		int idx = 0;
+		int flag = 0;
+		for (int i = 0; i < cloud->height / 2; i++) { //Front랑 Mid에서 움직일지 
+			if ((Img_CenterPoint.Idx - (i * cloud->width)) > 0) {
+				idx = Img_CenterPoint.Idx - (i * cloud->width);
+				flag = 0;
+				if (points[idx].x == 0.0) {
+					flag = 1;
+					for (int c = 0; c < 3; c++) {
+						if (points[idx - (c * cloud->width)].z != 0.0) {
+							flag = 0;
+						}
+					}
+					if (flag == 1) {
+						return idx - 5 * cloud->width;
+						break;
+					}
+				}
+			}
+			else {
+				std::cout << "[Right] : 얼굴이 너무 위로올라 갔습니다.\n" << std::endl;
+				exit(1);
+			}
+		}
+	}
+
+	bool isRightEndPointPosition() {
+		setPosition('N', getNorthEndPointPosition());
+		setPosition('W', getWestEndPointPosition());
+
+		setPosition('E', getEastEndPointPosition());
+		setPosition('S', getSouthEndPointPosition());
+		//setPosition('S', WE_MidPoint.Idx+1);
+
+		std::cout << " W : "; W.toString();
+		std::cout << " E : "; E.toString();
+		std::cout << " N : "; N.toString();
+		std::cout << " S : "; S.toString();
+		std::cout << "\n";
+
+		std::cout << " E-W : " << E.Col - W.Col << " S-N : " << (S.Row - N.Row) << std::endl;
+
+		if (W.Idx != -1 && E.Idx != -1 && S.Idx != -1 && N.Idx != -1 && S.Idx != N.Idx) { // 초기값을 구하고 상단점과 하단점을 구했을 경우 
+			double ratio = ((double)S.Row - N.Row) / ((double)E.Col - W.Col);
+			std::cout << "Width / Height ratio : " << ratio << std::endl;
+			if (2.0 > ratio && ratio >= 1.0) {
+				return false;
+			}
+		}
+		return true;
+	}
 };

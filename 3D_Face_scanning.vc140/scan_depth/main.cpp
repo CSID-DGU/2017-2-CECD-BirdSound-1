@@ -16,34 +16,49 @@ int main() try {
 
 	cout << "리얼센스 활성화 중..." << endl;
 
-	EndPoint EndPoints;
-	EndPoints.setOriginPoints(realSense.dev);
+	/*
+	TODO
+	1. 앞/좌/우면을 위한 cloud 3개 생성하기 
+	2. 각 depth이미지를 촬영하는 기능 추가하기.
+	*/
+
+	FrontEndPoint FrontEndPoints;
+	RightEndPoint RightEndPoints;
+	LeftEndPoint LeftEndPoints;
+	FrontEndPoints.setOriginPoints(realSense.dev);
+	RightEndPoints.setOriginPoints(realSense.dev);
+	LeftEndPoints.setOriginPoints(realSense.dev);
+
+
 	do {
 		///depth 이미지 촬영
-		EndPoints.initPoint();
-		rs::intrinsics depth_intrin = EndPoints.getDepthImage();
+		FrontEndPoints.initPoint();
+		rs::intrinsics depth_intrin = FrontEndPoints.getDepthImage();
 
 
 		cloud.width = depth_intrin.width;
 		cloud.height = depth_intrin.height;
 		cloud.is_dense = false;
 		cloud.points.resize(cloud.width * cloud.height);
-		EndPoints.setCloud(&cloud);
+		FrontEndPoints.setCloud(&cloud);
 		//cout << "PCL 로 변환중..." << endl;
 		std::cout << "\n\n";
 
-	} while (EndPoints.isRightEndPointPosition() == true);
+	} while (FrontEndPoints.isRightEndPointPosition() == true);
 
 
-	for (int row = 0; row < EndPoints.Img_CenterPoint.Idx; row += cloud.width) 
+	for (int row = 0; row < FrontEndPoints.Img_CenterPoint.Idx; row += cloud.width)
 	{
-		for (int i = EndPoints.N.Idx - (EndPoints.E.Idx - EndPoints.W.Idx) / 2 + row; i < EndPoints.N.Idx + (EndPoints.E.Idx - EndPoints.W.Idx) / 2 + row; i++) {
+		for (int i = FrontEndPoints.N.Idx - (FrontEndPoints.E.Idx - FrontEndPoints.W.Idx) / 2 + row; i < FrontEndPoints.N.Idx + (FrontEndPoints.E.Idx - FrontEndPoints.W.Idx) / 2 + row; i++) {
 			int idx = i;
-			cloud.points[idx].x = -2 * EndPoints.points[idx].x;
-			cloud.points[idx].y = -2 * EndPoints.points[idx].y;
-			cloud.points[idx].z = -2 * EndPoints.points[idx].z;
+			cloud.points[idx].x = -2 * FrontEndPoints.points[idx].x;
+			cloud.points[idx].y = -2 * FrontEndPoints.points[idx].y;
+			cloud.points[idx].z = -2 * FrontEndPoints.points[idx].z;
 		}
 	}
+	
+	
+	//RightEndPoint,LeftEndPoint도 Front랑 같은 코드로 구현하면 됨 
 
 	pcl::visualization::CloudViewer viewer("PCL Viewer");
 	viewer.showCloud(cloud.makeShared());
