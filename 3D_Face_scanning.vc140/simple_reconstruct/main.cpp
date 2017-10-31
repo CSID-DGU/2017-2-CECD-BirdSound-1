@@ -32,7 +32,7 @@ int main() try {
 	cout << "K-searching..." << endl;
 	n.setKSearch(k);
 	n.compute(*normals);
-	cout << "Finish Searching" << endl;
+	cout << "Finish Normal computing" << endl;
 	//* normals should not contain the point normals + surface curvatures
 	// Concatenate the XYZ and normal fields*
 	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
@@ -40,10 +40,6 @@ int main() try {
 	//* cloud_with_normals = cloud + normals
 
 	// Create search tree*
-
-	float resolution = 128.0f;
-	pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree(resolution);
-
 	pcl::search::KdTree<pcl::PointNormal>::Ptr tree2(new pcl::search::KdTree<pcl::PointNormal>);
 	tree2->setInputCloud(cloud_with_normals);
 
