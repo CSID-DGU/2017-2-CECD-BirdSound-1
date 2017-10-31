@@ -9,7 +9,9 @@ using namespace io;
 int main() try {
 	 
 	// Load input file into a PointCloud<T> with an appropriate type
+	
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	
 	pcl::PCLPointCloud2 cloud_blob; 
 	cout << "PCD 파일경로를 입력해주세요.." << endl;
 	string filePath; getline(std::cin, filePath);
@@ -38,6 +40,9 @@ int main() try {
 	//* cloud_with_normals = cloud + normals
 
 	// Create search tree*
+
+	float resolution = 128.0f;
+	pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree(resolution);
 
 	pcl::search::KdTree<pcl::PointNormal>::Ptr tree2(new pcl::search::KdTree<pcl::PointNormal>);
 	tree2->setInputCloud(cloud_with_normals);
