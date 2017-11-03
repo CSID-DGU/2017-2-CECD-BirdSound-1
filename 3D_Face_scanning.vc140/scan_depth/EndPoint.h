@@ -180,7 +180,7 @@ public:
 				flag = 0;
 				if (points[idx].x == 0.0) {
 					flag = 1;
-					for (int c = 0; c < 3; c++) {
+					for (int c = 0; c < 2; c++) {
 						if (points[idx - (c * cloud->width)].z != 0.0) {
 							flag = 0;
 						}
@@ -192,8 +192,6 @@ public:
 				}
 			}
 			else {
-				std::cout << "얼굴이 너무 위로올라 갔습니다.\n" << std::endl;
-				exit(1);
 			}
 		}
 	}
@@ -224,7 +222,7 @@ public:
 		setPosition('E', getEastEndPointPosition());
 		setPosition('W', getWestEndPointPosition());
 
-		setPosition('M', NULL);
+		setPosition('M', (E.Idx+W.Idx)/2);
 		setPosition('N', getNorthEndPointPosition());
 		setPosition('S', getSouthEndPointPosition());
 		//setPosition('S', WE_MidPoint.Idx+1);
@@ -313,7 +311,6 @@ public:
 	bool isRightEndPointPosition() {
 		setPosition('E', getEastEndPointPosition());
 		setPosition('N', getNorthEndPointPosition());
-
 		setPosition('W', getWestEndPointPosition());
 		setPosition('S', getSouthEndPointPosition());
 		//setPosition('S', WE_MidPoint.Idx+1);
