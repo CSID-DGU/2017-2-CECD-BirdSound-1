@@ -22,6 +22,7 @@ int main() try {
 	//* the data should be available in cloud
 
 	// Normal estimation*
+	cout << "Starting Normal Estimation" << endl;
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
 	pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
 	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>);

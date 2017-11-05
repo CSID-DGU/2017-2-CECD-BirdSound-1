@@ -34,8 +34,6 @@ int main() try {
 		///depth 이미지 촬영
 		FrontEndPoints.initPoint();
 		rs::intrinsics depth_intrin = FrontEndPoints.getDepthImage();
-
-
 		cloud.width = depth_intrin.width;
 		cloud.height = depth_intrin.height;
 		cloud.is_dense = false;
@@ -51,17 +49,41 @@ int main() try {
 	{
 		for (int i = FrontEndPoints.N.Idx - (FrontEndPoints.E.Idx - FrontEndPoints.W.Idx) / 2 + row; i < FrontEndPoints.N.Idx + (FrontEndPoints.E.Idx - FrontEndPoints.W.Idx) / 2 + row; i++) {
 			int idx = i;
-			cloud.points[idx].x = -2 * FrontEndPoints.points[idx].x;
-			cloud.points[idx].y = -2 * FrontEndPoints.points[idx].y;
-			cloud.points[idx].z = -2 * FrontEndPoints.points[idx].z;
+			cloud.points[idx].x = - FrontEndPoints.points[idx].x;
+			cloud.points[idx].y = - FrontEndPoints.points[idx].y;
+			cloud.points[idx].z = - FrontEndPoints.points[idx].z;
 		}
 	}
 	
+	cout << "Resizing..." << endl;
+	PointCloud<PointXYZ> r_cloud;
+	r_cloud.width = abs(FrontEndPoints.W.Col - FrontEndPoints.E.Col);
+	r_cloud.height = abs(FrontEndPoints.S.Row - FrontEndPoints.N.Row);
+	r_cloud.is_dense = false;
+	r_cloud.points.resize(r_cloud.width * r_cloud.height);
+
+	int newindex = 0;
+	for (int i = FrontEndPoints.N.Row; i < FrontEndPoints.S.Row; i ++)
+	{
+		int idx = FrontEndPoints.W.Col + i*cloud.width;
+		for (int j = 0; j < r_cloud.width; j++) {
+			r_cloud.points[newindex].x = -FrontEndPoints.points[idx+j].x;
+			r_cloud.points[newindex].y = -FrontEndPoints.points[idx+j].y;
+			r_cloud.points[newindex].z = -FrontEndPoints.points[idx+j].z;
+			++newindex;
+		}
+	}
+	cout << "Done." << endl;
+	
 	
 	//RightEndPoint,LeftEndPoint도 Front랑 같은 코드로 구현하면 됨 
+	string result_name;
+	cout << "출력 파일 이름(pcd) : "; cin >> result_name;
+	savePCDFileASCII(result_name + ".pcd", r_cloud);
+	cout << "Done." << endl;
 
 	pcl::visualization::CloudViewer viewer("PCL Viewer");
-	viewer.showCloud(cloud.makeShared());
+	viewer.showCloud(r_cloud.makeShared());
 	while (!viewer.wasStopped());
 
 	return EXIT_SUCCESS;
