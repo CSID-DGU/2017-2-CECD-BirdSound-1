@@ -47,7 +47,7 @@ int main() try {
 	} while (FrontEndPoints.isRightEndPointPosition() == true);
 
 
-	for (int row = 0; row < FrontEndPoints.Img_CenterPoint.Idx; row += cloud.width)
+	for (int row = 0; row < FrontEndPoints.S.Idx - FrontEndPoints.N.Idx; row += cloud.width)
 	{
 		for (int i = FrontEndPoints.N.Idx - (FrontEndPoints.E.Idx - FrontEndPoints.W.Idx) / 2 + row; i < FrontEndPoints.N.Idx + (FrontEndPoints.E.Idx - FrontEndPoints.W.Idx) / 2 + row; i++) {
 			int idx = i;
