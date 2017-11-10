@@ -125,19 +125,7 @@ int main()
 		dis.push_back(_distance);
 		
 	} 
-	//average /= sumOfdis;
-	////std::cout << "Average of distance is "<<average;
-	////std::cout << "average of (square Deviation) is " ;
-
-	//float stdv = 0.0f;
-
-	//for (int i = 0; i < dis.size(); i++)
-	//{
-	//	stdv+=(dis[i] - average);
-	//}
-
-	//stdv /= (out_centers.size() - 1);
-	//std::cout << stdv << "\n";
+	
 
 	cv::namedWindow("Display window", WINDOW_AUTOSIZE);
 	cv::imshow("Display window", outimage);
