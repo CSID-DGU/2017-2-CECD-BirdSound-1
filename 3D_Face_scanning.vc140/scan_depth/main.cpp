@@ -17,22 +17,18 @@ int main() try {
 	1. 앞/좌/우면을 위한 cloud 3개 생성하기
 	*/
 
-	FrontEndPoint FrontEndPoints;
-	RightEndPoint RightEndPoints;
-	LeftEndPoint LeftEndPoints;
-	FrontEndPoints.setOriginPoints(realSense.dev);
-	RightEndPoints.setOriginPoints(realSense.dev);
-	LeftEndPoints.setOriginPoints(realSense.dev);
+	FrontEndPoint FrontEndPoints(realSense.dev);
+	RightEndPoint RightEndPoints(realSense.dev);
+	LeftEndPoint LeftEndPoints(realSense.dev);
 
-
+	std::cout << "Capture Depth Image... " << std::endl;
 	do {
 		///depth 이미지 촬영
-		std::cout << "Capture Depth Image... " << std::endl;
 		FrontEndPoints.initPoint();
 		rs::intrinsics depth_intrin = FrontEndPoints.getDepthImage();
 		FrontEndPoints.setResolution(depth_intrin.width, depth_intrin.height);
-		std::cout << "Depth Image is Captured \n\n";
 	} while (FrontEndPoints.isRightEndPointPosition() == true);
+	std::cout << "Depth Image is Captured \n\n";
 
 	std::cout << "\nResize the Depth Image..." << std::endl;
 	int Width = FrontEndPoints.Width;
@@ -49,9 +45,11 @@ int main() try {
 	for (int i = FrontEndPoints.N.Row; i < FrontEndPoints.S.Row; i++){
 		int idx = FrontEndPoints.W.Col + i*Width;
 		for (int j = 0; j < subWidth; j++) {
-			cloud.points[newindex].x = -FrontEndPoints.points[idx + j].x;
-			cloud.points[newindex].y = -FrontEndPoints.points[idx + j].y;
-			cloud.points[newindex].z = -FrontEndPoints.points[idx + j].z;
+			if (FrontEndPoints.points[idx + j].z <= FrontEndPoints.points[FrontEndPoints.B.Idx].z) {
+				cloud.points[newindex].x = -FrontEndPoints.points[idx + j].x;
+				cloud.points[newindex].y = -FrontEndPoints.points[idx + j].y;
+				cloud.points[newindex].z = -FrontEndPoints.points[idx + j].z;
+			}
 			++newindex;
 		}
 	}
@@ -60,12 +58,12 @@ int main() try {
 	/*
 	RightEndPoint,LeftEndPoint도 Front랑 같은 코드로 구현하면 됨
 	*/
-
-	SaveFile(&cloud);
 	
 	pcl::visualization::CloudViewer viewer("PCL Viewer");
 	viewer.showCloud(cloud.makeShared());
 	while (!viewer.wasStopped());
+
+	SaveFile(&cloud);
 
 	return EXIT_SUCCESS;
 }

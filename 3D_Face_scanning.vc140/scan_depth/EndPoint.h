@@ -14,7 +14,12 @@ public:
 	int Idx;
 
 	void toString() {
-		std::cout<<"(" << Row << ", " << Col << ")";
+		if (Idx >= 0) {
+			std::cout << "(" << Row << ", " << Col << ")";
+		}
+		else {
+			std::cout << "this Point isn't set" << std::endl;
+		}
 	};
 }typedef Pos;
 
@@ -22,7 +27,7 @@ class EndPoint {
 public:	
 	int Width, Height;
 	Pos Img_CenterPoint, WE_MidPoint;
-	Pos  W, E, S, N;
+	Pos  W, E, S, N,B;
 	const rs::float3 *points;
 	device * dev;
 
@@ -36,9 +41,6 @@ public:
 		S.Row = -1;		S.Col = -1;		S.Idx = -1;
 		Img_CenterPoint.Row = -1;	Img_CenterPoint.Col = -1;	Img_CenterPoint.Idx = -1;
 		WE_MidPoint.Row = -1;		WE_MidPoint.Col = -1;		WE_MidPoint.Idx = -1;
-	}
-	void setOriginPoints(device * a_dev) {
-		dev = a_dev;
 	}
 	void setResolution(int a_Width, int a_Height) {
 		Width = a_Width;
@@ -106,6 +108,12 @@ public:
 			WE_MidPoint.Col = getCol(WE_MidPoint.Idx);
 			std::cout << " Mid Point is set" << std::endl;
 			break;
+		case 'B':
+		case 'b':
+			B.Idx = a_pos;
+			B.Row = getRow(B.Idx);
+			B.Col = getCol(B.Idx);
+			std::cout << " End Point B is set" << std::endl;
 		default:
 			ErrorPrint(1);
 			std::cout << "[ Error ] : Undefined character " << std::endl;
@@ -128,6 +136,9 @@ public:
 
 class FrontEndPoint : public EndPoint{
 public:
+	FrontEndPoint(device * a_dev) {
+		dev = a_dev;
+	}
 	int getEastEndPointPosition() {
 		int idx = 0;
 		int flag = 0;
@@ -137,8 +148,10 @@ public:
 			if (points[idx].x == 0.0) {
 				flag = 1;
 				for (int c = 0; c < 3; c++) {
-					if (points[idx + c].x != 0.0) {
-						flag = 0;
+					if ((idx + c) % Width != 0) {
+						if (points[idx + c].x != 0.0) {
+							flag = 0;
+						}
 					}
 				}
 				if (flag == 1) {
@@ -157,8 +170,10 @@ public:
 			if (points[idx].x == 0.0) {
 				flag = 1;
 				for (int c = 0; c < 3; c++) {
-					if (points[idx - c].x != 0.0) {
-						flag = 0;
+					if ((idx - c-1) % Width != 0) {
+						if (points[idx - c].x != 0.0) {
+							flag = 0;
+						}
 					}
 				}
 				if (flag == 1) {
@@ -179,8 +194,10 @@ public:
 				if (points[idx].x == 0.0) {
 					flag = 1;
 					for (int c = 0; c < 3; c++) {
-						if (points[idx - (c * Width)].z != 0.0) {
-							flag = 0;
+						if ((idx - (c * Width)) > 0) {
+							if (points[idx - (c * Width)].z != 0.0) {
+								flag = 0;
+							}
 						}
 					}
 					if (flag == 1) {
@@ -218,6 +235,22 @@ public:
 			}
 		}
 	}
+	int getBackEndPointPosition() {
+		int max;
+		for (int i = S.Idx+Width; i % Width!=0; i++) {
+			if (points[i].z != 0.0) {
+				max = i;
+			}
+		}
+		for (int i = S.Idx + Width; i % Width != 0; i--) {
+			if (points[i].z != 0.0) {
+				if (points[max].z > points[i].z)
+					max = i;
+				return max;
+			}
+		}
+		return 0;
+	}
 	bool isRightEndPointPosition() {
 		setPosition('E', getEastEndPointPosition());
 		setPosition('W', getWestEndPointPosition());
@@ -225,12 +258,14 @@ public:
 		setPosition('M', (E.Idx+W.Idx)/2);
 		setPosition('N', getNorthEndPointPosition());
 		setPosition('S', getSouthEndPointPosition());
-		//setPosition('S', WE_MidPoint.Idx+1);
+
+		setPosition('B', getBackEndPointPosition());
 
 		std::cout << " W : "; W.toString();
 		std::cout << " E : "; E.toString();
 		std::cout << " N : "; N.toString();
 		std::cout << " S : "; S.toString();
+		std::cout << " B : " << points[B.Idx].z<<" "; B.toString();
 		std::cout << "\n";
 
 		std::cout << " E-W : " << E.Col - W.Col << " S-N : " << (S.Row - N.Row) << std::endl;
@@ -249,6 +284,9 @@ public:
 
 class RightEndPoint : public EndPoint {
 public:
+	RightEndPoint(device * a_dev) {
+	dev = a_dev;
+	}
 	int Frame_W=200, Frame_H=200;
 	void setFrameSize(int W, int H) {
 		Frame_W = W;
@@ -335,6 +373,9 @@ public:
 };
 class LeftEndPoint : public EndPoint {
 public:
+	LeftEndPoint(device * a_dev) {
+		dev = a_dev;
+	}
 	int Frame_W = 200, Frame_H = 200;
 	void setFrameSize(int W, int H) {
 		Frame_W = W;
