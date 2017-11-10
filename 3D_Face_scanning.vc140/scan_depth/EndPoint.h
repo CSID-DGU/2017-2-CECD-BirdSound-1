@@ -246,6 +246,12 @@ public:
 			if (points[i].z != 0.0) {
 				if (points[max].z > points[i].z)
 					max = i;
+			}
+		}
+		for (int i = S.Idx + Width; i <Width*Height; i += Width) {
+			if (points[i].z != 0.0) {
+				if (points[max].z > points[i].z)
+					max = i;
 				return max;
 			}
 		}
