@@ -20,8 +20,7 @@ public:
 
 class EndPoint {
 public:	
-	PointCloud<PointXYZ> *cloud;
-	int width, height;
+	int Width, Height;
 	Pos Img_CenterPoint, WE_MidPoint;
 	Pos  W, E, S, N;
 	const rs::float3 *points;
@@ -41,14 +40,13 @@ public:
 	void setOriginPoints(device * a_dev) {
 		dev = a_dev;
 	}
-	void setCloud(PointCloud<PointXYZ> *a_cloud) {
-		cloud = a_cloud;
-		width = cloud->width;
-		height = cloud->height;
+	void setResolution(int a_Width, int a_Height) {
+		Width = a_Width;
+		Height = a_Height;
 
-		Img_CenterPoint.Col = cloud->width / 2;
-		Img_CenterPoint.Row = cloud->height / 2;
-		Img_CenterPoint.Idx = cloud->width*cloud->height / 2 + cloud->width / 2;
+		Img_CenterPoint.Col = Width / 2;
+		Img_CenterPoint.Row = Height / 2;
+		Img_CenterPoint.Idx = Width*Height / 2 + Width / 2;
 
 		std::cout << " Center Point is set" << std::endl;
 	}
@@ -121,10 +119,10 @@ public:
 	virtual int getNorthEndPointPosition() = NULL;
 
 	int getRow(int idx) {
-		return (idx + 1) / width;
+		return (idx + 1) / Width;
 	}
 	int getCol(int Idx) {
-		return Idx % width;
+		return Idx % Width;
 	}
 };
 
@@ -133,7 +131,7 @@ public:
 	int getEastEndPointPosition() {
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->width / 2; i++) { //east
+		for (int i = 0; i < Width / 2; i++) { //east
 			idx = Img_CenterPoint.Idx + i;
 			flag = 0;
 			if (points[idx].x == 0.0) {
@@ -153,7 +151,7 @@ public:
 	int getWestEndPointPosition() {
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->width / 2; i++) {	//West
+		for (int i = 0; i < Width / 2; i++) {	//West
 			idx = Img_CenterPoint.Idx - i;
 			flag = 0;
 			if (points[idx].x == 0.0) {
@@ -174,19 +172,19 @@ public:
 	int getNorthEndPointPosition() {
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->height / 2; i++) { //north
-			if ((WE_MidPoint.Idx - (i * cloud->width)) > 0) {
-				idx = WE_MidPoint.Idx - (i * cloud->width);
+		for (int i = 0; i < Width / 2; i++) { //north
+			if ((WE_MidPoint.Idx - (i * Width)) > 0) {
+				idx = WE_MidPoint.Idx - (i * Width);
 				flag = 0;
 				if (points[idx].x == 0.0) {
 					flag = 1;
-					for (int c = 0; c < 2; c++) {
-						if (points[idx - (c * cloud->width)].z != 0.0) {
+					for (int c = 0; c < 3; c++) {
+						if (points[idx - (c * Width)].z != 0.0) {
 							flag = 0;
 						}
 					}
 					if (flag == 1) {
-						return idx + cloud->width;
+						return idx + Width;
 						break;
 					}
 				}
@@ -201,18 +199,20 @@ public:
 
 		double prev = 0;
 		double gradient = 0;
-		for (int i = 0; i < cloud->height / 2; i++) { //south
-			idx = WE_MidPoint.Idx + (i * cloud->width);
+		for (int i = 0; i < Width / 2; i++) { //south
+			idx = WE_MidPoint.Idx + (i * Width);
 			flag = 0;
 			if (points[idx].x == 0.0) {
 				flag = 1;
-				for (int c = 0; c < 3; c++) {
-					if (points[idx + (c * cloud->width)].x != 0.0) {
-						flag = 0;
+				for (int c = 0; c < 2; c++) {
+					if (idx + (c * Width) < Width*Height) {
+						if (points[idx + (c * Width)].x != 0.0) {
+							flag = 0;
+						}
 					}
 				}
 				if (flag == 1) {
-					return idx + 4 * cloud->width;
+					return idx + 4 * Width;
 					break;
 				}
 			}
@@ -257,7 +257,7 @@ public:
 	int getEastEndPointPosition() {	//Front와 같음 
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->width / 2; i++) { //east
+		for (int i = 0; i < Width / 2; i++) { //east
 			idx = Img_CenterPoint.Idx + i;
 			flag = 0;
 			if (points[idx].x == 0.0) {
@@ -278,25 +278,25 @@ public:
 		return E.Idx - Frame_W;
 	}
 	int getSouthEndPointPosition() {
-		return N.Idx + Frame_H * cloud->width;
+		return N.Idx + Frame_H * Width;
 	}
 	int getNorthEndPointPosition()
 	{
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->height / 2; i++) { //Front랑 Mid에서 움직일지 
-			if ((Img_CenterPoint.Idx - (i * cloud->width)) > 0) {
-				idx = Img_CenterPoint.Idx - (i * cloud->width);
+		for (int i = 0; i < Height / 2; i++) { //Front랑 Mid에서 움직일지 
+			if ((Img_CenterPoint.Idx - (i * Width)) > 0) {
+				idx = Img_CenterPoint.Idx - (i * Width);
 				flag = 0;
 				if (points[idx].x == 0.0) {
 					flag = 1;
 					for (int c = 0; c < 3; c++) {
-						if (points[idx - (c * cloud->width)].z != 0.0) {
+						if (points[idx - (c * Width)].z != 0.0) {
 							flag = 0;
 						}
 					}
 					if (flag == 1) {
-						return idx - 5 * cloud->width;
+						return idx - 5 * Width;
 						break;
 					}
 				}
@@ -346,7 +346,7 @@ public:
 	int getWestEndPointPosition() {
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->width / 2; i++) {	//West
+		for (int i = 0; i < Width / 2; i++) {	//West
 			idx = Img_CenterPoint.Idx - i;
 			flag = 0;
 			if (points[idx].x == 0.0) {
@@ -364,25 +364,25 @@ public:
 		}
 	}
 	int getSouthEndPointPosition() {
-		return N.Idx + Frame_H * cloud->width;
+		return N.Idx + Frame_H * Width;
 	}
 	int getNorthEndPointPosition()
 	{
 		int idx = 0;
 		int flag = 0;
-		for (int i = 0; i < cloud->height / 2; i++) { //Front랑 Mid에서 움직일지 
-			if ((Img_CenterPoint.Idx - (i * cloud->width)) > 0) {
-				idx = Img_CenterPoint.Idx - (i * cloud->width);
+		for (int i = 0; i < Height / 2; i++) { //Front랑 Mid에서 움직일지 
+			if ((Img_CenterPoint.Idx - (i * Width)) > 0) {
+				idx = Img_CenterPoint.Idx - (i * Width);
 				flag = 0;
 				if (points[idx].x == 0.0) {
 					flag = 1;
 					for (int c = 0; c < 3; c++) {
-						if (points[idx - (c * cloud->width)].z != 0.0) {
+						if (points[idx - (c * Width)].z != 0.0) {
 							flag = 0;
 						}
 					}
 					if (flag == 1) {
-						return idx - 5 * cloud->width;
+						return idx - 5 * Width;
 						break;
 					}
 				}
