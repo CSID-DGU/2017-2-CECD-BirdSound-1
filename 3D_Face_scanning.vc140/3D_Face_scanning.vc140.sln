@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cmp_normal", "cmp_normal\cm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcd_viewer", "pcd_viewer\pcd_viewer.vcxproj", "{9319F412-9171-498E-AF2B-D30831BFA417}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "texture_mesh", "texture_mesh\texture_mesh.vcxproj", "{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -90,6 +92,14 @@ Global
 		{9319F412-9171-498E-AF2B-D30831BFA417}.Release|Win32.Build.0 = Release|Win32
 		{9319F412-9171-498E-AF2B-D30831BFA417}.Release|x64.ActiveCfg = Release|x64
 		{9319F412-9171-498E-AF2B-D30831BFA417}.Release|x64.Build.0 = Release|x64
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Debug|Win32.Build.0 = Debug|Win32
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Debug|x64.ActiveCfg = Debug|x64
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Debug|x64.Build.0 = Debug|x64
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Release|Win32.ActiveCfg = Release|Win32
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Release|Win32.Build.0 = Release|Win32
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Release|x64.ActiveCfg = Release|x64
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +112,6 @@ Global
 		{953F69DB-D07F-432D-AB8D-E96257D210C3} = {D562F976-74ED-4C2D-A291-F5A614603E85}
 		{F4191BC8-F265-4BCC-8D70-884E667DFBE9} = {D562F976-74ED-4C2D-A291-F5A614603E85}
 		{9319F412-9171-498E-AF2B-D30831BFA417} = {D562F976-74ED-4C2D-A291-F5A614603E85}
+		{7F7D0E8C-1614-411C-AD0A-C3D583EC5811} = {D562F976-74ED-4C2D-A291-F5A614603E85}
 	EndGlobalSection
 EndGlobal
