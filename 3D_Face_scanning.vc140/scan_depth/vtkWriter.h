@@ -32,7 +32,7 @@ public:
 		std::ofstream fout(filename);
 		fout << "# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " << subPOINTS << " float" << std::endl;
 		for (int i = 0; i < subPOINTS; i++) {
-			fout << Cloud->points[i].x << " " << Cloud->points[i].y << " " << Cloud->points[i].z << std::endl;
+			fout << "v " << Cloud->points[i].x << " " << Cloud->points[i].y << " " << Cloud->points[i].z << std::endl;
 			if ((i + subWidth < subPOINTS) && ((i + 1) % subWidth != 0)) {
 				if ((Cloud->points[i].x != 0) && (Cloud->points[i + subWidth].x != 0) && (Cloud->points[i + 1].x != 0))
 					ct += 1;

@@ -7,6 +7,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 4996)
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 #pragma comment(lib, "pcl_common_debug.lib")
 #pragma comment(lib, "pcl_features_debug.lib")
 #pragma comment(lib, "pcl_filters_debug.lib")

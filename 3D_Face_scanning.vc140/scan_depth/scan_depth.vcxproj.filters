@@ -33,9 +33,6 @@
     <ClInclude Include="example.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Neural.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
