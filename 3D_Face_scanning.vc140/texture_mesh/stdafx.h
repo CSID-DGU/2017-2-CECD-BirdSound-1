@@ -4,8 +4,11 @@
 //
 
 #pragma once
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 4996)
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 #pragma comment(lib, "pcl_common_debug.lib")
 #pragma comment(lib, "pcl_features_debug.lib")
 #pragma comment(lib, "pcl_filters_debug.lib")
@@ -41,11 +44,8 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/surface/gp3.h>
+#include <pcl/io/vtk_io.h>
 #include "targetver.h"
-#include "EndPoint.h"
-#include"DrawWindow.h"
-
-
 
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.

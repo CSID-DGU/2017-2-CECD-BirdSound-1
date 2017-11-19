@@ -29,7 +29,6 @@ public:
 	Pos Img_CenterPoint, WE_MidPoint;
 	Pos  W, E, S, N,B;
 	const rs::float3 *points;
-	device * dev;
 
 	EndPoint() {
 		initPoint();
@@ -52,13 +51,7 @@ public:
 
 		std::cout << " Center Point is set" << std::endl;
 	}
-	rs::intrinsics getDepthImage() {
-		dev->wait_for_frames();
-		rs::intrinsics depth_intrin = dev->get_stream_intrinsics(rs::stream::depth);
-		auto Points = reinterpret_cast<const rs::float3 *>(dev->get_frame_data(rs::stream::points));
-		points = Points;
-		return depth_intrin;
-	}
+
 	void ErrorPrint(int number) {
 		std::cout << "[ Error ] : ";
 		switch (number) {
@@ -136,8 +129,7 @@ public:
 
 class FrontEndPoint : public EndPoint{
 public:
-	FrontEndPoint(device * a_dev) {
-		dev = a_dev;
+	FrontEndPoint() {
 	}
 	int getEastEndPointPosition() {
 		int idx = 0;
@@ -183,7 +175,6 @@ public:
 			}
 		}
 	}
-
 	int getNorthEndPointPosition() {
 		int idx = 0;
 		int flag = 0;
@@ -290,8 +281,7 @@ public:
 
 class RightEndPoint : public EndPoint {
 public:
-	RightEndPoint(device * a_dev) {
-	dev = a_dev;
+	RightEndPoint() {
 	}
 	int Frame_W=200, Frame_H=200;
 	void setFrameSize(int W, int H) {
@@ -377,10 +367,10 @@ public:
 		return true;
 	}
 };
+
 class LeftEndPoint : public EndPoint {
 public:
-	LeftEndPoint(device * a_dev) {
-		dev = a_dev;
+	LeftEndPoint() {
 	}
 	int Frame_W = 200, Frame_H = 200;
 	void setFrameSize(int W, int H) {
