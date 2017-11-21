@@ -40,7 +40,7 @@ int colorIO() try {
 	float scale = dev->get_depth_scale();
 
 
-	stbi_write_png("nj_snapshot.png", color_intrin.width, color_intrin.height, 3, color_image, 3 * color_intrin.width);
+	stbi_write_png("snapshot.png", color_intrin.width, color_intrin.height, 3, color_image, 3 * color_intrin.width);
 
 	for (int dy = 0; dy<depth_intrin.height; ++dy)
 	{
