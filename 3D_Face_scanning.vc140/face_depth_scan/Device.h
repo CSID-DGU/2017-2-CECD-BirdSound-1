@@ -4,16 +4,16 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-typedef enum {BMP, PNG} filetype;
+typedef enum { BMP, PNG } filetype;
 
 using namespace std;
 using namespace rs;
 
 class Device {
-	
+
 public:
 	rs::context ctx;
-	rs:: device * dev;
+	rs::device * dev;
 	float depth_scale;
 	std::vector<rs::device *> devices;
 	rs::intrinsics color_intrin;
@@ -31,7 +31,7 @@ public:
 		printf("    Firmware version: %s\n", dev->get_firmware_version());
 	}
 
-	void start() 
+	void start()
 	{
 		for (int i = 0; i < ctx.get_device_count(); ++i)devices.push_back(ctx.get_device(i));
 		// Configure and start our devices
@@ -55,7 +55,7 @@ public:
 		depth_image = (const uint16_t *)dev->get_frame_data(rs::stream::depth);
 		color_image = (const uint8_t *)dev->get_frame_data(rs::stream::color);
 	}
-	
+
 	const rs::float3 * get_depth_points_array() {
 		const rs::float3 *points = reinterpret_cast<const rs::float3 *>(dev->get_frame_data(rs::stream::points));
 		return points;
@@ -65,9 +65,9 @@ public:
 		switch (ft) {
 		case BMP: stbi_write_bmp(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
 		case PNG: stbi_write_png(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image, 3 * color_intrin.width); break;
-		//case JPG: stbi_write_jpg(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
-		//case TGA: stbi_write_tga(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
-		//case HDR: stbi_write_hdr(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
+			//case JPG: stbi_write_jpg(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
+			//case TGA: stbi_write_tga(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
+			//case HDR: stbi_write_hdr(filename.c_str(), color_intrin.width, color_intrin.height, 3, color_image); break;
 		default: break;
 		}
 		printf("Image File save complete!\n");
