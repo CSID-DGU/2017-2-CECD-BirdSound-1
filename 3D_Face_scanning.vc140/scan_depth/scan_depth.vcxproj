@@ -163,16 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="DrawWindow.h" />
-    <ClInclude Include="EndPoint.h" />
-    <ClInclude Include="example.hpp" />
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="stb_easy_font.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="vtkWriter.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -185,6 +175,16 @@
     <ProjectReference Include="..\..\third_party\glfw\msvc140\glfw3.vcxproj">
       <Project>{979d0add-6ab7-403a-bb17-5434615e4446}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="DrawWindow.h" />
+    <ClInclude Include="EndPoint.h" />
+    <ClInclude Include="example.hpp" />
+    <ClInclude Include="stb_easy_font.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="vtkWriter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

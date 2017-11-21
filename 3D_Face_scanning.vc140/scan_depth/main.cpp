@@ -9,6 +9,7 @@ using namespace io;
 void SaveFile(PointCloud<PointXYZ>*);
 
 int main() try {
+	PointCloud<PointXYZ> cloud;
 	Device realSense;
 	realSense.start();
 	DrawWindows win(1280, 960, "Your Face", realSense.ctx.get_device_count() * 2);
@@ -20,52 +21,38 @@ int main() try {
 	RightEndPoint RightEndPoints;
 	LeftEndPoint LeftEndPoints;
 
-	
+	realSense.capture();
 	std::cout << "Capture Depth Image... " << std::endl;
-	do {
-		///depth 이미지 촬영
-		FrontEndPoints.initPoint();
-		realSense.capture();
-		FrontEndPoints.points = realSense.get_depth_points_array();
-		FrontEndPoints.setResolution(realSense.depth_intrin.width, realSense.depth_intrin.height);
-	} while (FrontEndPoints.isRightEndPointPosition() == true);
-	std::cout << "Depth Image is Captured \n\n";
 
-	std::cout << "\nResize the Depth Image..." << std::endl;
-	int Width = FrontEndPoints.Width;
-	int Height = FrontEndPoints.Height;
-	int subWidth = FrontEndPoints.E.Idx - FrontEndPoints.W.Idx;
-	int subHeight = FrontEndPoints.S.Row - FrontEndPoints.N.Row;
-	PointCloud<PointXYZ> cloud;
-	cloud.width = subWidth;
-	cloud.height = subHeight;
+
+	auto points = realSense.get_depth_points_array();
+
+	cloud.width = realSense.depth_intrin.width;
+	cloud.height = realSense.depth_intrin.height;
 	cloud.is_dense = false;
 	cloud.points.resize(cloud.width * cloud.height);
+	cout << "PCL 로 변환중..." << endl;
 
-	int newindex = 0;
-	for (int i = FrontEndPoints.N.Row; i < FrontEndPoints.S.Row; i++){
-		int idx = FrontEndPoints.W.Col + i*Width;
-		for (int j = 0; j < subWidth; j++) {
-			if (FrontEndPoints.points[idx + j].z <= FrontEndPoints.points[FrontEndPoints.B.Idx].z) {
-				cloud.points[newindex].x = -FrontEndPoints.points[idx + j].x;
-				cloud.points[newindex].y = -FrontEndPoints.points[idx + j].y;
-				cloud.points[newindex].z = -FrontEndPoints.points[idx + j].z;
-			}
-			++newindex;
-		}
+	for (size_t i = 0; i < cloud.points.size(); ++i) {
+		cloud.points[i].x = -points->x;
+		cloud.points[i].y = -points->y;
+		cloud.points[i].z = -points->z;
+		++points;
 	}
-	std::cout << "Depth Image is Resized points["<<newindex<<"]\n" <<  std::endl;
-
-	/*
-	RightEndPoint,LeftEndPoint도 Front랑 같은 코드로 구현하면 됨
-	*/
+	string result_name;
+	cout << "파일이름>>" << endl;
 	
+	std::cin >> result_name;
+	cout << "저장중" << endl;
+	savePCDFileASCII(result_name + ".pcd", cloud);
+	
+	cout << "저장완료" << endl;
+
 	pcl::visualization::CloudViewer viewer("PCL Viewer");
 	viewer.showCloud(cloud.makeShared());
+
 	while (!viewer.wasStopped());
 
-	SaveFile(&cloud);
-	realSense.save_image_file("filename.bmp", BMP);
 	return EXIT_SUCCESS;
 }
 catch (const rs::error & e)

@@ -1,8 +1,9 @@
+/**
+PCD ºä¾î
+*/
 #include "stdafx.h"
 
-
 using namespace std;
-using namespace rs;
 using namespace pcl;
 using namespace io;
 
