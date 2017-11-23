@@ -5,6 +5,7 @@ using namespace std;
 using namespace rs;
 using namespace pcl;
 using namespace io;
+#define INNER(X,Y) X<Y?1:0
 //TODO:
 // index 0을 넘어 설경우 처리 
 class Pos {
@@ -24,10 +25,10 @@ public:
 }typedef Pos;
 
 class EndPoint {
-public:	
+public:
 	int Width, Height;
 	Pos Img_CenterPoint, WE_MidPoint;
-	Pos  W, E, S, N,B;
+	Pos  W, E, S, N, B;
 	const rs::float3 *points;
 
 	EndPoint() {
@@ -107,6 +108,7 @@ public:
 			B.Row = getRow(B.Idx);
 			B.Col = getCol(B.Idx);
 			std::cout << " End Point B is set" << std::endl;
+			break;
 		default:
 			ErrorPrint(1);
 			std::cout << "[ Error ] : Undefined character " << std::endl;
@@ -127,7 +129,7 @@ public:
 	}
 };
 
-class FrontEndPoint : public EndPoint{
+class FrontEndPoint : public EndPoint {
 public:
 	FrontEndPoint() {
 	}
@@ -138,7 +140,7 @@ public:
 			idx = Img_CenterPoint.Idx + i;
 			flag = 0;
 			if (points[idx].x == 0.0) {
-				flag = 1;
+				flag = 1;					
 				for (int c = 0; c < 3; c++) {
 					if ((idx + c) % Width != 0) {
 						if (points[idx + c].x != 0.0) {
@@ -146,10 +148,10 @@ public:
 						}
 					}
 				}
-				if (flag == 1) {
-					return idx + 5;
-					break;
-				}
+			}
+			if (flag == 1) {		//플래그 설정이랑 return은 같은 위치에 있어야 함 
+				return idx + 5;
+				break;
 			}
 		}
 	}
@@ -162,16 +164,16 @@ public:
 			if (points[idx].x == 0.0) {
 				flag = 1;
 				for (int c = 0; c < 3; c++) {
-					if ((idx - c-1) % Width != 0) {
+					if ((idx - c - 1) % Width != 0) {
 						if (points[idx - c].x != 0.0) {
 							flag = 0;
 						}
 					}
 				}
-				if (flag == 1) {
-					return idx;
-					break;
-				}
+			}
+			if (flag == 1) {
+				return idx;
+				break;
 			}
 		}
 	}
@@ -191,13 +193,12 @@ public:
 							}
 						}
 					}
-					if (flag == 1) {
-						return idx + Width;
-						break;
-					}
+					
 				}
 			}
-			else {
+			if (flag == 1) {
+				return idx + Width;
+				break;
 			}
 		}
 	}
@@ -208,14 +209,19 @@ public:
 		double prev = 0;
 		double gradient = 0;
 		for (int i = 0; i < Width / 2; i++) { //south
-			idx = WE_MidPoint.Idx + (i * Width);
-			flag = 0;
-			if (points[idx].x == 0.0) {
-				flag = 1;
-				for (int c = 0; c < 2; c++) {
-					if (idx + (c * Width) < Width*Height) {
-						if (points[idx + (c * Width)].x != 0.0) {
-							flag = 0;
+			//std::cout << points[idx].z<<" "<< points[idx].x <<" "<< points[idx].y <<std::endl;
+			//if (points[idx].z == 0)
+			//	printf("213");
+			if (WE_MidPoint.Idx + (i * Width) < Width*Height) {
+				idx = WE_MidPoint.Idx + (i * Width);
+				flag = 0;
+				if (points[idx].z == 0.0) {
+					flag = 1;
+					for (int c = 0; c < 1; c++) {
+						if (idx + (c * Width) < Width*Height) {
+							if (points[idx + (c * Width)].z != 0.0) {
+								flag = 0;
+							}
 						}
 					}
 				}
@@ -224,23 +230,27 @@ public:
 					break;
 				}
 			}
+			else {
+				return idx + 4 * Width;
+				break;
+			}
 		}
 	}
 	int getBackEndPointPosition() {
-		int max;
-		for (int i = S.Idx+Width; i % Width!=0; i++) {
-			if (points[i].z != 0.0) {
+		int max= S.Idx + Width;
+		for (int i = S.Idx + Width; i % Width != 0; i++) {
+			if (i < Width*Height&&points[i].z != 0.0) {
 				max = i;
 			}
 		}
 		for (int i = S.Idx + Width; i % Width != 0; i--) {
-			if (points[i].z != 0.0) {
+			if (i < Width*Height&&points[i].z != 0.0) {
 				if (points[max].z > points[i].z)
 					max = i;
 			}
 		}
-		for (int i = S.Idx + Width; i <Width*Height; i += Width) {
-			if (points[i].z != 0.0) {
+		for (int i = S.Idx + Width; i < Width*Height; i += Width) {
+			if (i < Width*Height&&points[i].z != 0.0) {
 				if (points[max].z > points[i].z)
 					max = i;
 				return max;
@@ -252,7 +262,7 @@ public:
 		setPosition('E', getEastEndPointPosition());
 		setPosition('W', getWestEndPointPosition());
 
-		setPosition('M', (E.Idx+W.Idx)/2);
+		setPosition('M', (E.Idx + W.Idx) / 2);
 		setPosition('N', getNorthEndPointPosition());
 		setPosition('S', getSouthEndPointPosition());
 
@@ -262,7 +272,7 @@ public:
 		std::cout << " E : "; E.toString();
 		std::cout << " N : "; N.toString();
 		std::cout << " S : "; S.toString();
-		std::cout << " B : " << points[B.Idx].z<<" "; B.toString();
+		std::cout << " B : " << points[B.Idx].z << " "; B.toString();
 		std::cout << "\n";
 
 		std::cout << " E-W : " << E.Col - W.Col << " S-N : " << (S.Row - N.Row) << std::endl;
@@ -276,14 +286,14 @@ public:
 		}
 		return true;
 	}
-	
+
 };
 
 class RightEndPoint : public EndPoint {
 public:
 	RightEndPoint() {
 	}
-	int Frame_W=200, Frame_H=200;
+	int Frame_W = 200, Frame_H = 200;
 	void setFrameSize(int W, int H) {
 		Frame_W = W;
 		Frame_H = H;
@@ -302,13 +312,13 @@ public:
 					}
 				}
 				if (flag == 1) {
-					return idx+5;
+					return idx + 5;
 					break;
 				}
 			}
 		}
 	}
-	int getWestEndPointPosition() { 
+	int getWestEndPointPosition() {
 		return E.Idx - Frame_W;
 	}
 	int getSouthEndPointPosition() {

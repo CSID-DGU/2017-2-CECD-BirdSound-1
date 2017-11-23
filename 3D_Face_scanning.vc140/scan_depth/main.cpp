@@ -43,13 +43,20 @@ int main() try {
 	cloud.points.resize(cloud.width * cloud.height);
 
 	int newindex = 0;
+	int idx = 0;
 	for (int i = FrontEndPoints.N.Row; i < FrontEndPoints.S.Row; i++) {
-		int idx = FrontEndPoints.W.Col + i*Width;
+		if (FrontEndPoints.W.Col + i*Width < Width*Height) {
+			idx = FrontEndPoints.W.Col + i*Width;
+		}
+		else
+			break;
 		for (int j = 0; j < subWidth; j++) {
-			if (FrontEndPoints.points[idx + j].z <= FrontEndPoints.points[FrontEndPoints.B.Idx].z) {
-				cloud.points[newindex].x = -FrontEndPoints.points[idx + j].x;
-				cloud.points[newindex].y = -FrontEndPoints.points[idx + j].y;
-				cloud.points[newindex].z = -FrontEndPoints.points[idx + j].z;
+			if (idx + j < Width*Height) {
+				if (FrontEndPoints.points[idx + j].z <= FrontEndPoints.points[FrontEndPoints.B.Idx].z) {
+					cloud.points[newindex].x = -FrontEndPoints.points[idx + j].x;
+					cloud.points[newindex].y = -FrontEndPoints.points[idx + j].y;
+					cloud.points[newindex].z = -FrontEndPoints.points[idx + j].z;
+				}
 			}
 			++newindex;
 		}
@@ -105,6 +112,7 @@ void textureSave(rs::intrinsics color_intrin, rs::extrinsics depth_to_color, rs:
 		}
 	}
 }
+
 void SaveFile(PointCloud<PointXYZ> *cloud) {
 	string Output;
 	cout << "\nOutput Filename(.vtk |.pcd)  If you don't want to save, Input \"skip\".\n > "; cin >> Output;
