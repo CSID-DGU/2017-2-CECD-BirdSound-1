@@ -104,9 +104,8 @@ private:
 		for (int i = 0; i < RowNum; i++)
 		{
 			for (int j = 0; j < ColNum; j++)
-			{
 				data[i][j].setStat();
-			}
+	
 		}
 	}
 public:
@@ -160,13 +159,13 @@ public:
 		setMainValue();
 	}
 
-
+	/**survive한 data를 출력합니다*/
 	void prinValidData()
 	{
 		std::string name = "valid.txt";
 
-		std::string tt = "20\/";
-		name = tt + name;
+		////std::string tt = "20\/";
+		name =  name;
 		for (int i = 0; i < data.size(); i++)
 		{
 			for (int j = 0; j < data[i].size(); j++)

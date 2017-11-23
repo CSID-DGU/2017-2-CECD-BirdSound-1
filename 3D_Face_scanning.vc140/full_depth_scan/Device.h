@@ -31,6 +31,12 @@ public:
 		printf("    Firmware version: %s\n", dev->get_firmware_version());
 	}
 
+	/*
+	RS_PRESET_BEST_QUALITY     , 
+	RS_PRESET_LARGEST_IMAGE    , 
+	RS_PRESET_HIGHEST_FRAMERATE, 
+	RS_PRESET_COUNT      
+	*/
 	void start() 
 	{
 		for (int i = 0; i < ctx.get_device_count(); ++i)devices.push_back(ctx.get_device(i));
@@ -38,10 +44,10 @@ public:
 		for (auto dev : devices)
 		{
 			std::cout << "Starting " << dev->get_name() << "... ";
-			dev->enable_stream(rs::stream::color, 640, 480, rs::format::rgb8, 60); cout << "color cam active complete" << endl;
-			dev->enable_stream(rs::stream::depth, 640, 480, rs::format::z16, 60); cout << "depth active complete" << endl;
-			//dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
-			//dev->enable_stream(rs::stream::color, rs::preset::best_quality);
+			//dev->enable_stream(rs::stream::color, 640, 480, rs::format::rgb8, 60); cout << "color cam active complete" << endl;
+			//dev->enable_stream(rs::stream::depth, 640, 480, rs::format::z16, 60); cout << "depth active complete" << endl;
+			dev->enable_stream(rs::stream::depth, rs::preset::highest_framerate);
+			dev->enable_stream(rs::stream::color, rs::preset::highest_framerate);
 			dev->start();
 		}
 	}

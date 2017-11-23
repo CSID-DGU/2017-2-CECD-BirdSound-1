@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "face_depth_scan", "face_dep
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "check_board_detection", "check_Board_detection\check_Board_detection.vcxproj", "{D2CB0CC6-69A2-4E9C-B517-B01F812B7C15}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AnalysisDepth", "AnalysisDepth\AnalysisDepth.vcxproj", "{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -142,6 +144,14 @@ Global
 		{D2CB0CC6-69A2-4E9C-B517-B01F812B7C15}.Release|Win32.Build.0 = Release|Win32
 		{D2CB0CC6-69A2-4E9C-B517-B01F812B7C15}.Release|x64.ActiveCfg = Release|x64
 		{D2CB0CC6-69A2-4E9C-B517-B01F812B7C15}.Release|x64.Build.0 = Release|x64
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Debug|Win32.Build.0 = Debug|Win32
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Debug|x64.ActiveCfg = Debug|x64
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Debug|x64.Build.0 = Debug|x64
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Release|Win32.ActiveCfg = Release|Win32
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Release|Win32.Build.0 = Release|Win32
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Release|x64.ActiveCfg = Release|x64
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,5 +169,6 @@ Global
 		{0AA7BBA4-6B14-4344-AD13-A76303AEA29B} = {88F049D8-07D4-4C8D-9CF2-591787103489}
 		{3DAEEC2F-4D39-4E6B-BD0B-BC30B7035232} = {88F049D8-07D4-4C8D-9CF2-591787103489}
 		{D2CB0CC6-69A2-4E9C-B517-B01F812B7C15} = {D562F976-74ED-4C2D-A291-F5A614603E85}
+		{C7A2D8BD-EDCF-4C50-AAEB-CA30E1720A9F} = {88F049D8-07D4-4C8D-9CF2-591787103489}
 	EndGlobalSection
 EndGlobal

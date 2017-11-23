@@ -20,7 +20,9 @@ int main() try {
 	cout << "Capture Depth Image... " << endl;
 	realSense.capture();
 	cout << "Done." << endl;
-
+	//const rs_device *tt;
+	//const rs
+	//rs_get_device_depth_scale(tt, NULL);
 
 	auto points = realSense.get_depth_points_array();
 	cloud.width = realSense.depth_intrin.width;
@@ -29,7 +31,10 @@ int main() try {
 	cloud.points.resize(cloud.width * cloud.height);
 	cout << "Converting to PCL..." << endl;
 
+	//librealsense provides dedicated API for this question:
+	//float rs_get_device_depth_scale(const rs_device * device, rs_error ** error);
 	for (size_t i = 0; i < cloud.points.size(); ++i) {
+		
 		cloud.points[i].x = -points->x;
 		cloud.points[i].y = -points->y;
 		cloud.points[i].z = -points->z;
