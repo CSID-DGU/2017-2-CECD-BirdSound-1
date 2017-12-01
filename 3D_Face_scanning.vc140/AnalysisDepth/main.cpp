@@ -1,258 +1,111 @@
+#include <librealsense/rs.hpp>
 #include<iostream>
+#include <cstdio>
 #include<fstream>
-#include<vector>
-#include<cmath>
-#include<string>
+#include"Frame.h"
 
-const int squareSIZE = 80;//Square Frame 
-const int RowNum = 480 / squareSIZE;//Frame SIZE
-const int ColNum = 640 / squareSIZE;
-class Frame
+double yaw, pitch, lastX, lastY; int ml;
+
+int main() //try
 {
-public:
-	std::vector<double> data;//set of z
-	double average = 0.0l;
-	double Std = 0.0l;
-	bool isValid = true;
+	rs::log_to_console(rs::log_severity::warn);
+	rs::context ctx;
+	printf("There are %d connected RealSense devices.\n", ctx.get_device_count());
+	if (ctx.get_device_count() == 0) return EXIT_FAILURE;
 
+	rs::device * dev = ctx.get_device(0);
+	printf("\nUsing device 0, an %s\n", dev->get_name());
 
-	void setAverage()
+	Page pa;
+	dev->enable_stream(rs::stream::depth, rs::preset::best_quality);
+	dev->enable_stream(rs::stream::color, rs::preset::best_quality);
+	dev->start();
+
+	std::string name1, name2;
+
+	std::cout << "depth\n";
+	std::cin >> name1;
+	std::cout << "color\n";
+	std::cin >> name2;
+
+	std::ofstream off1(name1);// ("depth.txt");
+	std::ofstream off2(name2);
+
+		
+	for (int loop = 0; loop < 3; loop++)
 	{
-		double value = 0.0l;
 
-		for (int i = 0; i < data.size(); i++)
+		//for (int i = 0; i < 30; i++)dev->wait_for_frames();
+		dev->wait_for_frames();
+		//std::cout << "@@";
+		// Retrieve our images
+		const uint16_t * depth_image = (const uint16_t *)dev->get_frame_data(rs::stream::depth);
+		const uint8_t * color_image = (const uint8_t *)dev->get_frame_data(rs::stream::color);
+
+		// Retrieve camera parameters for mapping between depth and color
+		rs::intrinsics depth_intrin = dev->get_stream_intrinsics(rs::stream::depth);
+		rs::extrinsics depth_to_color = dev->get_extrinsics(rs::stream::depth, rs::stream::color);
+		rs::intrinsics color_intrin = dev->get_stream_intrinsics(rs::stream::color);
+		float scale = dev->get_depth_scale();
+
+		int index = 0;
+		for (int dy = 0; dy < depth_intrin.height; ++dy)
 		{
-			value += data[i];
+			for (int dx = 0; dx < depth_intrin.width; ++dx)
+			{
+				uint16_t depth_value = depth_image[dy * depth_intrin.width + dx];
+				float depth_in_meters = depth_value * scale;
+
+
+				
+				rs::float2 depth_pixel = { (float)dx, (float)dy };   //2차원 픽셀을 구성 
+				rs::float3 depth_point = depth_intrin.deproject(depth_pixel, depth_in_meters); //2차원에 실제 z값을 대입함 
+				rs::float3 color_point = depth_to_color.transform(depth_point); //depth포인트를 color가 맵핑되는 포인트 좌표로 변환 
+				rs::float2 color_pixel = color_intrin.project(color_point); //컬러
+
+				//std::cout<<
+				//std::cin >> off;									//if (depth_value == 0)
+				
+				//std::cin>>
+
+				//std::cout << -depth_point.z << "\n";
+				off1 << "" << depth_point.x << "\t" << depth_point.y << "\t" << depth_point.z << std::endl; //depth 
+				off2 << "" << color_pixel.x << "\t" << color_pixel.y << "\t" << std::endl; //color
+																							//I_C_point++;
+
+				//off<< depth_image
+				//off<<depth_image/
+				//if (depth_in_meters == 0) continue;
+				pa.setData(index, depth_point.z);
+				index++;
+
+				// Skip over pixels with a depth value of zero, which is used to indicate no data
+			}
 		}
 
-		value /= data.size();
-		average = value;
+		off1 << "\n";
+		off2 << "\n";
 	}
 
-	void setStd()
-	{
-		double sumError = 0.0l;
+	std::cout << "촬영끝\n";
+	pa.setStat();
 
-		for (int i = 0; i < data.size(); i++)
-		{
-
-			sumError += (data[i] - average)*(data[i] - average);
-		}
-
-		sumError /= data.size();
-		Std = sumError;
-	}
-	void setStat()
-	{
-		setAverage();
-		setStd();
-	}
-
-	void printData(std::string ffname)
-	{
-		std::ofstream of(ffname, std::ios_base::out | std::ios_base::app);
-
-		for (int i = 0; i<data.size(); i++)
-			of << data[i] << "\n";
-
-	}
-
-};
-
-/*
-InPut	: *.pcd
-OutPut	: survive Frame
-
-20(4,4) 21(5,4)
-28(4,5) 29(5,5)
-ㅁㅁㅁㅁㅁㅁㅁㅁ
-ㅁㅁㅁㅁㅁㅁㅁㅁ
-ㅁㅁㅁㅁㅁㅁㅁㅁ
-ㅁㅁㅁㅁㅁㅁㅁㅁ
-ㅁㅁㅁㅁㅁㅁㅁㅁ
-ㅁㅁㅁㅁㅁㅁㅁㅁ
-*/
-class Page
-{
-public:
-	std::vector<std::vector<Frame>> data;
-	double MainValue = 0.0l;
-	Page()
-	{
-		data.resize(RowNum);
-
-		for (int i = 0; i<RowNum; i++)
-			data[i].resize(ColNum);
-	}
-private:
-	std::string ffname;
-	void setMainValue()
-	{
-		/*
-		20(4,4) 21(5,4)
-		28(4,5) 29(5,5)
-		정가운데 있는 자료가 대표값이다.
-		*/
-		double value = data[3][3].average + data[4][3].average + data[3][4].average + data[4][4].average;
-		value /= 4;
-		MainValue = value;
-		//std::cout << MainValue << " is MainValue\n";
-	}
-
-	void setAverage()
-	{
-		for (int i = 0; i < RowNum; i++)
-		{
-			for (int j = 0; j < ColNum; j++)
-				data[i][j].setStat();
 	
-		}
-	}
-public:
-	void printStat()
-	{
-		for (int i = 0; i < data.size(); i++)
-		{
-			for (int j = 0; j < data[i].size(); j++)
-			{
+	pa.printValidFrame(0.002);
+	std::cout << "Valid z data file name\n";
+	pa.prinValidData();
 
-				std::cout << data[i][j].average << "\t";// << data[i][j].Std << "\n";
-
-			}std::cout << "\n";
-		}
-	}
-	void setData(std::string fname)
-	{
-		std::ifstream inf(fname);
-		char tt[50];
-		ffname = fname;
-		for (int i = 0; i<11; i++)inf.getline(tt, 50);//쓸모 x 부분 제외
-		int count = 0;
-		for (int r = 0; r < RowNum; r++)
-		{
-			//if (inf.eof())break;
-			for (int j = 0; j < squareSIZE; j++)
-			{
-				for (int c = 0; c < ColNum; c++)
-				{
-					for (int i = 0; i < squareSIZE; i++)
-					{
-						double x, y, z;
-						inf >> x >> y >> z;
-						//std::cout << x << " " << y << " " << z << "\n";
-						count++;
-
-						if (z != 0)
-						{
-							data[r][c].data.push_back(z);
-							//std::cout << z << "\n";
-						}
-
-						//if (x != 0 && y != 0 && z != 0)
-					}
-				}
-			}
-		}
-
-		std::cout << count << "!!!!!!!!!!!!\n";
-		setAverage();
-		setMainValue();
-	}
-
-	/**survive한 data를 출력합니다*/
-	void prinValidData()
-	{
-		std::string name = "valid.txt";
-
-		////std::string tt = "20\/";
-		name =  name;
-		for (int i = 0; i < data.size(); i++)
-		{
-			for (int j = 0; j < data[i].size(); j++)
-				if (data[i][j].isValid == true)
-					data[i][j].printData(name);
-		}
-	}
-
-	void printAllData()
-	{
-		std::string name = "all.txt";
-		std::string tt = "20\/";
-		name = tt + name;
-		for (int i = 0; i < data.size(); i++)
-			for (int j = 0; j < data[i].size(); j++)
-				data[i][j].printData(name);
-	}
-	void printValidFrame(double alpha)
-	{
-		checkValid(alpha);
-		//std::cout << "\n\n\n";
-		std::cout << ffname << "\n";
-		/*for (int i = 0; i < data.size(); i++)
-		{
-		for (int j = 0; j < data[i].size(); j++)
-		{
-		if (data[i][j].isValid == true)
-		{
-		std::cout << i << " " << j << "is valid Frame\n";
-		}
-		}
-		}*/
-
-		for (int i = 0; i < data.size(); i++)
-		{
-			for (int j = 0; j < data[i].size(); j++)
-			{
-				if (data[i][j].isValid == true)
-					std::cout << "O ";
-				else std::cout << "X ";
-			}std::cout << "\n";
-		}
-	}
-private:
-	/** alpha needs to be under 0.05*/
-	void checkValid(double alpha)
-	{
-		for (int i = 0; i < ColNum; i++)
-		{
-			for (int j = 0; j <RowNum; j++)
-			{
-				//if (abs(data[j][i].average - MainValue) >= 0.002f)
-				if (abs(data[j][i].average - MainValue) >= abs(MainValue*alpha))
-				{
-					data[j][i].isValid = false;
-				}
-
-
-			}
-		}
-	}
-};
-int main()
-{
-	std::string fname[13];
-	fname[0] = "20.pcd"; fname[1] = "25.pcd";
-	fname[2] = "30.pcd"; fname[3] = "35.pcd";
-	fname[4] = "40.pcd"; fname[5] = "45.pcd";
-	fname[6] = "50.pcd"; fname[7] = "55.pcd";
-	fname[8] = "60.pcd"; fname[9] = "70.pcd";
-	fname[10] = "80.pcd"; fname[11] = "90.pcd";
-	fname[12] = "100.pcd";
-
-	//basic_test.pcd
-	//std::string asd = "f.txt";
-	std::string asd = fname[0];
-
-	for (int i = 0; i < 1; i++)
-	{
-		Page test;
-		test.setData(asd);
-		std::cout << test.MainValue << "\n";
-		test.printValidFrame(0.1);
-		test.printStat();
-		test.printAllData();
-		std::cout << "\n";
-		//test.prinValidData();
-		//test.printAllData();
-	}
+	std::cout << "All z data file name\n";
+	//pa.printValidFrame(0.005);
+	pa.printAllData();
+	pa.printStat();
+	return EXIT_SUCCESS;
 }
+
+//catch (const rs::error & e)
+//{
+//	// Method calls against librealsense objects may throw exceptions of type rs::error
+//	printf("rs::error was thrown when calling %s(%s):\n", e.get_failed_function().c_str(), e.get_failed_args().c_str());
+//	printf("    %s\n", e.what());
+//	return EXIT_FAILURE;
+//}
