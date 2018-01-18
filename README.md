@@ -18,8 +18,10 @@ Lecture info : Computer Engineering Capstone Design 1(CSE4066-1), Dongho Kim <<d
 Genoray  
 Dental Division S/W Team Deputy General Manager, Yonghyun Lim
 
-## SoftWare Dependencies
-- librealsense (https://github.com/IntelRealSense/librealsense/tree/master)
-- PointCloud Library **1.8.0** (http://pointclouds.org/, http://unanancyowen.com/en/pcl18/)  
- \* PCL 1.8.0 All-in-one Installer include below Dependencies  
- \- Boost, Eigen, FLANN, VTK, OpenNI2
+## SoftWare Dependencies (Third Party)
+- librealsense_v2 (https://github.com/IntelRealSense/librealsense/tree/2a2446f1ca7b543f02aa5d51aa1d9fc533b6b48b)
+- VTK **8.1.0**
+- QT **5.9.1**
+
+## Runing Environment  
+- Only Window10, 64bit

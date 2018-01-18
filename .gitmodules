@@ -1,0 +1,6 @@
+[submodule "submodule/librealsense"]
+	path = submodule/librealsense
+	url = https://github.com/IntelRealSense/librealsense.git
+[submodule "submodule/vtk"]
+	path = submodule/vtk
+	url = https://gitlab.kitware.com/vtk/vtk.git

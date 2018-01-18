@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/usr/local/bin/usb-R200-in &
