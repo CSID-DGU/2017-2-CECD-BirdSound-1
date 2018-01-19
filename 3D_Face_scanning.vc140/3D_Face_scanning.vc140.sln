@@ -7,7 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainQtApplication", "MainQt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainConsoleApplication", "MainConsoleApplication\MainConsoleApplication.vcxproj", "{9C11B353-D513-4C37-A23B-A3232436A63D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SubApplication", "SubApplication", "{370091BA-D623-47E7-A349-70D714C6F351}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModuleTest", "ModuleTest", "{370091BA-D623-47E7-A349-70D714C6F351}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanDepth", "ScanDepth\ScanDepth.vcxproj", "{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,8 +26,15 @@ Global
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Debug|x64.Deploy.0 = Debug|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Release|x64.ActiveCfg = Release|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Release|x64.Build.0 = Release|x64
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Debug|x64.ActiveCfg = Debug|x64
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Debug|x64.Build.0 = Debug|x64
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Release|x64.ActiveCfg = Release|x64
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A} = {370091BA-D623-47E7-A349-70D714C6F351}
 	EndGlobalSection
 EndGlobal
