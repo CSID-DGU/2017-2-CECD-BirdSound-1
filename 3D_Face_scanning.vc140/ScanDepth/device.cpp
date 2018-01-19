@@ -14,7 +14,7 @@ void Realsense::init() {
 
 void Realsense::info(int devNum) {
 	this->isInit();
-	if ((devNum <0) || (devNum>this->deviceNum-1)) {
+	if ((devNum < MIN_CAM_NUM-1) || (devNum>this->deviceNum-1)) {
 		string message = "연결된 장치의 Index값을 넘어섰습니다. 현재 장치의 갯수는 ";
 		message += to_string(this->deviceNum); message += "개 입니다. 입력된 index 값 : ";
 		message += to_string(devNum);
@@ -40,7 +40,37 @@ void Realsense::info(int devNum) {
 
 void Realsense::startStreaming(int devNum, int streamType) {
 	this->isInit();
+	auto dev = this->deviceList[devNum];
+	string serial_number = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+
+	//config를 통해 해당 카메라만 제어함.
+	//https://github.com/IntelRealSense/librealsense/blob/master/include/librealsense2/hpp/rs_pipeline.hpp#L118 참조
+	rs2::config c;
+	c.enable_device(serial_number);
+
+	//stream 의 종류 : RS2_STREAM_ANY, RS2_STREAM_DEPTH, RS2_STREAM_COLOR , RS2_STREAM_GPIO, RS2_STREAM_COUNT 등
+	//https://github.com/IntelRealSense/librealsense/blob/c8ee8fa1912b9297df13bfe097d527667fe0afba/include/librealsense2/h/rs_sensor.h#L37
+	if (streamType == color)
+		c.enable_stream(RS2_STREAM_COLOR);
+	else if (streamType == depth)
+		c.enable_stream(RS2_STREAM_DEPTH);
+	
+	
+	rs2::pipeline pipe;
+	rs2::pipeline_profile profile = pipe.start(c);
+	this->pipe_map.emplace(devNum, unit{ {}, pipe, profile });
+	
+	//throw notImplemented_error();
+}
+
+void Realsense::capture(int devNum, int streamType) {
+	unit cam_unit = this->pipe_map[0];
+	rs2::frameset data = cam_unit.pipe.wait_for_frames();
 	throw notImplemented_error();
+	printf("a");
+}
+
+void Realsense::stopStreaming(int devNum, int streamType) {
 }
 
 bool Realsense::isInit() {
