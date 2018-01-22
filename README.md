@@ -19,12 +19,12 @@ Genoray
 Dental Division S/W Team Deputy General Manager, Yonghyun Lim
 
 ## SoftWare Dependencies (Third Party)
-- librealsense **version2**
+- librealsense **2.9.0**
 - VTK **8.1.0**
 - Qt **5.9.1** [\[download mirror\]](http://blog.njcells.net:8080/index.php/s/U5lGqam8IYTkrQ4)
 
 ## Runing Environment  
 - Only Window10, 64bit
 - **위의 Qt 5.9.1을 먼저 설치해 주세요**
-- 아래의 파일을 다운로드&압축해제 후, Debug와 Release 폴더를 프로젝트 root에 덮어쓰기 해주세요.   
-[\[☞ additional file v4 다운로드\]](http://blog.njcells.net:8080/index.php/s/28fr8qn46iCv9JR)
+- 아래의 파일을 다운로드&압축해제 후, 프로젝트 폴더 root에 덮어쓰기 해주세요.  
+[\[☞ additional file v5 다운로드\]](http://blog.njcells.net:8080/index.php/s/SauG6O5gT7zcLTl)
