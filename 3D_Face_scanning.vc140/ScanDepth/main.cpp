@@ -7,10 +7,12 @@ int main(void) {
 	Realsense realsense;
 	realsense.init();
 	realsense.info(0);
-	realsense.startStreaming(0,color);
-	realsense.capture(0, color);
+	realsense.startStreaming(0,depth);
+	rs2::frame frame = realsense.capture(0, depth);
+	realsense.frameToVtkPoints(frame);
+
 	
-	
-	cout << "" << endl;
+	realsense.stopStreaming(0, depth);
+	cout << "IS IT OK??" << endl;
 	
 }

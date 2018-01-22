@@ -63,14 +63,92 @@ void Realsense::startStreaming(int devNum, int streamType) {
 	//throw notImplemented_error();
 }
 
-void Realsense::capture(int devNum, int streamType) {
-	unit cam_unit = this->pipe_map[0];
-	rs2::frameset data = cam_unit.pipe.wait_for_frames();
-	throw notImplemented_error();
-	printf("a");
+void Realsense::stopStreaming(int devNum, int streamType) {
+
+	this->isInit();
+	auto dev = this->deviceList[devNum];
+	string serial_number = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+
+	rs2::config c;
+	c.enable_device(serial_number);
+
+	if (streamType == color)
+		c.disable_stream(RS2_STREAM_COLOR);
+	else if (streamType == depth)
+		c.disable_stream(RS2_STREAM_DEPTH);
 }
 
-void Realsense::stopStreaming(int devNum, int streamType) {
+rs2::frame Realsense::capture(int devNum, int streamType, int restNum) {
+	unit cam_unit = this->pipe_map[devNum];
+	this->restFrame(cam_unit,restNum);
+	rs2::frameset data = cam_unit.pipe.wait_for_frames();
+	rs2::frame frameData;
+	if (streamType == color) {
+		frameData = data.get_color_frame();
+	}
+	else if (streamType == depth) {
+		frameData = data.get_depth_frame();
+	}
+	else return NULL;
+	return frameData;
+}
+
+std::vector<rs2::frame> Realsense::capture(int devNum, int streamType, int frameNum, int restNum) {
+	unit cam_unit = this->pipe_map[devNum];
+	this->restFrame(cam_unit, restNum);
+	rs2::frameset data = cam_unit.pipe.wait_for_frames();
+	std::vector<rs2::frame> frameData;
+	for (int i = 0; i < frameNum; i++) {
+		if (streamType == color) {
+			frameData.push_back(data.get_color_frame());
+		}
+		else if (streamType == depth){
+			frameData.push_back(data.get_depth_frame());
+		}
+		else return frameData;
+		data = cam_unit.pipe.wait_for_frames();
+	}
+	return frameData;
+}
+
+std::string Realsense::saveImage(rs2::frame &frame, string filepath, int filetype) {
+	throw notImplemented_error();
+	rs2::colorizer color_map;
+
+	if (auto vf = frame.as<rs2::video_frame>())
+	{
+		auto stream = frame.get_profile().stream_type();
+		// Use the colorizer to get an rgb image for the depth stream
+		if (vf.is<rs2::depth_frame>()) vf = color_map(frame);
+
+		// Write images to disk
+		std::stringstream png_file;
+		png_file << "rs-save-to-disk-output-" << vf.get_profile().stream_name() << ".png";
+		//stbi_write_png(png_file.str().c_str(), vf.get_width(), vf.get_height(), vf.get_bytes_per_pixel(), vf.get_data(), vf.get_stride_in_bytes());
+		std::cout << "Saved " << png_file.str() << std::endl;
+	}
+	return "아직 미구현 입니다~";
+}
+
+vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) {
+	rs2::pointcloud pc;
+	rs2::points rsPoints;
+	rsPoints = pc.calculate(frame);
+	vtkPoints * vtkPoints = vtkPoints::New();
+
+
+	for (auto i = 0; i < rsPoints.size(); i++) {
+		auto v = rsPoints.get_vertices();
+		vtkPoints->InsertNextPoint(v->x, v->y, v->z);
+	}
+	return vtkPoints;
+}
+
+// private function
+void Realsense::restFrame(unit &cam_unit, int num) {
+	for (int i = 0; i < num; i++) {
+		cam_unit.pipe.wait_for_frames();
+	}
 }
 
 bool Realsense::isInit() {
