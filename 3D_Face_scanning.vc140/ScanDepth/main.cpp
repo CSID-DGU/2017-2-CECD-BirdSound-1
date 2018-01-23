@@ -9,8 +9,7 @@ int main(void) {
 	realsense.info(0);
 	realsense.startStreaming(0,depth);
 	rs2::frame frame = realsense.capture(0, depth);
-	realsense.frameToVtkPoints(frame);
-
+	vtkPoints *points = realsense.frameToVtkPoints(frame);
 	
 	realsense.stopStreaming(0, depth);
 	cout << "IS IT OK??" << endl;

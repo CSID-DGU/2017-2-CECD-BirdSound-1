@@ -87,7 +87,8 @@ rs2::frame Realsense::capture(int devNum, int streamType, int restNum) {
 		frameData = data.get_color_frame();
 	}
 	else if (streamType == depth) {
-		frameData = data.get_depth_frame();
+		//frameData = data.get_depth_frame();
+		frameData = data.first(RS2_STREAM_DEPTH);
 	}
 	else return NULL;
 	return frameData;
@@ -135,11 +136,12 @@ vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) {
 	rs2::points rsPoints;
 	rsPoints = pc.calculate(frame);
 	vtkPoints * vtkPoints = vtkPoints::New();
-
-
+	auto v = rsPoints.get_vertices();
 	for (auto i = 0; i < rsPoints.size(); i++) {
-		auto v = rsPoints.get_vertices();
-		vtkPoints->InsertNextPoint(v->x, v->y, v->z);
+		if (v[i].z != 0) {
+			vtkPoints->InsertNextPoint(v[i].x, v[i].y, v[i].z);
+			//cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
+		}
 	}
 	return vtkPoints;
 }
