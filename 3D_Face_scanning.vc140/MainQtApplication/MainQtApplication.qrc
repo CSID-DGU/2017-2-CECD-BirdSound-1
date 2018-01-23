@@ -1,4 +1,4 @@
 <RCC>
-    <qresource prefix="MainQtApplication">
+    <qresource prefix="IOModule">
     </qresource>
 </RCC>
