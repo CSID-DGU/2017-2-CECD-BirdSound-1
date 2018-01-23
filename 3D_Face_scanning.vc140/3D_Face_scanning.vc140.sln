@@ -37,4 +37,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A} = {370091BA-D623-47E7-A349-70D714C6F351}
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		Qt5Version = 5.9.1_x64
+	EndGlobalSection
 EndGlobal

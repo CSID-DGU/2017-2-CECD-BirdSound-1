@@ -13,5 +13,4 @@ int main(void) {
 	
 	realsense.stopStreaming(0, depth);
 	cout << "IS IT OK??" << endl;
-	
 }
