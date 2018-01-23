@@ -48,7 +48,6 @@
 #include <QtWidgets/QApplication>
 #undef foreach //Q_FOREACH 매크로 정의 해제
 #include "librealsense2/rs.hpp"
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
