@@ -42,7 +42,7 @@
 //	renderWindowInteractor->Start();
 //
 //	return EXIT_SUCCESS;
-//}
+//} 
 
 #include "MainQtApplication.h"
 #include <QtWidgets/QApplication>
