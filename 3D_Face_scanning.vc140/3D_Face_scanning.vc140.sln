@@ -11,31 +11,48 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModuleTest", "ModuleTest", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanDepth", "ScanDepth\ScanDepth.vcxproj", "{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DepthModule", "DepthModule\DepthModule.vcxproj", "{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x86.ActiveCfg = Debug|x64
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x86.ActiveCfg = Release|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Debug|x64.ActiveCfg = Debug|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Debug|x64.Build.0 = Debug|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Debug|x64.Deploy.0 = Debug|x64
+		{9C11B353-D513-4C37-A23B-A3232436A63D}.Debug|x86.ActiveCfg = Debug|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Release|x64.ActiveCfg = Release|x64
 		{9C11B353-D513-4C37-A23B-A3232436A63D}.Release|x64.Build.0 = Release|x64
+		{9C11B353-D513-4C37-A23B-A3232436A63D}.Release|x86.ActiveCfg = Release|x64
 		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Debug|x64.ActiveCfg = Debug|x64
 		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Debug|x64.Build.0 = Debug|x64
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Debug|x86.ActiveCfg = Debug|x64
 		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Release|x64.ActiveCfg = Release|x64
 		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Release|x64.Build.0 = Release|x64
+		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A}.Release|x86.ActiveCfg = Release|x64
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}.Debug|x64.ActiveCfg = Debug|x64
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}.Debug|x64.Build.0 = Debug|x64
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}.Debug|x86.ActiveCfg = Debug|x64
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}.Release|x64.ActiveCfg = Release|x64
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}.Release|x64.Build.0 = Release|x64
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D66C7F2F-8A6B-4B67-9333-0C0B0EE0611A} = {370091BA-D623-47E7-A349-70D714C6F351}
+		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C} = {370091BA-D623-47E7-A349-70D714C6F351}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		Qt5Version = 5.9.1_x64
