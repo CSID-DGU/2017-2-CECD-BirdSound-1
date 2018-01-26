@@ -64,6 +64,6 @@ Global
 		{9875212D-FCA4-497D-8510-34FB0F97EB76} = {370091BA-D623-47E7-A349-70D714C6F351}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.9.1_x64
+		Qt5Version = msvc2015_64
 	EndGlobalSection
 EndGlobal
