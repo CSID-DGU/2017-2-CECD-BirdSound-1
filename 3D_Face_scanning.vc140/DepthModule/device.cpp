@@ -135,13 +135,16 @@ std::string Realsense::saveImage(rs2::frame &frame, string filepath, int filetyp
 vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) {
 	rs2::pointcloud pc;
 	rs2::points rsPoints;
+	//cout << sizeof(frame);
 	rsPoints = pc.calculate(frame);
 	vtkPoints * vtkPoints = vtkPoints::New();
 	auto v = rsPoints.get_vertices();
 	for (auto i = 0; i < rsPoints.size(); i++) {
 		if (v[i].z != 0) {
+			//cout.precision(9);
+			vtkPoints->InsertNextPoint(v[i]);
 			//vtkPoints->InsertNextPoint(v[i].x, v[i].y, v[i].z);
-			cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
+			//cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
 		}
 	}
 	return vtkPoints;
