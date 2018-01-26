@@ -53,7 +53,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5AxContainerd.lib;Qt5AxBased.lib;Qt5Bluetoothd.lib;Qt5Concurrentd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Helpd.lib;Qt5Locationd.lib;Qt5Multimediad.lib;Qt5MultimediaWidgetsd.lib;Qt5Networkd.lib;Qt5Nfcd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Positioningd.lib;Qt5PrintSupportd.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;Qt5Scriptd.lib;Qt5ScriptToolsd.lib;Qt5Sensorsd.lib;Qt5SerialPortd.lib;Qt5Sqld.lib;Qt5Svgd.lib;Qt5Testd.lib;Qt5UiToolsd.lib;Qt5WebChanneld.lib;Qt5WebSocketsd.lib;Qt5Widgetsd.lib;Qt5WinExtrasd.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5AxContainerd.lib;Qt5AxBased.lib;Qt5Bluetoothd.lib;Qt5Concurrentd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Helpd.lib;Qt5Locationd.lib;Qt5Multimediad.lib;Qt5MultimediaWidgetsd.lib;Qt5Networkd.lib;Qt5Nfcd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Positioningd.lib;Qt5PrintSupportd.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;Qt5Scriptd.lib;Qt5ScriptToolsd.lib;Qt5Sensorsd.lib;Qt5SerialPortd.lib;Qt5Sqld.lib;Qt5Svgd.lib;Qt5Testd.lib;Qt5UiToolsd.lib;Qt5WebChanneld.lib;Qt5WebSocketsd.lib;Qt5Widgetsd.lib;Qt5WinExtrasd.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;opencv_world340.lib;opencv_world340d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -69,7 +69,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;Qt5AxContainer.lib;Qt5AxBase.lib;Qt5Bluetooth.lib;Qt5Concurrent.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Help.lib;Qt5Location.lib;Qt5Multimedia.lib;Qt5MultimediaWidgets.lib;Qt5Network.lib;Qt5Nfc.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Positioning.lib;Qt5PrintSupport.lib;Qt5Qml.lib;Qt5Quick.lib;Qt5QuickWidgets.lib;Qt5Script.lib;Qt5ScriptTools.lib;Qt5Sensors.lib;Qt5SerialPort.lib;Qt5Sql.lib;Qt5Svg.lib;Qt5Test.lib;Qt5UiTools.lib;Qt5WebChannel.lib;Qt5WebSockets.lib;Qt5Widgets.lib;Qt5WinExtras.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5AxContainer.lib;Qt5AxBase.lib;Qt5Bluetooth.lib;Qt5Concurrent.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Help.lib;Qt5Location.lib;Qt5Multimedia.lib;Qt5MultimediaWidgets.lib;Qt5Network.lib;Qt5Nfc.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Positioning.lib;Qt5PrintSupport.lib;Qt5Qml.lib;Qt5Quick.lib;Qt5QuickWidgets.lib;Qt5Script.lib;Qt5ScriptTools.lib;Qt5Sensors.lib;Qt5SerialPort.lib;Qt5Sql.lib;Qt5Svg.lib;Qt5Test.lib;Qt5UiTools.lib;Qt5WebChannel.lib;Qt5WebSockets.lib;Qt5Widgets.lib;Qt5WinExtras.lib;Qt5Xml.lib;Qt5XmlPatterns.lib;opencv_world340d.lib;opencv_world340.lib;*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

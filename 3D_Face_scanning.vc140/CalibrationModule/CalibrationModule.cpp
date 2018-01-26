@@ -5,3 +5,4 @@ CalibrationModule::CalibrationModule(QWidget *parent)
 {
 	ui.setupUi(this);
 }
+

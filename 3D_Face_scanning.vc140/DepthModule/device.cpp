@@ -53,7 +53,8 @@ void Realsense::startStreaming(int devNum, int streamType) {
 	if (streamType == color)
 		c.enable_stream(RS2_STREAM_COLOR);
 	else if (streamType == depth)
-		c.enable_stream(RS2_STREAM_DEPTH);
+		//c.enable_stream(RS2_STREAM_DEPTH);
+		c.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
 
 
 	rs2::pipeline pipe;
@@ -87,8 +88,8 @@ rs2::frame Realsense::capture(int devNum, int streamType, int restNum) {
 		frameData = data.get_color_frame();
 	}
 	else if (streamType == depth) {
-		//frameData = data.get_depth_frame();
-		frameData = data.first(RS2_STREAM_DEPTH);
+		frameData = data.get_depth_frame();
+		//frameData = data.first(RS2_STREAM_DEPTH);
 	}
 	else return NULL;
 	return frameData;
@@ -139,8 +140,8 @@ vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) {
 	auto v = rsPoints.get_vertices();
 	for (auto i = 0; i < rsPoints.size(); i++) {
 		if (v[i].z != 0) {
-			vtkPoints->InsertNextPoint(v[i].x, v[i].y, v[i].z);
-			//cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
+			//vtkPoints->InsertNextPoint(v[i].x, v[i].y, v[i].z);
+			cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
 		}
 	}
 	return vtkPoints;
