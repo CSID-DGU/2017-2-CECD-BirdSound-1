@@ -1,8 +1,8 @@
 #ifndef OBJExport_h
 #define OBJExport_h
 
-#include "vtk-8.1\vtkIOExportModule.h"
-#include "vtk-8.1\vtkExporter.h"
+#include "vtkIOExportModule.h"
+#include "vtkExporter.h"
 
 class vtkActor;
 

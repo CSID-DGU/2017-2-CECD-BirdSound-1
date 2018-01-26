@@ -7,10 +7,10 @@
 #include "STLExport.h"
 #include "STLImport.h"
 
-#include <vtk-8.1\vtkSmartPointer.h>
-#include <vtk-8.1\vtkPolyData.h>
-#include <vtk-8.1\vtkRenderWindow.h>
-#include <vtk-8.1\vtkMatrix4x4.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+#include <vtkRenderWindow.h>
+#include <vtkMatrix4x4.h>
 
 
 class MeshIO

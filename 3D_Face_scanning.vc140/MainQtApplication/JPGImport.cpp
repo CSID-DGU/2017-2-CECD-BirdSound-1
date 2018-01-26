@@ -1,13 +1,13 @@
 #include "JPGImport.h"
 
-#include "vtk-8.1\vtkDataArray.h"
-#include "vtk-8.1\vtkImageData.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPointData.h"
-#include "vtk-8.1\vtkToolkits.h"
+#include "vtkDataArray.h"
+#include "vtkImageData.h"
+#include "vtkObjectFactory.h"
+#include "vtkPointData.h"
+#include "vtkToolkits.h"
 
 extern "C" {
-#include "vtk-8.1\vtk_jpeg.h"
+#include "vtk_jpeg.h"
 #include <setjmp.h>
 }
 

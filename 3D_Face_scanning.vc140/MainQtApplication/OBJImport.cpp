@@ -1,12 +1,12 @@
 #include "OBJImport.h"
 
-#include "vtk-8.1\vtkCellArray.h"
-#include "vtk-8.1\vtkFloatArray.h"
-#include "vtk-8.1\vtkInformation.h"
-#include "vtk-8.1\vtkInformationVector.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPointData.h"
-#include "vtk-8.1\vtkPolyData.h"
+#include "vtkCellArray.h"
+#include "vtkFloatArray.h"
+#include "vtkInformation.h"
+#include "vtkInformationVector.h"
+#include "vtkObjectFactory.h"
+#include "vtkPointData.h"
+#include "vtkPolyData.h"
 #include <cctype>
 
 vtkStandardNewMacro(OBJImport);

@@ -1,8 +1,8 @@
 #ifndef OBJImport_h
 #define OBJImport_h
 
-#include "vtk-8.1\vtkIOGeometryModule.h"
-#include "vtk-8.1\vtkAbstractPolyDataReader.h"
+#include "vtkIOGeometryModule.h"
+#include "vtkAbstractPolyDataReader.h"
 
 
 //v <x> <y> <z>

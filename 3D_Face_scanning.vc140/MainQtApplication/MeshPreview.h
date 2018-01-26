@@ -1,19 +1,19 @@
 #pragma once
 
-#include <vtk-8.1\vtkSmartPointer.h>
-#include <vtk-8.1\vtkPolyData.h>
-#include <vtk-8.1\vtkImageData.h>
-#include <vtk-8.1\vtkPolyDataMapper.h>
-#include <vtk-8.1\vtkTexture.h>
-#include <vtk-8.1\vtkActor.h>
-#include <vtk-8.1\vtkProperty.h>
-#include <vtk-8.1\vtkRenderer.h>
-#include <vtk-8.1\vtkCamera.h>
-#include <vtk-8.1\vtkRenderWindow.h>
-#include <vtk-8.1\vtkRenderWindowInteractor.h>
-#include <vtk-8.1\vtkInteractorStyleTrackballCamera.h>
-#include <vtk-8.1\vtkInteractorStyleSwitch.h>
-#include <vtk-8.1\vtkAbstractWidget.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+#include <vtkImageData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkTexture.h>
+#include <vtkActor.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkCamera.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkInteractorStyleSwitch.h>
+#include <vtkAbstractWidget.h>
 class MeshIO;
 class ImageIO;
 

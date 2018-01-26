@@ -1,8 +1,8 @@
 #ifndef PNGImport_h
 #define PNGImport_h
 
-#include "vtk-8.1\vtkIOImageModule.h"
-#include "vtk-8.1\vtkImageReader2.h"
+#include "vtkIOImageModule.h"
+#include "vtkImageReader2.h"
 
 class PNGImport : public vtkImageReader2
 {

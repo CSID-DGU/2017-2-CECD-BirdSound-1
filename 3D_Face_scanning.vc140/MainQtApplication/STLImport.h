@@ -1,8 +1,8 @@
 #ifndef STLImport_h
 #define STLImport_h
 
-#include "vtk-8.1\vtkIOGeometryModule.h"
-#include "vtk-8.1\vtkAbstractPolyDataReader.h"
+#include "vtkIOGeometryModule.h"
+#include "vtkAbstractPolyDataReader.h"
 
 class vtkCellArray;
 class vtkFloatArray;

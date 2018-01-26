@@ -1,15 +1,15 @@
 #include "JPGExport.h"
 
-#include "vtk-8.1\vtkErrorCode.h"
-#include "vtk-8.1\vtkImageData.h"
-#include "vtk-8.1\vtkInformation.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkStreamingDemandDrivenPipeline.h"
-#include "vtk-8.1\vtkToolkits.h"
-#include "vtk-8.1\vtkUnsignedCharArray.h"
+#include "vtkErrorCode.h"
+#include "vtkImageData.h"
+#include "vtkInformation.h"
+#include "vtkObjectFactory.h"
+#include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkToolkits.h"
+#include "vtkUnsignedCharArray.h"
 
 extern "C" {
-#include "vtk-8.1\vtk_jpeg.h"
+#include "vtk_jpeg.h"
 #include <setjmp.h>
 }
 
