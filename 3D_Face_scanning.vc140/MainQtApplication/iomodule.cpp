@@ -83,7 +83,7 @@ void IOModule::InitializeUi()
 	connect(ui.LandMarkBtn_3, SIGNAL(clicked()), this, SLOT(slotLandMarkBtn_3Clicked()));//land mark select mode
 	connect(ui.ToOrignBtn_3, SIGNAL(clicked()), this, SLOT(slotToOrignBtn_3Clicked()));//to Oring mesh
 	
-	connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChanged(int)));
+	//connect(ui.tab, SIGNAL(currentChanged(int)), this, SLOT(slotTabChanged(int)));
 
 	connect(ui.AlignBtn, SIGNAL(clicked()), this, SLOT(slotAlignBtnClicked()));
 
