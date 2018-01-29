@@ -132,18 +132,24 @@ std::string Realsense::saveImage(rs2::frame &frame, string filepath, int filetyp
 	return "아직 미구현 입니다~";
 }
 
-vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) {
+vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) 
+{
 	rs2::pointcloud pc;
 	rs2::points rsPoints;
 	//cout << sizeof(frame);
 	rsPoints = pc.calculate(frame);
 	vtkPoints * vtkPoints = vtkPoints::New();
 	auto v = rsPoints.get_vertices();
+
+	std::cout << rsPoints.size() << " number of points exist!!\n";
 	for (auto i = 0; i < rsPoints.size(); i++) {
-		if (v[i].z != 0) {
-			//cout.precision(9);
+		//if (v[i].z != 0) 
+		if (v[i].z>1 || v[i].z<-1)
+			vtkPoints->InsertNextPoint(0, 0, 0);
+		else
+		{
 			vtkPoints->InsertNextPoint(v[i]);
-			//vtkPoints->InsertNextPoint(v[i].x, v[i].y, v[i].z);
+			//cout << v << endl;
 			//cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
 		}
 	}
@@ -151,7 +157,8 @@ vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame) {
 }
 
 // private function
-void Realsense::restFrame(unit &cam_unit, int num) {
+void Realsense::restFrame(unit &cam_unit, int num) 
+{
 	for (int i = 0; i < num; i++) {
 		cam_unit.pipe.wait_for_frames();
 	}
@@ -164,5 +171,126 @@ bool Realsense::isInit() {
 		return false;
 	}
 	return true;
+}
+
+
+double Realsense::getDistane(double *src, double *tar)
+{
+	double retv = 0.0;
+	if (tar[0] == 0)return INF;
+	//retv += (src[0] - tar[0])*(src[0] - tar[0]);
+	//retv += (src[1] - tar[1])*(src[1] - tar[1]);
+	retv += (src[2] - tar[2])*(src[2] - tar[2]);
+	return retv;
+}
+void Realsense::MeshConstruct(vtkPoints *point, int saveType)
+{
+	vtkCellArray *cell = vtkCellArray::New();
+	double *ptr;
+
+	std::cout << point->GetNumberOfPoints() << "\n";
+
+	for (vtkIdType i = 0; i < point->GetNumberOfPoints() - width; i++)
+	{
+		ptr = point->GetPoint(i);
+		double orign[3] = { ptr[0],ptr[1],ptr[2] };
+
+		ptr = point->GetPoint(i + 1);
+		double right[3] = { ptr[0],ptr[1],ptr[2] };
+
+		ptr = point->GetPoint(i + width);
+		double down[3] = { ptr[0],ptr[1],ptr[2] };
+
+		ptr = point->GetPoint(i + width + 1);
+		double diga[3] = { ptr[0],ptr[1],ptr[2] };
+
+		if ((i + 1) % width == 0)continue;
+		if (orign[0] == 0)continue;
+
+		double _dia = getDistane(orign, diga);
+		double _down = getDistane(orign, down);
+
+		if (_down < _dia)
+		{
+			if (right[0] != 0 && down[0] != 0)
+			{
+				cell->InsertNextCell(3);
+				cell->InsertCellPoint(i); cell->InsertCellPoint(i + 1); cell->InsertCellPoint(i + width);
+			}
+
+			if (right[0] != 0 && diga[0] != 0)
+			{
+				cell->InsertNextCell(3);
+				cell->InsertCellPoint(i + 1); cell->InsertCellPoint(i + width + 1); cell->InsertCellPoint(i + width);
+			}
+		}
+
+		else
+		{
+			if (right[0] != 0 && diga[0] != 0)
+			{
+				cell->InsertNextCell(3);
+				cell->InsertCellPoint(i); cell->InsertCellPoint(i + 1); cell->InsertCellPoint(i + width + 1);
+			}
+
+			if (diga[0] != 0 && down[0] != 0)
+			{
+				cell->InsertNextCell(3);
+				cell->InsertCellPoint(i); cell->InsertCellPoint(i + width + 1); cell->InsertCellPoint(i + width);
+			}
+		}
+	}
+
+
+	vtkPolyData *poly = vtkPolyData::New();
+	poly->SetPoints(point);
+	poly->SetPolys(cell);
+
+	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+	mapper->SetInputData(poly);
+
+	vtkRenderer *renderer = vtkRenderer::New();
+	renderer->GetActiveCamera()->ParallelProjectionOff();
+
+	vtkActor *actor = vtkActor::New();
+	actor->SetMapper(mapper);
+	renderer->AddActor(actor);
+
+	vtkRenderWindow *win = vtkRenderWindow::New();
+	vtkRenderWindowInteractor * interactor = vtkRenderWindowInteractor::New();
+	interactor->SetRotation(0.1);
+	win->AddRenderer(renderer);
+
+
+	if (saveType == 1)
+	{
+		vtkSTLWriter* stlWriter = vtkSTLWriter::New();
+		stlWriter->SetFileName("my.stl");
+
+		stlWriter->SetInputData(poly);
+		stlWriter->Write();
+		stlWriter->Delete();
+	}
+
+	else if (saveType == 2) {
+		vtkOBJExporter *obj = vtkOBJExporter::New();
+		obj->SetInput(win);
+		obj->SetFilePrefix("mine");
+		obj->Write();
+		obj->Delete();
+	}
+
+	interactor->SetRenderWindow(win);
+	interactor->Start();
+
+
+
+	poly->Delete();
+	mapper->Delete();
+	renderer->Delete();
+	actor->Delete();
+	win->Delete();
+	interactor->Delete();
+	cell->Delete();
 }
 

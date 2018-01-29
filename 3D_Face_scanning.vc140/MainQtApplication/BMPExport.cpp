@@ -1,8 +1,8 @@
 #include "BMPExport.h"
 
-#include "vtk-8.1\vtkImageData.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPointData.h"
+#include "vtkImageData.h"
+#include "vtkObjectFactory.h"
+#include "vtkPointData.h"
 
 vtkStandardNewMacro(BMPExport);
 

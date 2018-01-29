@@ -1,8 +1,8 @@
 #ifndef JPGImport_h
 #define JPGImport_h
 
-#include "vtk-8.1\vtkIOImageModule.h"
-#include "vtk-8.1\vtkImageReader2.h"
+#include "vtkIOImageModule.h"
+#include "vtkImageReader2.h"
 
 class JPGImport : public vtkImageReader2
 {

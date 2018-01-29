@@ -1,8 +1,8 @@
 #ifndef JPGExport_h
 #define JPGExport_h
 
-#include "vtk-8.1\vtkIOImageModule.h"
-#include "vtk-8.1\vtkImageWriter.h"
+#include "vtkIOImageModule.h"
+#include "vtkImageWriter.h"
 
 class vtkUnsignedCharArray;
 class vtkImageData;

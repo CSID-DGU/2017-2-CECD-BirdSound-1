@@ -1,8 +1,8 @@
 #ifndef BMPImport_h
 #define BMPImport_h
 
-#include "vtk-8.1\vtkIOImageModule.h"
-#include "vtk-8.1\vtkImageReader.h"
+#include "vtkIOImageModule.h"
+#include "vtkImageReader.h"
 
 class vtkLookupTable;
 

@@ -36,7 +36,7 @@ class Ui_IOModuleClass
 public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
-    QTabWidget *tabWidget;
+    QTabWidget *rsWidget;
     QWidget *widget;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_11;
@@ -98,6 +98,11 @@ public:
     QPushButton *CapSaveBtn_cad_1;
     QPushButton *SaveBtn_cad_1;
     QPushButton *AlignBtn;
+    QWidget *tab;
+    QFrame *Viewer_cad_RS;
+    QPushButton *CapColBtn;
+    QPushButton *CapDepBtn;
+    QPushButton *RecordBtn;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -113,8 +118,8 @@ public:
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        tabWidget = new QTabWidget(centralWidget);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        rsWidget = new QTabWidget(centralWidget);
+        rsWidget->setObjectName(QStringLiteral("rsWidget"));
         widget = new QWidget();
         widget->setObjectName(QStringLiteral("widget"));
         verticalLayout_2 = new QVBoxLayout(widget);
@@ -200,7 +205,7 @@ public:
         verticalLayout_2->setStretch(0, 1);
         verticalLayout_2->setStretch(1, 20);
         verticalLayout_2->setStretch(2, 1);
-        tabWidget->addTab(widget, QString());
+        rsWidget->addTab(widget, QString());
         widget_3 = new QWidget();
         widget_3->setObjectName(QStringLiteral("widget_3"));
         Viewer_cad_1 = new QFrame(widget_3);
@@ -436,9 +441,27 @@ public:
         AlignBtn = new QPushButton(widget_3);
         AlignBtn->setObjectName(QStringLiteral("AlignBtn"));
         AlignBtn->setGeometry(QRect(490, 710, 101, 31));
-        tabWidget->addTab(widget_3, QString());
+        rsWidget->addTab(widget_3, QString());
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        Viewer_cad_RS = new QFrame(tab);
+        Viewer_cad_RS->setObjectName(QStringLiteral("Viewer_cad_RS"));
+        Viewer_cad_RS->setGeometry(QRect(20, 20, 431, 571));
+        Viewer_cad_RS->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
+        Viewer_cad_RS->setFrameShape(QFrame::StyledPanel);
+        Viewer_cad_RS->setFrameShadow(QFrame::Raised);
+        CapColBtn = new QPushButton(tab);
+        CapColBtn->setObjectName(QStringLiteral("CapColBtn"));
+        CapColBtn->setGeometry(QRect(30, 610, 111, 51));
+        CapDepBtn = new QPushButton(tab);
+        CapDepBtn->setObjectName(QStringLiteral("CapDepBtn"));
+        CapDepBtn->setGeometry(QRect(170, 610, 101, 51));
+        RecordBtn = new QPushButton(tab);
+        RecordBtn->setObjectName(QStringLiteral("RecordBtn"));
+        RecordBtn->setGeometry(QRect(290, 610, 121, 41));
+        rsWidget->addTab(tab, QString());
 
-        horizontalLayout->addWidget(tabWidget);
+        horizontalLayout->addWidget(rsWidget);
 
         IOModuleClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(IOModuleClass);
@@ -465,7 +488,7 @@ public:
 
         retranslateUi(IOModuleClass);
 
-        tabWidget->setCurrentIndex(1);
+        rsWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(IOModuleClass);
@@ -478,7 +501,7 @@ public:
         LoadBtn_2d->setText(QApplication::translate("IOModuleClass", "Load", Q_NULLPTR));
         CapSaveBtn_2d->setText(QApplication::translate("IOModuleClass", "Save (Capture)", Q_NULLPTR));
         SaveBtn_2d->setText(QApplication::translate("IOModuleClass", "Save (Origin)", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(widget), QApplication::translate("IOModuleClass", "2D", Q_NULLPTR));
+        rsWidget->setTabText(rsWidget->indexOf(widget), QApplication::translate("IOModuleClass", "2D", Q_NULLPTR));
         LoadBtn_cad_2->setText(QApplication::translate("IOModuleClass", "Load", Q_NULLPTR));
         ViewVertex_2->setText(QApplication::translate("IOModuleClass", "Vertex", Q_NULLPTR));
         ViewWireFrame_2->setText(QApplication::translate("IOModuleClass", "WireFrame", Q_NULLPTR));
@@ -513,7 +536,11 @@ public:
         CapSaveBtn_cad_1->setText(QApplication::translate("IOModuleClass", "Save (Capture)", Q_NULLPTR));
         SaveBtn_cad_1->setText(QApplication::translate("IOModuleClass", "Save (Origin)", Q_NULLPTR));
         AlignBtn->setText(QApplication::translate("IOModuleClass", "Align", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(widget_3), QApplication::translate("IOModuleClass", "CAD", Q_NULLPTR));
+        rsWidget->setTabText(rsWidget->indexOf(widget_3), QApplication::translate("IOModuleClass", "CAD", Q_NULLPTR));
+        CapColBtn->setText(QApplication::translate("IOModuleClass", "Color", Q_NULLPTR));
+        CapDepBtn->setText(QApplication::translate("IOModuleClass", "Depth", Q_NULLPTR));
+        RecordBtn->setText(QApplication::translate("IOModuleClass", "Record", Q_NULLPTR));
+        rsWidget->setTabText(rsWidget->indexOf(tab), QApplication::translate("IOModuleClass", "\354\252\275", Q_NULLPTR));
     } // retranslateUi
 
 };

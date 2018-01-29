@@ -1,10 +1,10 @@
 #include "BMPImport.h"
 
-#include "vtk-8.1\vtkByteSwap.h"
-#include "vtk-8.1\vtkImageData.h"
-#include "vtk-8.1\vtkLookupTable.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPointData.h"
+#include "vtkByteSwap.h"
+#include "vtkImageData.h"
+#include "vtkLookupTable.h"
+#include "vtkObjectFactory.h"
+#include "vtkPointData.h"
 
 vtkStandardNewMacro(BMPImport);
 

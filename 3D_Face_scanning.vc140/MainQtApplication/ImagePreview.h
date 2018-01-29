@@ -1,15 +1,15 @@
 #pragma once
 
-#include <vtk-8.1\vtkSmartPointer.h>
-#include <vtk-8.1\vtkImageData.h>
-#include <vtk-8.1\vtkImageResliceMapper.h>
-#include <vtk-8.1\vtkImageSlice.h>
-#include <vtk-8.1\vtkImageProperty.h>
-#include <vtk-8.1\vtkRenderer.h>
-#include <vtk-8.1\vtkCamera.h>
-#include <vtk-8.1\vtkRenderWindow.h>
-#include <vtk-8.1\vtkRenderWindowInteractor.h>
-#include <vtk-8.1\vtkInteractorStyleImage.h>
+#include <vtkSmartPointer.h>
+#include <vtkImageData.h>
+#include <vtkImageResliceMapper.h>
+#include <vtkImageSlice.h>
+#include <vtkImageProperty.h>
+#include <vtkRenderer.h>
+#include <vtkCamera.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkInteractorStyleImage.h>
 
 
 class ImageIO;

@@ -2,19 +2,19 @@
 #ifndef LandMarkInteractorStyle_H
 #define LandMarkInteractorStyle_H
 
-#include <vtk-8.1\vtkRendererCollection.h>
-#include <vtk-8.1\vtkWorldPointPicker.h>
-#include <vtk-8.1\vtkRenderWindow.h>
-#include <vtk-8.1\vtkRenderer.h>
-#include <vtk-8.1\vtkSphereSource.h>
-#include <vtk-8.1\vtkRenderWindowInteractor.h>
-#include <vtk-8.1\vtkInteractorStyleTrackballCamera.h>
+#include <vtkRendererCollection.h>
+#include <vtkWorldPointPicker.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkSphereSource.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 
-#include<vtk-8.1\vtkProperty.h>
-#include<vtk-8.1\vtkPropPicker.h>
-#include<vtk-8.1\vtkPolyDataMapper.h>
+#include<vtkProperty.h>
+#include<vtkPropPicker.h>
+#include<vtkPolyDataMapper.h>
 
-#include<vtk-8.1\vtkInteractorStyleImage.h>
+#include<vtkInteractorStyleImage.h>
 #include <vector>
 
 class PointXYZR

@@ -16,9 +16,9 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="rsWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="widget">
        <attribute name="title">
@@ -697,6 +697,69 @@
         </property>
         <property name="text">
          <string>Align</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>쪽</string>
+       </attribute>
+       <widget class="QFrame" name="Viewer_cad_RS">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>431</width>
+          <height>571</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(0, 0, 0);</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="CapColBtn">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>610</y>
+          <width>111</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="CapDepBtn">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>610</y>
+          <width>101</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Depth</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="RecordBtn">
+        <property name="geometry">
+         <rect>
+          <x>290</x>
+          <y>610</y>
+          <width>121</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Record</string>
         </property>
        </widget>
       </widget>

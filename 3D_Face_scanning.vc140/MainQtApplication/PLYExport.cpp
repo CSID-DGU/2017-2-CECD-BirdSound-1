@@ -1,15 +1,15 @@
 #include "PLYExport.h"
 
-#include "vtk-8.1\vtkCellArray.h"
-#include "vtk-8.1\vtkCellData.h"
-#include "vtk-8.1\vtkFloatArray.h"
-#include "vtk-8.1\vtkInformation.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPLY.h"
-#include "vtk-8.1\vtkPointData.h"
-#include "vtk-8.1\vtkPolyData.h"
-#include "vtk-8.1\vtkScalarsToColors.h"
-#include "vtk-8.1\vtkStringArray.h"
+#include "vtkCellArray.h"
+#include "vtkCellData.h"
+#include "vtkFloatArray.h"
+#include "vtkInformation.h"
+#include "vtkObjectFactory.h"
+#include "vtkPLY.h"
+#include "vtkPointData.h"
+#include "vtkPolyData.h"
+#include "vtkScalarsToColors.h"
+#include "vtkStringArray.h"
 
 #include <cstddef>
 

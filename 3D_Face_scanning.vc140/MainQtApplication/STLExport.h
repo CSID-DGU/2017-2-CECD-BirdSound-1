@@ -1,8 +1,8 @@
 #ifndef STLExport_h
 #define STLExport_h
 
-#include "vtk-8.1\vtkIOGeometryModule.h"
-#include "vtk-8.1\vtkWriter.h"
+#include "vtkIOGeometryModule.h"
+#include "vtkWriter.h"
 
 class vtkCellArray;
 class vtkPoints;

@@ -1,14 +1,14 @@
 #include "STLExport.h"
-#include "vtk-8.1\vtkSmartPointer.h"
+#include "vtkSmartPointer.h"
 
-#include "vtk-8.1\vtkByteSwap.h"
-#include "vtk-8.1\vtkCellArray.h"
-#include "vtk-8.1\vtkErrorCode.h"
-#include "vtk-8.1\vtkInformation.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPolyData.h"
-#include "vtk-8.1\vtkTriangle.h"
-#include "vtk-8.1\vtkTriangleStrip.h"
+#include "vtkByteSwap.h"
+#include "vtkCellArray.h"
+#include "vtkErrorCode.h"
+#include "vtkInformation.h"
+#include "vtkObjectFactory.h"
+#include "vtkPolyData.h"
+#include "vtkTriangle.h"
+#include "vtkTriangleStrip.h"
 #include <vtk-8.1/vtksys/SystemTools.hxx>
 
 #if !defined(_WIN32) || defined(__CYGWIN__)

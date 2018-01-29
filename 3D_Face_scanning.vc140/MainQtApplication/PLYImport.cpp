@@ -1,15 +1,15 @@
 #include "PLYImport.h"
 
-#include "vtk-8.1\vtkCellArray.h"
-#include "vtk-8.1\vtkCellData.h"
-#include "vtk-8.1\vtkPointData.h"
-#include "vtk-8.1\vtkFloatArray.h"
-#include "vtk-8.1\vtkInformation.h"
-#include "vtk-8.1\vtkInformationVector.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkPLY.h"
-#include "vtk-8.1\vtkPolyData.h"
-#include "vtk-8.1\vtkSmartPointer.h"
+#include "vtkCellArray.h"
+#include "vtkCellData.h"
+#include "vtkPointData.h"
+#include "vtkFloatArray.h"
+#include "vtkInformation.h"
+#include "vtkInformationVector.h"
+#include "vtkObjectFactory.h"
+#include "vtkPLY.h"
+#include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
 
 #include <cctype>
 #include <cstddef>

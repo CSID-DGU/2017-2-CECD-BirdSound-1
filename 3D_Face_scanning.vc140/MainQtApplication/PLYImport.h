@@ -1,8 +1,8 @@
 #ifndef PLYImport_h
 #define PLYImport_h
 
-#include "vtk-8.1\vtkIOPLYModule.h"
-#include "vtk-8.1\vtkAbstractPolyDataReader.h"
+#include "vtkIOPLYModule.h"
+#include "vtkAbstractPolyDataReader.h"
 
 class PLYImport : public vtkAbstractPolyDataReader
 {

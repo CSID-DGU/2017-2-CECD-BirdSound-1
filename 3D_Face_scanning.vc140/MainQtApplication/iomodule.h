@@ -4,12 +4,12 @@
 #include <QtWidgets/QMainWindow>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
-#include <vtk-8.1\vtkPointHandleRepresentation2D.h>//
-#include <vtk-8.1\vtkSeedRepresentation.h>//
-#include <vtk-8.1\vtkSeedWidget.h>//
-#include <vtk-8.1\vtkSphereSource.h>//
+#include <vtkPointHandleRepresentation2D.h>//
+#include <vtkSeedRepresentation.h>//
+#include <vtkSeedWidget.h>//
+#include <vtkSphereSource.h>//
 #include <LandMarkInteractorStyle.h>
-#include <vtk-8.1\vtkProperty2D.h>//
+#include <vtkProperty2D.h>//
 
 
 #include "ui_iomodule.h"
@@ -17,7 +17,7 @@
 #include "MeshPreview.h"
 #include "ImagePreview.h"
 
-#include <vtk-8.1\vtkAutoInit.h>
+#include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
 VTK_MODULE_INIT(vtkRenderingFreeType);

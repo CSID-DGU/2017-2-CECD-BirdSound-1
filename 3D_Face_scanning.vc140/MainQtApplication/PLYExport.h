@@ -1,9 +1,9 @@
 #ifndef PLYExport_h
 #define PLYExport_h
 
-#include "vtk-8.1\vtkIOPLYModule.h"
-#include "vtk-8.1\vtkSmartPointer.h"
-#include "vtk-8.1\vtkWriter.h"
+#include "vtkIOPLYModule.h"
+#include "vtkSmartPointer.h"
+#include "vtkWriter.h"
 
 #include <string>
 

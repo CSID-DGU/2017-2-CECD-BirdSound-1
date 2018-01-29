@@ -7,13 +7,13 @@
 #include "JPGExport.h"
 #include "PNGExport.h"
 
-#include <vtk-8.1\vtkTIFFReader.h>
-#include <vtk-8.1\vtkTIFFWriter.h>
+#include <vtkTIFFReader.h>
+#include <vtkTIFFWriter.h>
 
-#include <vtk-8.1\vtkSmartPointer.h>
-#include <vtk-8.1\vtkImageData.h>
-#include <vtk-8.1\vtkRenderWindow.h>
-#include <vtk-8.1\vtkWindowToImageFilter.h>
+#include <vtkSmartPointer.h>
+#include <vtkImageData.h>
+#include <vtkRenderWindow.h>
+#include <vtkWindowToImageFilter.h>
 
 class ImageIO
 {

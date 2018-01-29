@@ -1,12 +1,12 @@
 #include "PNGExport.h"
 
-#include "vtk-8.1\vtkAlgorithmOutput.h"
-#include "vtk-8.1\vtkErrorCode.h"
-#include "vtk-8.1\vtkImageData.h"
-#include "vtk-8.1\vtkObjectFactory.h"
-#include "vtk-8.1\vtkStreamingDemandDrivenPipeline.h"
-#include "vtk-8.1\vtkUnsignedCharArray.h"
-#include "vtk-8.1\vtk_png.h"
+#include "vtkAlgorithmOutput.h"
+#include "vtkErrorCode.h"
+#include "vtkImageData.h"
+#include "vtkObjectFactory.h"
+#include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkUnsignedCharArray.h"
+#include "vtk_png.h"
 
 #include <vector>
 
