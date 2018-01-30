@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
+    <width>1121</width>
     <height>504</height>
    </rect>
   </property>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>130</y>
+      <y>60</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>90</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>190</y>
+      <y>120</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -79,24 +79,73 @@
      <string>Stop</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cameraList">
+   <widget class="QWidget" name="irCam1" native="true">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>76</width>
-      <height>22</height>
+      <x>480</x>
+      <y>40</y>
+      <width>231</width>
+      <height>231</height>
      </rect>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="QWidget" name="irCam2" native="true">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>10</y>
-      <width>561</width>
-      <height>441</height>
+      <x>720</x>
+      <y>40</y>
+      <width>231</width>
+      <height>231</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QWidget" name="rgbCam" native="true">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>40</y>
+      <width>231</width>
+      <height>231</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>280</y>
+      <width>56</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RGB CAM</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>280</y>
+      <width>56</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IR CAM 1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>280</y>
+      <width>56</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IR CAM 2</string>
     </property>
    </widget>
   </widget>
@@ -105,7 +154,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>773</width>
+     <width>1121</width>
      <height>21</height>
     </rect>
    </property>

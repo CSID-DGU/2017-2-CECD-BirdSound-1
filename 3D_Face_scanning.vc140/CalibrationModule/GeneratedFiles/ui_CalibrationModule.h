@@ -13,8 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -35,8 +33,12 @@ public:
     QPushButton *startStreaming;
     QPushButton *captrueImage;
     QPushButton *stopStreaming;
-    QComboBox *cameraList;
-    QGraphicsView *graphicsView;
+    QWidget *irCam1;
+    QWidget *irCam2;
+    QWidget *rgbCam;
+    QLabel *label;
+    QLabel *label_2;
+    QLabel *label_3;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -45,7 +47,7 @@ public:
     {
         if (CalibrationModuleClass->objectName().isEmpty())
             CalibrationModuleClass->setObjectName(QStringLiteral("CalibrationModuleClass"));
-        CalibrationModuleClass->resize(773, 504);
+        CalibrationModuleClass->resize(1121, 504);
         centralWidget = new QWidget(CalibrationModuleClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         deviceName = new QLabel(centralWidget);
@@ -56,23 +58,35 @@ public:
         deviceFirmware->setGeometry(QRect(10, 30, 81, 21));
         startStreaming = new QPushButton(centralWidget);
         startStreaming->setObjectName(QStringLiteral("startStreaming"));
-        startStreaming->setGeometry(QRect(10, 130, 75, 23));
+        startStreaming->setGeometry(QRect(10, 60, 75, 23));
         captrueImage = new QPushButton(centralWidget);
         captrueImage->setObjectName(QStringLiteral("captrueImage"));
-        captrueImage->setGeometry(QRect(10, 160, 75, 23));
+        captrueImage->setGeometry(QRect(10, 90, 75, 23));
         stopStreaming = new QPushButton(centralWidget);
         stopStreaming->setObjectName(QStringLiteral("stopStreaming"));
-        stopStreaming->setGeometry(QRect(10, 190, 75, 23));
-        cameraList = new QComboBox(centralWidget);
-        cameraList->setObjectName(QStringLiteral("cameraList"));
-        cameraList->setGeometry(QRect(10, 60, 76, 22));
-        graphicsView = new QGraphicsView(centralWidget);
-        graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        graphicsView->setGeometry(QRect(200, 10, 561, 441));
+        stopStreaming->setGeometry(QRect(10, 120, 75, 23));
+        irCam1 = new QWidget(centralWidget);
+        irCam1->setObjectName(QStringLiteral("irCam1"));
+        irCam1->setGeometry(QRect(480, 40, 231, 231));
+        irCam2 = new QWidget(centralWidget);
+        irCam2->setObjectName(QStringLiteral("irCam2"));
+        irCam2->setGeometry(QRect(720, 40, 231, 231));
+        rgbCam = new QWidget(centralWidget);
+        rgbCam->setObjectName(QStringLiteral("rgbCam"));
+        rgbCam->setGeometry(QRect(240, 40, 231, 231));
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(320, 280, 56, 12));
+        label_2 = new QLabel(centralWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(570, 280, 56, 12));
+        label_3 = new QLabel(centralWidget);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setGeometry(QRect(810, 280, 56, 12));
         CalibrationModuleClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(CalibrationModuleClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 773, 21));
+        menuBar->setGeometry(QRect(0, 0, 1121, 21));
         CalibrationModuleClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(CalibrationModuleClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -94,6 +108,9 @@ public:
         startStreaming->setText(QApplication::translate("CalibrationModuleClass", "Start", Q_NULLPTR));
         captrueImage->setText(QApplication::translate("CalibrationModuleClass", "Capture", Q_NULLPTR));
         stopStreaming->setText(QApplication::translate("CalibrationModuleClass", "Stop", Q_NULLPTR));
+        label->setText(QApplication::translate("CalibrationModuleClass", "RGB CAM", Q_NULLPTR));
+        label_2->setText(QApplication::translate("CalibrationModuleClass", "IR CAM 1", Q_NULLPTR));
+        label_3->setText(QApplication::translate("CalibrationModuleClass", "IR CAM 2", Q_NULLPTR));
     } // retranslateUi
 
 };

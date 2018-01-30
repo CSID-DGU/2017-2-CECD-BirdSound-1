@@ -35,6 +35,7 @@ using namespace std;
 
 class Realsense {
 
+	enum class filetype{stl,obj};
 	typedef struct unit
 	{
 		std::map<int, rs2::frame> frames_per_stream;
