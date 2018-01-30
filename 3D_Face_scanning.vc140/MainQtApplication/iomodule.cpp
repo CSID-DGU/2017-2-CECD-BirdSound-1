@@ -102,6 +102,10 @@ void IOModule::InitializeUi()
 	connect(ui.ViewFace_3, SIGNAL(clicked()), this, SLOT(ViewFace_3()));
 	connect(ui.ViewEdgedFace_3, SIGNAL(clicked()), this, SLOT(ViewEdgedFace_3()));
 
+	
+	connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(()));
+	connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(()));
+	connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(()));
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_1->width();	sizeY = this->ui.Viewer_cad_1->height();
 	m_MeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_1->winId()), sizeX, sizeY);
@@ -544,3 +548,13 @@ void IOModule::slotAlignBtnClicked()
 	for (int i = 0; i < right.size(); i++)
 		std::cout << right[i] << "\n";
 }
+
+
+void IOModule::CapColBtnClicked()
+{}
+
+void IOModule::CapDepBtnClicked()
+{}
+
+void IOModule::RecordBtnClicked() 
+{}

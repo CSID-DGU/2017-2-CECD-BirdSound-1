@@ -121,6 +121,13 @@ public slots:
 
 	
 	void slotAlignBtnClicked();
+
+
+	//rs slot
+	void CapColBtnClicked();
+	void CapDepBtnClicked();
+	void RecordBtnClicked();
+	
 private:
 	void loadCadBtn(int frameNumber);
 	void saveCadBtn(int frameNumber);
