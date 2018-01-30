@@ -3,16 +3,11 @@
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
-      <Extensions>qrc;*</Extensions>
-      <ParseFiles>false</ParseFiles>
+      <Extensions>h</Extensions>
     </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
@@ -29,12 +24,12 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{5d5d4df1-8a0d-47ed-b114-dc970f7fbf70}</UniqueIdentifier>
+      <UniqueIdentifier>{2130a817-5b5c-4aef-9419-20c93f6aba43}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{222b6daf-f7a7-4b59-9206-62ecbe0c1ca3}</UniqueIdentifier>
+      <UniqueIdentifier>{3aae354f-d770-4de8-ae4f-1c28d7d63453}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -43,11 +38,17 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="iomodule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_iomodule.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_iomodule.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_iomodule.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="BMPExport.cpp">
       <Filter>Source Files</Filter>
@@ -59,9 +60,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImagePreview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="iomodule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JPGExport.cpp">
@@ -82,9 +80,6 @@
     <ClCompile Include="MeshPreview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="moc_iomodule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OBJExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,28 +98,31 @@
     <ClCompile Include="PNGImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qrc_iomodule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="STLExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="STLImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qrc_iomodule.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="MainQtApplication.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="iomodule.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="iomodule.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="iomodule.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_iomodule.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
     <ClInclude Include="BMPExport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -178,12 +176,6 @@
     </ClInclude>
     <ClInclude Include="STLImport.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ui_iomodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_iomodule.h">
-      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

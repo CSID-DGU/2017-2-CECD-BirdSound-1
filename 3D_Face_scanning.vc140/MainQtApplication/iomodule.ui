@@ -803,7 +803,7 @@
   <tabstop>PathEdit_2d</tabstop>
  </tabstops>
  <resources>
-  <include location="MainQtApplication.qrc"/>
+  <include location="iomodule.qrc"/>
  </resources>
  <connections/>
  <slots>
