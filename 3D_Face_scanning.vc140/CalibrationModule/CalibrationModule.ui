@@ -99,16 +99,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="rgbCam" native="true">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>40</y>
-      <width>231</width>
-      <height>231</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -146,6 +136,19 @@
     </property>
     <property name="text">
      <string>IR CAM 2</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="rgbLabel">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>40</y>
+      <width>221</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RGB Image</string>
     </property>
    </widget>
   </widget>

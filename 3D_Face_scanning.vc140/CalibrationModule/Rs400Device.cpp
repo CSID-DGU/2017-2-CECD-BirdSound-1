@@ -51,52 +51,8 @@ Rs400Device::~Rs400Device()
 	m_colorProfile.clear();
 	delete m_context;
 }
-camera_info Rs400Device::InitializeCamera()
-{
-	camera_info info{};
-	auto devices = m_context->query_devices();
-	m_device = devices[0];
-	if (m_device.is<rs400::advanced_mode>())
-	{
-		rs400::advanced_mode advanced = m_device.as<rs400::advanced_mode>();
-		if (!advanced.is_enabled())
-		{
-			advanced.toggle_advanced_mode(true);
-			//Remove context recreation after libRs fix
-			delete m_context;
-			m_context = new context();
-			devices = m_context->query_devices();
-			m_device = devices[0];
-		}
-	}
-	auto sensors = devices[0].query_sensors();
-	m_depthSensor = sensors[0];
-	info.name = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_NAME);
-	// filter out non RS400 camera
-	if (info.name.find("RealSense") == string::npos || info.name.find("4") ==
-		string::npos) return info;
-	info.pid = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_PRODUCT_ID);
-	info.serial = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_SERIAL_NUMBER);
-	info.fw_ver =
-		m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_FIRMWARE_VERSION);
-	std::vector<uint8_t> RawBuffer =
-	{ 0x14, 0, 0xab, 0xcd, 0x10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0 };
-	std::vector<uint8_t> rcvBuf;
-	auto debug = m_device.as<debug_protocol>();;
-	rcvBuf = debug.send_and_receive_raw_data(RawBuffer);
-	if ((rcvBuf[SKU_COMPONENT] & 0x03) == 2)
-		info.isWide = true;
-	if (rcvBuf[RGB_MODE] & 0x01)
-	{
-		info.isRGB = true;
-		if (sensors.size() > 1)
-		{
-			m_colorSensor = sensors[1];
-		}
-	}
-	return info;
-}
+
+
 bool Rs400Device::SetMediaMode(int width, int height, int frameRate, int colorWidth, int
 	colorHeight, bool enableColor)
 {

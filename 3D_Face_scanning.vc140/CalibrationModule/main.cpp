@@ -79,30 +79,35 @@ int main(int argc, char *argv[])
 		if (waitKey(10) == 27) break;
 	}*/
 	
-	rs2::context ctx;
-	rs2::device dev = ctx.query_devices()[0];
-	rs2::sensor depth_sensor = dev.query_sensors()[0];
-	//depth_sensor.set_option(RS2_OPTION_EMITTER_ENABLED, 1.f); // Enable emitter
-	depth_sensor.set_option(RS2_OPTION_EMITTER_ENABLED, 0.f); // Disable emitter
+	//dz
+	//rs2::context ctx;
+	//rs2::device dev = ctx.query_devices()[0];
+	//rs2::sensor depth_sensor = dev.query_sensors()[0];
+	////depth_sensor.set_option(RS2_OPTION_EMITTER_ENABLED, 1.f); // Enable emitter
+	//depth_sensor.set_option(RS2_OPTION_EMITTER_ENABLED, 0.f); // Disable emitter
 
-	rs2::pipeline pipe;
-	rs2::pipeline_profile profile = pipe.start();
+	//rs2::pipeline pipe;
+	//rs2::pipeline_profile profile = pipe.start();
 
-	rs2::frameset data = pipe.wait_for_frames();
+	//rs2::frameset data = pipe.wait_for_frames();
 
-	std::unique_ptr<uint8_t[]> m_leftImage;
-	std::unique_ptr<uint8_t[]> m_rightImage;
-	std::unique_ptr<uint32_t[]> m_colorImage;
+	//std::unique_ptr<uint8_t[]> m_leftImage;
+	//std::unique_ptr<uint8_t[]> m_rightImage;
+	//std::unique_ptr<uint32_t[]> m_colorImage;
 
-	m_leftImage = std::unique_ptr<uint8_t[]>(new uint8_t[1920 * (1080 + 1)]);
-	m_rightImage = std::unique_ptr<uint8_t[]>(new uint8_t[1920 * (1080 + 1)]);
+	//m_leftImage = std::unique_ptr<uint8_t[]>(new uint8_t[1920 * (1080 + 1)]);
+	//m_rightImage = std::unique_ptr<uint8_t[]>(new uint8_t[1920 * (1080 + 1)]);
 
-	rs2::stream_profile infraredProfile;
+	//rs2::stream_profile infraredProfile;
 
 	//rs2::device selected_device = profile.get_device();
 	//auto depth_sensor = selected_device.first<rs2::depth_sensor>();
 
-	
+	/*rs2::colorizer color_map;
+	rs2::pipeline pipe;
+	pipe.start();
+	rs2::frameset data = pipe.wait_for_frames();
+	rs2::frame color = data.get_color_frame();*/
 	
 		
 	/*rs2::config cfg;

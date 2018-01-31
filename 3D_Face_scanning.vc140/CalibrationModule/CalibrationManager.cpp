@@ -168,17 +168,13 @@ void CustomCalibration::Start(void)
 		m_rsDevice->SetAeControl(800);
 	else
 		m_rsDevice->SetAeControl(500);
-	m_rsDevice->SetMediaMode(m_width, m_height, m_fps, m_rgbWidth, m_rgbHeight,
-		m_cameraInfo.isRGB);
-	m_rsDevice->StartCapture([&](const void *leftImage, const void *rightImage,
-		const void *colorImage, const uint64_t timeStamp)
+	m_rsDevice->SetMediaMode(m_width, m_height, m_fps, m_rgbWidth, m_rgbHeight,.isRGB);
+	m_rsDevice->StartCapture([&](const void *leftImage, const void *rightImage, void *colorImage, const uint64_t timeStamp)
 	{
 		uint8_t *left = m_leftImage.get();
-		ConvertLuminance16ToLuminance8((uint16_t *)leftImage, m_width, m_height,
-			left);
+		ConvertLuminance16ToLuminance8((uint16_t *)leftImage, m_width, m_height,);
 		uint8_t *right = m_rightImage.get();
-		ConvertLuminance16ToLuminance8((uint16_t *)rightImage, m_width, m_height,
-			right);
+		ConvertLuminance16ToLuminance8((uint16_t *)rightImage, m_width, m_height,);
 		if (colorImage != nullptr)
 		{
 			uint32_t *color = m_colorImage.get();

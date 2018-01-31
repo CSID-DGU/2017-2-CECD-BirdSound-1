@@ -98,9 +98,6 @@
     <ClInclude Include="CustomCalibrationWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CalibrationManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DS5CalibCoefficients.h">
       <Filter>Header Files</Filter>
     </ClInclude>

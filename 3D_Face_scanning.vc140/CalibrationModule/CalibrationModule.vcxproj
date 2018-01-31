@@ -131,9 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DepthModule\device.h" />
-    <ClInclude Include="CalibrationManager.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="CustomCalibration.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
