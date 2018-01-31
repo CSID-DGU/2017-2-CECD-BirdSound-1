@@ -30,6 +30,9 @@ void IOModule::InitializeVariables()
 	m_ImagePreviewer = NULL;
 	for (int i = 0; i < 3; i++)
 		m_MeshLandmarkStyle[i] = LandMarkInteractorStyle::New();
+
+	m_IsRelalSensePreviewer = 0;
+	m_RelalSensePreviewer = NULL;
 }
 
 void IOModule::InitializeScene()
@@ -41,7 +44,9 @@ void IOModule::InitializeScene()
 		m_IsMeshViewer[i] = 1;
 	}
 
-	
+	m_RelalSensePreviewer = new RelalSensePreviewer();
+	//m_RelalSensePreviewer->Create2DScene();
+	m_IsRelalSensePreviewer = 1;
 
 	m_ImagePreviewer = new ImagePreview;
 	m_ImagePreviewer->Create2DScene();
@@ -103,9 +108,10 @@ void IOModule::InitializeUi()
 	connect(ui.ViewEdgedFace_3, SIGNAL(clicked()), this, SLOT(ViewEdgedFace_3()));
 
 	
-	connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(()));
-	connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(()));
-	connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(()));
+	connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(slotCapColBtnClicked()));
+	connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(slotCapDepBtnClicked()));
+	connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(slotRecordBtnClicked()));
+
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_1->width();	sizeY = this->ui.Viewer_cad_1->height();
 	m_MeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_1->winId()), sizeX, sizeY);
@@ -114,6 +120,10 @@ void IOModule::InitializeUi()
 
 	sizeX = this->ui.Viewer_2d->width();	sizeY = this->ui.Viewer_2d->height();
 	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_2d->winId()), sizeX, sizeY);
+	
+	
+	sizeX = this->ui.Viewer_cad_RS->width();	sizeY = this->ui.Viewer_cad_RS->height();
+	//m_RelalSensePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RS->winId()), sizeX, sizeY);
 }
 
 void IOModule::resizeEvent(QResizeEvent * event)
@@ -550,11 +560,14 @@ void IOModule::slotAlignBtnClicked()
 }
 
 
-void IOModule::CapColBtnClicked()
+void IOModule::slotCapColBtnClicked()
 {}
 
-void IOModule::CapDepBtnClicked()
+void IOModule::slotCapDepBtnClicked()
 {}
 
-void IOModule::RecordBtnClicked() 
-{}
+void IOModule::slotRecordBtnClicked()
+{
+	//std::cout << "@@";
+	//m_RelalSensePreviewer->drawStream();
+}

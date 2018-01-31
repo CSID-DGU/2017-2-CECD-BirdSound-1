@@ -16,7 +16,7 @@
 
 #include "MeshPreview.h"
 #include "ImagePreview.h"
-
+#include"RelalSensePreviewer.h"
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -51,7 +51,8 @@ public:
 	ImagePreview*	m_ImagePreviewer;
 	int				m_IsImageViewer;
 
-
+	RelalSensePreviewer*					m_RelalSensePreviewer;
+	int										m_IsRelalSensePreviewer;
 	void InitializeVariables();
 	void InitializeScene();
 	void InitializeUi();
@@ -124,9 +125,9 @@ public slots:
 
 
 	//rs slot
-	void CapColBtnClicked();
-	void CapDepBtnClicked();
-	void RecordBtnClicked();
+	void slotCapColBtnClicked();
+	void slotCapDepBtnClicked();
+	void slotRecordBtnClicked();
 	
 private:
 	void loadCadBtn(int frameNumber);

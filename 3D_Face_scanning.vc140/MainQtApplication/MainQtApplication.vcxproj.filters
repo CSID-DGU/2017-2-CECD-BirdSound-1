@@ -107,6 +107,9 @@
     <ClCompile Include="STLImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RelalSensePreviewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">
@@ -175,6 +178,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="STLImport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RelalSensePreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
