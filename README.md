@@ -26,5 +26,6 @@ Dental Division S/W Team Deputy General Manager, Yonghyun Lim
 ## Runing Environment  
 - Only Window10, 64bit
 - **위의 Qt 5.9.1을 먼저 설치해 주세요**
-- 아래의 파일을 다운로드&압축해제 후, 프로젝트 폴더 root에 덮어쓰기 해주세요.  
+- 아래의 파일을 다운로드&압축해제 후, 프로젝트 폴더 root에 덮어쓰기 해주세요.
+- intel compiler c++ (https://software.intel.com/en-us/qualify-for-free-software/student)
 [\[☞ additional file v8 다운로드\]](http://blog.njcells.net:8080/index.php/s/nDTNYEpb0yvEJrw)
