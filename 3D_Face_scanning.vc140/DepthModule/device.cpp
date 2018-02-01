@@ -61,7 +61,7 @@ Device::Device(string serialNumber) {
 	for (auto&& sp : stream_profiles)
 	{
 		auto streamType = m_streamName2Enum(sp.stream_name());
-		m_streoUniqueStreams[]
+		m_streoUniqueStreams[streamType][]
 		//m_streoUniqueStreams[std::make_pair(sp.stream_type(), sp.stream_index())]++;
 	}
 
