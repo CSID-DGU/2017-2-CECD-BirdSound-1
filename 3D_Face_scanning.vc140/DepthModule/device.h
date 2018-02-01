@@ -25,35 +25,72 @@
 #include <string>
 #include <iomanip>
 #include <cstdint>
-
-
+#include <utility>
+#include <map>
 
 namespace realsense {
 	using namespace std;
 	using namespace rs2;
 	
 	//raw to other formating
-	
-	string getFirstSerial() {
-		return getSerial(0);
-	}
+	string getFirstSerial();
+	string getSerial(int devIdx);
 
-	string getSerial(int devIdx) {
-		if (devIdx < 0) return;
-		rs2::context ctx;
-		if (ctx.query_devices().size < devIdx) return;
-		rs2::device dev = ctx.query_devices()[devIdx];
-		string serial_number = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
-		return serial_number;
-	}
+	enum RS_400_SENSOR {
+		STEREO_MODULE,
+		RGB_CAMERA
+	};
 
 	enum RS_400_STREAM_TYPE
 	{
 		RS400_STREAM_DEPTH,
 		RS400_STREAM_INFRARED,
+		RS400_STREAM_INFRARED1,
 		RS400_STREAM_INFRARED2,
 		RS400_STREAM_COLOR,
 		RS400_STREAM_COUNT
+	};
+
+	enum RS_400_FORMAT {
+		RAW16,
+		Y16,
+		Y8,
+		BGRA8,
+		RGBA8,
+		BGR8,
+		RGB8,
+		YUYV,
+		UYVY,
+
+	};
+	enum class RS_400_DEPTH_RESOLUTION {
+		R1280_720,
+		R848_480,
+		R640_480,
+		R640_360,
+		R480_270,
+		R424_240
+	};
+
+	enum RS_400_RESOLUTION {
+		R1920_1080,
+		R1280_720,
+		R960_540,
+		R848_480,
+		R640_480,
+		R640_360,
+		R480_270,
+		R484_480,
+		R424_240,
+		R320_240,
+		R320_180
+	};
+
+	enum RS_400_FPS {
+		HZ6,
+		HZ15,
+		HZ30,
+		HZ60
 	};
 
 	enum GVD_FIELDS
@@ -75,6 +112,14 @@ namespace realsense {
 	class Device {
 	public:
 		Device(string serialNumber);
+		void printDeviceInfo();
+		void printSensorInfo();
+		void selectSensorAndStream();
+		void Device::startStreaming(int streamProp);
+		void capture();
+		void stopStreaming();
+		/******************************/
+
 		camera_info InitializeCamera(string serial_number);
 		bool SetMediaMode(int width, int height, int frameRate, int colorWidth, int colorHeight, bool enableColor);
 		bool GetProfile(rs2::stream_profile& profile, rs2_stream stream, int width, int height, int fps, int index);
@@ -85,17 +130,33 @@ namespace realsense {
 		void StartCapture(std::function<void(const void *leftImage, const void *rightImage, const void *depthImage, const uint64_t timeStamp)> callback);
 		auto GetRawImage(RS_400_STREAM_TYPE streamType, rs2_format format);
 		
+
+
+
 		camera_info info;
 		std::uint8_t* leftImage;
 		std::uint8_t* rightImage;
 		std::uint8_t* colorImage;
 		std::uint8_t* depthImage;
+
+		/******************************/
 	private:
+		RS_400_STREAM_TYPE m_streamName2Enum(string streamName);
+		
 		rs2::context* m_context;
 		rs2::device m_device;
-		rs2::sensor m_depthSensor;
+		vector<rs2::sensor> m_sensors;
+		rs2::sensor m_stereoSensor;
 		rs2::sensor m_colorSensor;
+		std::vector<std::vector<map<int, rs2::stream_profile>>> m_streoUniqueStreams;
+		//map<std::pair<rs2_stream, int>, int> m_streoUniqueStreams;
+		std::vector<std::vector<map<int, rs2::stream_profile>>> m_colorUniqueStreams;
 
+		rs2::frame_queue m_depthFrameQueue;
+		rs2::frame_queue m_colorFrameQueue;
+		RS_400_SENSOR m_selectedSensor;
+		RS_400_STREAM_TYPE m_selectedStream;
+		/************************/
 		std::function<void(const void *leftImage, const void *rightImage, const void *colorImage, const uint64_t timeStamp)> callback;
 		std::vector<rs2::stream_profile> depthProfiles;
 		std::vector<rs2::stream_profile> colorProfile;
@@ -123,12 +184,6 @@ namespace realsense {
 
 	};
 }
-
-
-
-class RS400Device{
-
-};
 
 
 #endif

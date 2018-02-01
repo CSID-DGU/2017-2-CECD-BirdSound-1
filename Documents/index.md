@@ -36,4 +36,35 @@ typedef struct rs2_extrinsics
 } rs2_extrinsics;
 ```
 
+* 센서 제어  
+
+```  
+using namsepace rs2;
+
+context* ctx = new context();
+device_list dev_list = ctx.query_devices();
+device dev = dev_list[0];
+
+if(device.is<rs400::advanced_mode>) {
+  rs400::advanced_mode advanced = device.as<rs400::advanced_mode>();
+  if(advanced.is_enabled()) {
+    advanced.toggle_advanced_mode(true);
+    delete ctx;
+    ctx = new(context);
+    device_list = ctx.query_devices();
+    dev = dev_list[0];
+  }
+}
+
+vector<sensors> = device.query_sensors();
+
+sensor sens1 = sensors[0];
+sensor sens2 = sensors[1];
+
+
+
+
+
+```
+
 * [rs_camera_info](https://github.com/IntelRealSense/librealsense/blob/ba01147d65db16fdf4da36a3e718fe81c8421034/include/librealsense2/h/rs_sensor.h#L22)

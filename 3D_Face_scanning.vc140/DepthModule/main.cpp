@@ -6,6 +6,7 @@ using namespace realsense;
 int main(void) {
 	string devSerialNumber = getFirstSerial();
 	Device* device = new Device(devSerialNumber);
-	device->
-
+	device->printDeviceInfo();
+	device->printSensorInfo();
+	
 }
