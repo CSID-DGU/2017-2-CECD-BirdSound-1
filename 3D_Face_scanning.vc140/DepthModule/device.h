@@ -52,9 +52,9 @@ namespace realsense {
 	enum RS_400_STREAM_TYPE
 	{
 		RS400_STREAM_DEPTH, //Only Z16 format
-		RS400_STREAM_INFRARED, 
-		RS400_STREAM_INFRARED1, //Only Y8, Y16 format
-		RS400_STREAM_INFRARED2, //Only Y8, Y16 format
+		RS400_STREAM_INFRARED, //LR image
+		RS400_STREAM_INFRARED1, //L image //Only Y8, Y16 format
+		RS400_STREAM_INFRARED2, //R image //Only Y8, Y16 format
 		RS400_STREAM_COLOR,
 		RS400_STREAM_COUNT
 	};
@@ -116,9 +116,9 @@ namespace realsense {
 		void printDeviceInfo();
 		void printSensorInfo();
 		void selectSensorAndStreamProps();
-		void Device::startStreaming(rs2::stream_profile& stream_profile);
-		void capture();
-		void stopStreaming();
+		void startStreaming(rs2::stream_profile& stream_profile);
+		rs2::frame capture(RS_400_STREAM_TYPE);
+		void stopStreaming(RS_400_SENSOR);
 		/******************************/
 
 //		camera_info InitializeCamera(string serial_number);
@@ -155,10 +155,14 @@ namespace realsense {
 		std::map<int, std::map<int, pair<int, rs2::stream_profile>>> m_streoUniqueStreams;
 		std::map<int, std::map<int, pair<int, rs2::stream_profile>>> m_colorUniqueStreams;
 
+		/*Frame Queue가 Stream Type 만큼 4개 있어야함. (Depth, IR1, IR2, IR)*/
 		rs2::frame_queue m_depthFrameQueue;
+		rs2::frame_queue m_ir_FrameQueue;
+		rs2::frame_queue m_ir1_FrameQueue;
+		rs2::frame_queue m_ir2_FrameQueue;
 		rs2::frame_queue m_colorFrameQueue;
 		RS_400_SENSOR m_selectedSensor;
-		int m_selectedStreamProps;
+
 		/************************/
 		std::function<void(const void *leftImage, const void *rightImage, const void *colorImage, const uint64_t timeStamp)> callback;
 		std::vector<rs2::stream_profile> depthProfiles;

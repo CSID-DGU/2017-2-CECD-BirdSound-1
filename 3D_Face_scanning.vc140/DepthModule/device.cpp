@@ -166,49 +166,71 @@ void Device::printSensorInfo() {
 	
 }
 
+//help function...
 void Device::selectSensorAndStreamProps() {
 	// Select "RGB Camera" Sensor
 	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
 
 	// Select "StreamType" and "Resolution - Format - FPS"
 	// ex: [RS400_STREAM_COLOR][1920x1080-BGR8-30Hz]
-	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][453].second);
+	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][451].second);
 
 }
 
-/**
- * 짜다 만거지만, Open CV 로 스트림 뽑아내는거
-
-*/
 void Device::startStreaming(rs2::stream_profile& stream_profile) {
-
-	if (m_selectedSensor == RS_400_SENSOR::RGB_CAMERA) {
-		m_colorSensor.open(stream_profile);
-		m_colorSensor.start([&](rs2::frame f) {
-
-			//std::cout << "This line be printed every frame!" << std::endl;
-			m_depthFrameQueue.enqueue(f);
-		});
-		rs2::frame _lastFrame;
-		while (1) {
-			
-			rs2::frame f = m_depthFrameQueue.wait_for_frame();
-			cv::Mat image(cv::Size(640, 480), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
-			cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-			cv:: imshow("namedWindow", image);
-			cv::waitKey(1);
-
-
-		};
-		
+	RS_400_STREAM_TYPE streamType = m_stream2Enum(stream_profile.stream_name());
+	switch (streamType){
+	case RS400_STREAM_DEPTH: {
+		m_stereoSensor.open(stream_profile);
+		m_stereoSensor.start([&](rs2::frame f) {m_depthFrameQueue.enqueue(f);});
 	}
-
-
-	else if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
-
+	case RS400_STREAM_INFRARED: {
+		m_stereoSensor.open(stream_profile);
+		m_stereoSensor.start([&](rs2::frame f) {m_ir_FrameQueue.enqueue(f);});
+	}
+	case RS400_STREAM_INFRARED1: {
+		m_stereoSensor.open(stream_profile);
+		m_stereoSensor.start([&](rs2::frame f) {m_ir1_FrameQueue.enqueue(f); });
+	}
+	case RS400_STREAM_INFRARED2: {
+		m_stereoSensor.open(stream_profile);
+		m_stereoSensor.start([&](rs2::frame f) {m_ir2_FrameQueue.enqueue(f); });
+	}
+	case RS400_STREAM_COLOR: {
+		m_colorSensor.open(stream_profile);
+		m_colorSensor.start([&](rs2::frame f) {m_colorFrameQueue.enqueue(f); });
+	}
 	}
 }
 
+void Device::stopStreaming(RS_400_SENSOR sensorName) {
+	if (sensorName == STEREO_MODULE) {
+		m_stereoSensor.stop();
+	}
+	else if (sensorName == RGB_CAMERA) {
+		m_colorSensor.stop();
+	}
+}
+
+rs2::frame Device::capture(RS_400_STREAM_TYPE streamType) {
+	switch (streamType) {
+	case RS400_STREAM_DEPTH: {
+		return m_depthFrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_INFRARED: {
+		return m_ir_FrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_INFRARED1: {
+		return m_ir1_FrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_INFRARED2: {
+		return m_ir2_FrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_COLOR: {
+		return m_colorFrameQueue.wait_for_frame();
+	}
+	}
+}
 
 RS_400_STREAM_TYPE Device::m_stream2Enum(string streamName) {
 	if (streamName == "Infrared") {
