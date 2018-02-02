@@ -32,6 +32,7 @@
 
 //스트림 확인을 위한 cv 예제
 #include <opencv/cv.hpp>
+#include <opencv/highgui.h>
 
 //
 

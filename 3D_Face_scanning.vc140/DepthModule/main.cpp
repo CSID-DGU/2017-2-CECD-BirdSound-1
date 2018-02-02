@@ -9,4 +9,5 @@ int main(void) {
 	device->printDeviceInfo();
 	//device->printSensorInfo();
 	device->selectSensorAndStreamProps();
+
 }

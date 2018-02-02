@@ -35,7 +35,7 @@ Device::Device(string serialNumber) {
 	}
 	
 	//check is advanced?
-	if (m_device.is<rs400::advanced_mode>()){
+	/*if (m_device.is<rs400::advanced_mode>()){
 		rs400::advanced_mode advanced = m_device.as<rs400::advanced_mode>();
 		if (advanced.is_enabled()) {
 			advanced.toggle_advanced_mode(true);
@@ -48,7 +48,7 @@ Device::Device(string serialNumber) {
 				}
 			}
 		}
-	}
+	}*/
 
 	//sensor catch
 	m_sensors = m_device.query_sensors();
@@ -172,7 +172,7 @@ void Device::selectSensorAndStreamProps() {
 
 	// Select "StreamType" and "Resolution - Format - FPS"
 	// ex: [RS400_STREAM_COLOR][1920x1080-BGR8-30Hz]
-	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][53].second);
+	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][453].second);
 
 }
 
@@ -185,20 +185,25 @@ void Device::startStreaming(rs2::stream_profile& stream_profile) {
 	if (m_selectedSensor == RS_400_SENSOR::RGB_CAMERA) {
 		m_colorSensor.open(stream_profile);
 		m_colorSensor.start([&](rs2::frame f) {
-			MUTEX_LOCK(&m_mutex);
-			std::cout << "This line be printed every frame!" << std::endl;
-			m_depthFrameQueue.enqueue(move(f));
-			MUTEX_UNLOCK(&m_mutex);
-		});
 
+			//std::cout << "This line be printed every frame!" << std::endl;
+			m_depthFrameQueue.enqueue(f);
+		});
+		rs2::frame _lastFrame;
 		while (1) {
-			std::cout << "frame emit" << endl;
+			
 			rs2::frame f = m_depthFrameQueue.wait_for_frame();
-			cv::Mat image(cv::Size(1920, 1080), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
-			cv::imshow("CV Video Client", image);
+			cv::Mat image(cv::Size(640, 480), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
+			cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
+			cv:: imshow("namedWindow", image);
+			cv::waitKey(1);
+
 
 		};
+		
 	}
+
+
 	else if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
 
 	}
