@@ -4,6 +4,7 @@
 #include "librealsense2\rs.hpp"
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include "../DepthModule/device.h"
 
 using namespace std;
 using namespace cv;
@@ -69,7 +70,13 @@ using namespace cv;
 int main(int argc, char *argv[])
 {
 	
-	
+
+	string devSerialNumber = getFirstSerial();
+	Device* device = new Device(devSerialNumber);
+	device->printDeviceInfo();
+	//device->printSensorInfo();
+	device->selectSensorAndStreamProps();
+
 	/*while (1) {
 		CvMat test;
 		Mat frame;

@@ -7,6 +7,6 @@ int main(void) {
 	string devSerialNumber = getFirstSerial();
 	Device* device = new Device(devSerialNumber);
 	device->printDeviceInfo();
-	device->printSensorInfo();
-	
+	//device->printSensorInfo();
+	device->selectSensorAndStreamProps();
 }

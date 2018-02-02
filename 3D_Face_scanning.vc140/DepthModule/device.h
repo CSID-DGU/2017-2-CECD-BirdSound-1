@@ -16,6 +16,7 @@
 ("pthread_mutex_unlock failed")
 #endif
 
+
 //#define STB_IMAGE_WRITE_IMPLEMENTATION
 //#include "stb_image_write.h"
 #include "common.h"
@@ -27,6 +28,12 @@
 #include <cstdint>
 #include <utility>
 #include <map>
+
+
+//스트림 확인을 위한 cv 예제
+#include <opencv/cv.hpp>
+
+//
 
 namespace realsense {
 	using namespace std;
@@ -43,10 +50,10 @@ namespace realsense {
 
 	enum RS_400_STREAM_TYPE
 	{
-		RS400_STREAM_DEPTH,
-		RS400_STREAM_INFRARED,
-		RS400_STREAM_INFRARED1,
-		RS400_STREAM_INFRARED2,
+		RS400_STREAM_DEPTH, //Only Z16 format
+		RS400_STREAM_INFRARED, 
+		RS400_STREAM_INFRARED1, //Only Y8, Y16 format
+		RS400_STREAM_INFRARED2, //Only Y8, Y16 format
 		RS400_STREAM_COLOR,
 		RS400_STREAM_COUNT
 	};
@@ -61,15 +68,7 @@ namespace realsense {
 		RGB8,
 		YUYV,
 		UYVY,
-
-	};
-	enum class RS_400_DEPTH_RESOLUTION {
-		R1280_720,
-		R848_480,
-		R640_480,
-		R640_360,
-		R480_270,
-		R424_240
+		Z16
 	};
 
 	enum RS_400_RESOLUTION {
@@ -80,7 +79,6 @@ namespace realsense {
 		R640_480,
 		R640_360,
 		R480_270,
-		R484_480,
 		R424_240,
 		R320_240,
 		R320_180
@@ -89,8 +87,10 @@ namespace realsense {
 	enum RS_400_FPS {
 		HZ6,
 		HZ15,
+		HZ25,
 		HZ30,
-		HZ60
+		HZ60,
+		HZ90
 	};
 
 	enum GVD_FIELDS
@@ -114,13 +114,13 @@ namespace realsense {
 		Device(string serialNumber);
 		void printDeviceInfo();
 		void printSensorInfo();
-		void selectSensorAndStream();
-		void Device::startStreaming(int streamProp);
+		void selectSensorAndStreamProps();
+		void Device::startStreaming(rs2::stream_profile& stream_profile);
 		void capture();
 		void stopStreaming();
 		/******************************/
 
-		camera_info InitializeCamera(string serial_number);
+//		camera_info InitializeCamera(string serial_number);
 		bool SetMediaMode(int width, int height, int frameRate, int colorWidth, int colorHeight, bool enableColor);
 		bool GetProfile(rs2::stream_profile& profile, rs2_stream stream, int width, int height, int fps, int index);
 		void EnableAutoExposure(float value);
@@ -141,21 +141,23 @@ namespace realsense {
 
 		/******************************/
 	private:
-		RS_400_STREAM_TYPE m_streamName2Enum(string streamName);
-		
+		RS_400_STREAM_TYPE m_stream2Enum(string streamName);
+		RS_400_FORMAT m_format2Enum(rs2_format format);
+		RS_400_RESOLUTION m_resolution2Enum(string resolution);
+		RS_400_FPS m_fps2Enum(int fps);
+
 		rs2::context* m_context;
 		rs2::device m_device;
 		vector<rs2::sensor> m_sensors;
 		rs2::sensor m_stereoSensor;
 		rs2::sensor m_colorSensor;
-		std::vector<std::vector<map<int, rs2::stream_profile>>> m_streoUniqueStreams;
-		//map<std::pair<rs2_stream, int>, int> m_streoUniqueStreams;
-		std::vector<std::vector<map<int, rs2::stream_profile>>> m_colorUniqueStreams;
+		std::map<int, std::map<int, pair<int, rs2::stream_profile>>> m_streoUniqueStreams;
+		std::map<int, std::map<int, pair<int, rs2::stream_profile>>> m_colorUniqueStreams;
 
 		rs2::frame_queue m_depthFrameQueue;
 		rs2::frame_queue m_colorFrameQueue;
 		RS_400_SENSOR m_selectedSensor;
-		RS_400_STREAM_TYPE m_selectedStream;
+		int m_selectedStreamProps;
 		/************************/
 		std::function<void(const void *leftImage, const void *rightImage, const void *colorImage, const uint64_t timeStamp)> callback;
 		std::vector<rs2::stream_profile> depthProfiles;
