@@ -1,7 +1,7 @@
 #pragma once
-
 #include <QtWidgets/QMainWindow>
 #include "ui_CalibrationModule.h"
+
 
 
 class CalibrationModule : public QMainWindow

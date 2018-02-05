@@ -10,9 +10,17 @@ int main(void) {
 	//device->printSensorInfo();
 	device->selectSensorAndStreamProps();
 	
-	while (1) {
+	/*while (1) {
 		auto f = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 		cv::Mat image(cv::Size(640, 480), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
+		cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
+		cv::imshow("namedWindow", image);
+		cv::waitKey(1);
+	}*/
+
+	while (1) {
+		auto f = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
+		cv::Mat image(cv::Size(640, 480), CV_8U, (void*)f.get_data(), cv::Mat::AUTO_STEP);
 		cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
 		cv::imshow("namedWindow", image);
 		cv::waitKey(1);

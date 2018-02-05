@@ -43,6 +43,11 @@ namespace realsense {
 	//raw to other formating
 	string getFirstSerial();
 	string getSerial(int devIdx);
+	void ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output);
+	void ConvertYUY2ToLuminance8(const uint8_t* image, int width, int height, uint8_t* output);
+	void ConvertLuminance16ToLuminance8(const uint16_t* image, int width, int height, uint8_t* output);
+
+
 
 	enum RS_400_SENSOR {
 		STEREO_MODULE,
@@ -119,9 +124,8 @@ namespace realsense {
 		void startStreaming(rs2::stream_profile& stream_profile);
 		rs2::frame capture(RS_400_STREAM_TYPE);
 		void stopStreaming(RS_400_SENSOR);
-		/******************************/
 
-//		camera_info InitializeCamera(string serial_number);
+		/*camera_info InitializeCamera(string serial_number);
 		bool SetMediaMode(int width, int height, int frameRate, int colorWidth, int colorHeight, bool enableColor);
 		bool GetProfile(rs2::stream_profile& profile, rs2_stream stream, int width, int height, int fps, int index);
 		void EnableAutoExposure(float value);
@@ -129,10 +133,8 @@ namespace realsense {
 		void SetAeControl(unsigned int point);
 		void StartCapture();
 		void StartCapture(std::function<void(const void *leftImage, const void *rightImage, const void *depthImage, const uint64_t timeStamp)> callback);
-		auto GetRawImage(RS_400_STREAM_TYPE streamType, rs2_format format);
-		
-
-
+		auto GetRawImage(RS_400_STREAM_TYPE streamType, rs2_format format);*/
+	
 
 		camera_info info;
 		std::uint8_t* leftImage;
@@ -140,12 +142,16 @@ namespace realsense {
 		std::uint8_t* colorImage;
 		std::uint8_t* depthImage;
 
-		/******************************/
 	private:
 		RS_400_STREAM_TYPE m_stream2Enum(string streamName);
 		RS_400_FORMAT m_format2Enum(rs2_format format);
 		RS_400_RESOLUTION m_resolution2Enum(string resolution);
 		RS_400_FPS m_fps2Enum(int fps);
+		/*std::function<void(const void *leftImage, const void *rightImage, const void *colorImage, const uint64_t timeStamp)> callback;
+		std::vector<rs2::stream_profile> depthProfiles;
+		std::vector<rs2::stream_profile> colorProfile;
+		std::unique_ptr<uint16_t[]> lrImage[2];*/
+
 
 		rs2::context* m_context;
 		rs2::device m_device;
@@ -154,8 +160,6 @@ namespace realsense {
 		rs2::sensor m_colorSensor;
 		std::map<int, std::map<int, pair<int, rs2::stream_profile>>> m_streoUniqueStreams;
 		std::map<int, std::map<int, pair<int, rs2::stream_profile>>> m_colorUniqueStreams;
-
-		/*Frame Queue가 Stream Type 만큼 4개 있어야함. (Depth, IR1, IR2, IR)*/
 		rs2::frame_queue m_depthFrameQueue;
 		rs2::frame_queue m_ir_FrameQueue;
 		rs2::frame_queue m_ir1_FrameQueue;
@@ -163,13 +167,7 @@ namespace realsense {
 		rs2::frame_queue m_colorFrameQueue;
 		RS_400_SENSOR m_selectedSensor;
 
-		/************************/
-		std::function<void(const void *leftImage, const void *rightImage, const void *colorImage, const uint64_t timeStamp)> callback;
-		std::vector<rs2::stream_profile> depthProfiles;
-		std::vector<rs2::stream_profile> colorProfile;
-		std::unique_ptr<uint16_t[]> lrImage[2];
-
-		std::unique_ptr<uint8_t[]> m_grayImage;
+		/*std::unique_ptr<uint8_t[]> m_grayImage;
 		bool isAdvanced;
 		int m_width;
 		int m_height;
@@ -181,14 +179,12 @@ namespace realsense {
 		uint64_t ts;
 		bool captureStarted;
 		bool stopProcessFrame;
-		bool bColorEnabled;
+		bool bColorEnabled;*/
 		#ifdef _WIN32
 			CRITICAL_SECTION m_mutex;
 		#else
 			pthread_mutex_t m_mutex;
 		#endif
-		
-
 	};
 }
 

@@ -15,6 +15,91 @@ string realsense::getSerial(int devIdx) {
 	return serial_number;
 }
 
+void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output)
+{
+	int n = width*height;
+	auto src = image;
+	auto dst = output;
+	for (; n; n -= 16, src += 32)
+	{
+		int16_t y[16] = {
+			src[0], src[2], src[4], src[6],
+			src[8], src[10], src[12], src[14],
+			src[16], src[18], src[20], src[22],
+			src[24], src[26], src[28], src[30],
+		}, u[16] = {
+			src[1], src[1], src[5], src[5],
+			src[9], src[9], src[13], src[13],
+			src[17], src[17], src[21], src[21],
+			src[25], src[25], src[29], src[29],
+		}, v[16] = {
+			src[3], src[3], src[7], src[7],
+			src[11], src[11], src[15], src[15],
+			src[19], src[19], src[23], src[23],
+			src[27], src[27], src[31], src[31],
+		};
+		uint8_t r[16], g[16], b[16];
+			for (int i = 0; i < 16; i++)
+			{
+				int32_t c = y[i] - 16;
+				int32_t d = u[i] - 128;
+				int32_t e = v[i] - 128;
+				int32_t t;
+#define clamp(x) ((t=(x)) > 255 ? 255 : t < 0 ? 0 : t)
+				r[i] = clamp((298 * c + 409 * e + 128) >> 8);
+				g[i] = clamp((298 * c - 100 * d - 208 * e + 128) >> 8);
+				b[i] = clamp((298 * c + 516 * d + 128) >> 8);
+#undef clamp
+			}
+		uint8_t out[16 * 4] = {
+			r[0], g[0], b[0], 255, r[1], g[1], b[1], 255,
+			r[2], g[2], b[2], 255, r[3], g[3], b[3], 255,
+			r[4], g[4], b[4], 255, r[5], g[5], b[5], 255,
+			r[6], g[6], b[6], 255, r[7], g[7], b[7], 255,
+			r[8], g[8], b[8], 255, r[9], g[9], b[9], 255,
+			r[10], g[10], b[10], 255, r[11], g[11], b[11], 255,
+			r[12], g[12], b[12], 255, r[13], g[13], b[13], 255,
+			r[14], g[14], b[14], 255, r[15], g[15], b[15], 255,
+		};
+#ifdef _WIN32
+		memcpy_s((void *)dst, sizeof out, out, sizeof out);
+#else
+		memcpy((void *)dst, out, sizeof out);
+#endif
+		dst += sizeof out;
+	}
+}
+
+void realsense::ConvertYUY2ToLuminance8(const uint8_t* image, int width, int height, uint8_t* output)
+{
+	auto out = output;
+	auto in = image;
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j += 2)
+		{
+			*out++ = in[0];
+			*out++ = in[2];
+			in += 4;
+		}
+	}
+}
+
+void realsense::ConvertLuminance16ToLuminance8(const uint16_t* image, int width, int height, uint8_t* output)
+{
+	auto ptr = output;
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			uint8_t val = (uint8_t)(image[i * width + j] >> 8);
+			*ptr++ = val;
+		}
+	}
+}
+
+
+
 Device::Device(string serialNumber) {
 	#ifdef _WIN32
 	InitializeCriticalSection(&m_mutex);
@@ -167,13 +252,18 @@ void Device::printSensorInfo() {
 }
 
 //help function...
+//하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
 void Device::selectSensorAndStreamProps() {
 	// Select "RGB Camera" Sensor
+	//m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
 	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
 
 	// Select "StreamType" and "Resolution - Format - FPS"
-	// ex: [RS400_STREAM_COLOR][1920x1080-BGR8-30Hz]
+	// ex: [RS400_STREAM_COLOR][1920x1080-BGR8-30Hz
 	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][451].second);
+
+	// ex: IR_LEFT, 680x480-Y8-30hz
+	//startStreaming(m_streoUniqueStreams[RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1][423].second);
 
 }
 
@@ -183,22 +273,27 @@ void Device::startStreaming(rs2::stream_profile& stream_profile) {
 	case RS400_STREAM_DEPTH: {
 		m_stereoSensor.open(stream_profile);
 		m_stereoSensor.start([&](rs2::frame f) {m_depthFrameQueue.enqueue(f);});
+		break;
 	}
 	case RS400_STREAM_INFRARED: {
 		m_stereoSensor.open(stream_profile);
 		m_stereoSensor.start([&](rs2::frame f) {m_ir_FrameQueue.enqueue(f);});
+		break;
 	}
 	case RS400_STREAM_INFRARED1: {
 		m_stereoSensor.open(stream_profile);
 		m_stereoSensor.start([&](rs2::frame f) {m_ir1_FrameQueue.enqueue(f); });
+		break;
 	}
 	case RS400_STREAM_INFRARED2: {
 		m_stereoSensor.open(stream_profile);
 		m_stereoSensor.start([&](rs2::frame f) {m_ir2_FrameQueue.enqueue(f); });
+		break;
 	}
 	case RS400_STREAM_COLOR: {
 		m_colorSensor.open(stream_profile);
 		m_colorSensor.start([&](rs2::frame f) {m_colorFrameQueue.enqueue(f); });
+		break;
 	}
 	}
 }

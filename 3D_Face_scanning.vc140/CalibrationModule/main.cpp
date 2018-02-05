@@ -71,11 +71,11 @@ int main(int argc, char *argv[])
 {
 	
 
-	string devSerialNumber = getFirstSerial();
-	Device* device = new Device(devSerialNumber);
-	device->printDeviceInfo();
-	//device->printSensorInfo();
-	device->selectSensorAndStreamProps();
+	//string devSerialNumber = getFirstSerial();
+	//Device* device = new Device(devSerialNumber);
+	//device->printDeviceInfo();
+	////device->printSensorInfo();
+	//device->selectSensorAndStreamProps();
 
 	/*while (1) {
 		CvMat test;
@@ -123,6 +123,11 @@ int main(int argc, char *argv[])
 	rs2::pipeline pipe;
 	pipe.start(cfg);*/
 
+
+
+
+	
+	
 
 	
 	QApplication a(argc, argv);
