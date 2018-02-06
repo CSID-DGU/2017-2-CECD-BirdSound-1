@@ -71,7 +71,9 @@ public:
 	void MeshConstruct(vtkPoints *points, int saveType = 3);
 	/*save부분 미구현 추가할 것*/
 	void MeshConstructWithOMP(vtkPoints *point, int saveType=3, int ThreadSize=4);
+	void MeshConstructWithOMP1(vtkPoints *point, int saveType = 3, int ThreadSize = 4);
 	void MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType = 3, int ThreadSize = 4);
+
 	void viewRawStream();
 
 private:
@@ -85,7 +87,7 @@ private:
 
 	double getDistane(double *src, double *tar);
 	/*disp는 변위를 의미*/
-	void cellInsert(vtkCellArray *cell, int number, int index1, int index2, int index3,int disp=0);
+	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp=0);
 };
 
 #endif
