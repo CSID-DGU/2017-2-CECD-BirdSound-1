@@ -38,8 +38,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 	m_Mapper->SetInputData(m_PolyData);
 	m_Mapper->Update();
 
-	m_Actor->SetMapper(m_Mapper);//actor에 mapper을 set함. 
-	m_OrignActor->SetMapper(m_Mapper);//하나 더 만들어서 넣는다. 
+	m_Actor->SetMapper(m_Mapper);//actor에 mapper을 set함.  
 
 	if (m_IsTexture)
 		m_Actor->SetTexture(m_Texture);
@@ -58,10 +57,6 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 	//m_Actor->GetProperty()->SetEdgeColor();
 	m_Actor->Modified();
 
-	m_OrignActor->GetProperty()->SetInterpolationToGouraud();
-	m_OrignActor->GetProperty()->SetColor(1.0, 1.0, 1.0);
-	m_OrignActor->GetProperty()->BackfaceCullingOn();
-	m_OrignActor->Modified();
 
 	m_Renderer->AddActor(m_Actor);
 	m_Renderer->ResetCamera();
@@ -87,12 +82,12 @@ int MeshPreview::ReleaseModel()
 {
 	m_Renderer->RemoveActor(m_Actor);
 
-	if (m_OrignActor)
+	/*if (m_OrignActor)
 	{
 		m_OrignActor->Delete();
 		m_OrignActor = NULL;
 		m_OrignActor = vtkActor::New();
-	}
+	}*/
 	if (m_Actor)
 	{
 		m_Actor->Delete();
@@ -126,13 +121,6 @@ int MeshPreview::ReleaseModel()
 		m_ImageData = NULL;
 		m_ImageData = vtkImageData::New();
 	}
-
-	if (m_OrignActor)
-	{
-		m_OrignActor->Delete();
-		m_OrignActor = NULL;
-		m_OrignActor = vtkActor::New();
-	}
 	
 	
 	return 1;
@@ -165,7 +153,6 @@ int MeshPreview::InitializeVariables()
 	m_RenWin		= NULL;
 	m_IRen			= NULL;
 	m_3DStyle		= NULL;
-	m_OrignActor	= NULL;
 
 	m_MeshIO = new MeshIO;
 	m_ImageIO = new ImageIO;
@@ -181,7 +168,6 @@ int MeshPreview::InitializeVariables()
 	m_IRen			= vtkRenderWindowInteractor::New();
 	m_3DStyle		= vtkInteractorStyleTrackballCamera::New();
 
-	m_OrignActor	= vtkActor::New();
 	return 1;
 }
 
@@ -244,11 +230,7 @@ int MeshPreview::DestroyVariables()
 		m_3DStyle->Delete();
 		m_3DStyle = NULL;
 	}
-	if (m_OrignActor)
-	{
-		m_OrignActor->Delete();
-		m_OrignActor = NULL;
-	}
+
 	return 1;
 }
 

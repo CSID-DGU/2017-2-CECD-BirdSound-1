@@ -31,56 +31,8 @@ void LandMarkInteractorStyle::OnLeftButtonUp()
 	this->SetMotionFactor(1);
 }
 
-void LandMarkInteractorStyle::Delete()
-{
-	vtkActorCollection * actorCol = NULL;
 
-	if (this->GetDefaultRenderer())
-		actorCol = this->GetDefaultRenderer()->GetActors();
-
-
-	if (actorCol)
-	{
-		actorCol->InitTraversal();
-		const int loopSIZE = actorCol->GetNumberOfItems();
-		vtkActor *nextActor;
-
-		for (vtkIdType i = 0; i<loopSIZE; i++)
-		{
-			nextActor = actorCol->GetNextActor();
-			std::cout << i;
-			if (nextActor != mainActor)
-			{
-				this->GetDefaultRenderer()->RemoveActor(nextActor);
-				nextActor->GetMapper()->Delete();
-				nextActor->Delete();
-				nextActor = NULL;
-			}
-		}
-	}
-
-
-	if (LastPickedProperty) 
-	{ 
-		LastPickedProperty->Delete(); 
-		LastPickedProperty = NULL;
-	}
-	if (LastPickedActor) 
-	{
-		LastPickedActor->Delete(); 
-		LastPickedActor = NULL;
-	}
-	if (picker) 
-	{
-		picker->Delete();
-		picker = NULL;
-	}
-
-	if (this->GetDefaultRenderer() != NULL)
-		this->GetDefaultRenderer()->Render();
-}
-
-/**다시 load하기 위하여 멤버들을 Reset 한다. */
+/* mainActor을 제외한 모든 actor을 지운다.  */
 void LandMarkInteractorStyle::Reset()
 {
 	vtkActorCollection * actorCol = NULL;
@@ -95,16 +47,19 @@ void LandMarkInteractorStyle::Reset()
 		const int loopSIZE = actorCol->GetNumberOfItems();
 		vtkActor *nextActor;
 		
+		std::cout << loopSIZE << "\n";
 		for (vtkIdType i = 0;i<loopSIZE; i++)
 		{
 			nextActor = actorCol->GetNextActor();
-			std::cout << i;
-			if (nextActor != mainActor)
+			std::cout << i << "@#!@#!@#\n";
+			if (i >= 1)
 			{
+				std::cout << "deleted" << " " << i << "\n";
 				this->GetDefaultRenderer()->RemoveActor(nextActor);
 				nextActor->GetMapper()->Delete();
 				nextActor->Delete();
 				nextActor = NULL;
+				
 			}
 		}
 	}
@@ -117,7 +72,8 @@ void LandMarkInteractorStyle::Reset()
 
 	if (this->GetDefaultRenderer() != NULL)
 	{
-		this->GetDefaultRenderer()->Render();
+		this->GetDefaultRenderer()->Modified();
+		this->GetDefaultRenderer()->GetRenderWindow()->Render();
 	}
 	
 }

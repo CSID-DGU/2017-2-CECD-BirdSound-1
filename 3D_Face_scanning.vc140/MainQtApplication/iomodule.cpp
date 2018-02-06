@@ -151,6 +151,10 @@ void IOModule::DestroyVariables()
 		delete m_ImagePreviewer;
 		m_ImagePreviewer = NULL;
 	}
+
+	/*
+	land mark style 삭제하는 코드도 추가할 것.
+	*/
 }
 
 
@@ -185,7 +189,7 @@ void IOModule::loadCadBtn(int frameNumber)
 
 	int DataType = this->GetCADType(filename);
 
-	m_MeshLandmarkStyle[frameNumber - 1]->Reset();
+	m_MeshLandmarkStyle[frameNumber - 1]->Reset();//
 	
 
 	if (DataType != -1)this->LoadCADData(DataType, frameNumber, filename);
@@ -198,7 +202,9 @@ void IOModule::loadCadBtn(int frameNumber)
 void IOModule::LoadCADData(int type, int frameNum, QString filePath)
 {
 	if (m_IsMeshViewer[frameNum - 1])
+	{
 		m_MeshPreviewer[frameNum - 1]->ReleaseModel();
+	}
 	
 	m_MeshPreviewer[frameNum-1]->GetRenderWindow()->SetSize(ui.Viewer_cad_1->width(), ui.Viewer_cad_1->height());
 	if (type == CAD_TYPE_OBJ)
@@ -515,7 +521,7 @@ void IOModule::slotLandMarkBtn_3Clicked()
 void IOModule::ToOringBtn(int frameNumber)
 {
 	m_MeshLandmarkStyle[frameNumber-1]->Reset();
-	m_MeshPreviewer[frameNumber - 1]->ChangeToOrgin();
+	//m_MeshPreviewer[frameNumber - 1]->ChangeToOrgin();
 }
 void IOModule::slotToOrignBtn_1Clicked()
 {

@@ -29,6 +29,7 @@ public:
 	}
 
 };
+
 class LandMarkInteractorStyle : public vtkInteractorStyleTrackballCamera
 {
 public: 
@@ -43,7 +44,6 @@ public:
 	virtual void OnKeyPress();
 	virtual void OnLeftButtonUp();
 	void initialize();
-	void Delete();
 	void Reset();
 	void setRadis(vtkActor *_mainActor)
 	{

@@ -98,9 +98,6 @@
     <ClCompile Include="PNGImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qrc_iomodule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="STLExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

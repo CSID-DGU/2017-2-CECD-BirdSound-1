@@ -110,7 +110,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;..\..\$(Configuration)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -186,7 +186,6 @@
     <ClCompile Include="PLYImport.cpp" />
     <ClCompile Include="PNGExport.cpp" />
     <ClCompile Include="PNGImport.cpp" />
-    <ClCompile Include="qrc_iomodule.cpp" />
     <ClCompile Include="RelalSensePreviewer.cpp" />
     <ClCompile Include="STLExport.cpp" />
     <ClCompile Include="STLImport.cpp" />

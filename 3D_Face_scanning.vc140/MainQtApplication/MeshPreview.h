@@ -57,8 +57,8 @@ public:
 	vtkInteractorStyleTrackballCamera*				m_3DStyle;
 	vtkInteractorStyleTrackballCamera* Get3DStyle()	{ return m_3DStyle; }
 
-	vtkActor*										m_OrignActor;
-	vtkActor* GetOrignActor()						{ return m_OrignActor; }
+	//vtkActor*										m_OrignActor;
+	//vtkActor* GetOrignActor()						{ return m_OrignActor; }
 
 	void setStyle(vtkInteractorStyle *_style);
 	int InitializeVariables();
@@ -80,30 +80,18 @@ public:
 
 	void Rendering();
 	
-	void ChangeToOrgin()
-	{
-		m_RenWin->ClearInRenderStatus();
-		
-		if (m_Renderer != NULL)
-		{
-			m_Renderer->Delete();
-			m_Renderer = NULL;
-		}
-		m_Renderer = vtkRenderer::New();
-
-
-		m_Renderer->AddActor(m_OrignActor);
-		m_Renderer->ResetCamera();
-
-		m_RenWin->AddRenderer(m_Renderer);
-
-		Rendering();
-		m_IRen->SetRenderWindow(m_RenWin);
-		
-		m_IRen->SetInteractorStyle(m_3DStyle);
-		m_RenWin->SetInteractor(m_IRen);
-
-	
-	}
+	//void ChangeToOrgin()
+	//{
+	//
+	//	m_Renderer->RemoveActor(m_Actor);
+	//
+	//	m_Actor = m_OrignActor;
+	//	m_Renderer->AddActor(m_Actor);
+	//	
+	//	
+	//	//m_Renderer->ResetCamera();
+	//	m_Renderer->Modified();
+	//	m_Renderer->Render();
+	//}
 
 };
