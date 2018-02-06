@@ -260,6 +260,7 @@ void Device::printSensorInfo() {
 //하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
 void Device::selectSensorAndStreamProps() {
 
+	
 	/*size_t command_sensor;
 	size_t command_stream;
 	size_t command_code;

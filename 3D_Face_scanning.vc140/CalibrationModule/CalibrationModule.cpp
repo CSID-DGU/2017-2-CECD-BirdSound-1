@@ -82,7 +82,8 @@ void CalibrationModule::startStreaming(streamType st) {
 	device->selectSensorAndStreamProps();
 
 	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-	while (1) {
+	while (1) 
+	{
 		auto fColor = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 		auto fLeft = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
 		auto fRight = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
@@ -96,6 +97,8 @@ void CalibrationModule::startStreaming(streamType st) {
 		/*cv::imshow("namedWindow", leftImage);
 		cv::imshow("namedWindow", rightImage);*/
 		cv::waitKey(1);
+
+		
 		QImage color_image(colorImage.data, w, h, QImage::Format_RGB888);
 		QImage lq_image(leftImage.data, w, h, QImage::Format_Grayscale8);
 		QImage rq_image(rightImage.data, w, h, QImage::Format_Grayscale8);
