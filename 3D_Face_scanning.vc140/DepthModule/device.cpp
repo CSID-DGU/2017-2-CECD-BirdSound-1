@@ -109,6 +109,11 @@ Device::Device(string serialNumber) {
 	#endif
 	m_stereoSensor = nullptr;
 	m_colorSensor = nullptr;
+	m_colorStreamCheck = false;
+	m_depthStreamCheck = false;
+	m_irStreamCheck = false;
+	m_ir1StreamCheck = false;
+	m_ir2StreamCheck = false;
 
 	//set target device object
 	m_context = new context;
@@ -208,8 +213,7 @@ void Device::printDeviceInfo() {
 	for (rs2::sensor sensor : sensors)
 	{
 		if (sensor.supports(RS2_CAMERA_INFO_NAME)) {
-			cout << "    " << left << setw(30) << index++
-				<< ": \t" << sensor.get_info(RS2_CAMERA_INFO_NAME) << endl;
+			cout << "    " << index++ << " : " << sensor.get_info(RS2_CAMERA_INFO_NAME) << endl;
 		}
 
 	}
@@ -219,11 +223,12 @@ void Device::printSensorInfo() {
 	cout << "\n\nSensor detail Info" << endl;
 	auto sensors = m_sensors;
 	for (rs2::sensor sensor : sensors) {
+		cout << "\n [" << sensor.get_info(RS2_CAMERA_INFO_NAME) << "]" << endl;
 		for (int i = 0; i < static_cast<int>(RS2_OPTION_COUNT); i++)
 		{
 			rs2_option option_type = static_cast<rs2_option>(i);
 			//SDK enum types can be streamed to get a string that represents them
-			cout << "    " << left << setw(30) << i << ": \t" << option_type;
+			cout << "    " << i << " : " << option_type;
 
 			// To control an option, use the following api:
 
@@ -254,56 +259,149 @@ void Device::printSensorInfo() {
 //help function...
 //하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
 void Device::selectSensorAndStreamProps() {
-	// Select "RGB Camera" Sensor
-	//m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
+
+	/*size_t command_sensor;
+	size_t command_stream;
+	size_t command_code;
+	cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
+	cout << "1. 카메라 센서 \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
+	cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
+	cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;
+
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+		
+	cout << "스트리밍을 시작합니다..";
+	try {
+		if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
+			startStreaming(m_streoUniqueStreams[command_stream][command_code].second);
+			
+		}
+		else if (m_selectedSensor == RS_400_SENSOR::RGB_CAMERA) {
+			startStreaming(m_colorUniqueStreams[command_stream][command_code].second);
+		}
+	}
+	catch(...) {
+		cout << "잘못된 접근입니다. 코드표를 참조해주세요" << endl;
+	}*/
+	
+
+	m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
+
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
+	
 	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
+	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
 
-	// Select "StreamType" and "Resolution - Format - FPS"
-	// ex: [RS400_STREAM_COLOR][1920x1080-BGR8-30Hz
-	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][451].second);
-
-	// ex: IR_LEFT, 680x480-Y8-30hz
-	//startStreaming(m_streoUniqueStreams[RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1][423].second);
+	//Depth #0 (640x480 / Z16 / 30Hz)
+	//startStreaming(m_streoUniqueStreams[RS400_STREAM_DEPTH][493].second);
 
 }
 
 void Device::startStreaming(rs2::stream_profile& stream_profile) {
 	RS_400_STREAM_TYPE streamType = m_stream2Enum(stream_profile.stream_name());
-	switch (streamType){
-	case RS400_STREAM_DEPTH: {
-		m_stereoSensor.open(stream_profile);
-		m_stereoSensor.start([&](rs2::frame f) {m_depthFrameQueue.enqueue(f);});
-		break;
+	if ((streamType > 4)||(streamType<0)) {
+		throw std::invalid_argument("Invalid Stream profile");
 	}
-	case RS400_STREAM_INFRARED: {
-		m_stereoSensor.open(stream_profile);
-		m_stereoSensor.start([&](rs2::frame f) {m_ir_FrameQueue.enqueue(f);});
-		break;
+	
+	if ((m_selectedSensor == STEREO_MODULE)&&(m_depthStreamCheck || m_irStreamCheck || m_ir1StreamCheck || m_ir2StreamCheck)) {
+		//Multiple Streaming
+		vector <rs2::stream_profile> profile_set;
+		m_getProfile(profile_set);
+		profile_set.push_back(stream_profile);
+		stopStreaming(RS_400_SENSOR::STEREO_MODULE);
+		startStreaming(profile_set);
 	}
-	case RS400_STREAM_INFRARED1: {
-		m_stereoSensor.open(stream_profile);
-		m_stereoSensor.start([&](rs2::frame f) {m_ir1_FrameQueue.enqueue(f); });
-		break;
+	else {//Single Stream
+		switch (streamType) {
+		case RS400_STREAM_DEPTH: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_depthFrameQueue.enqueue(f); });
+			m_depthStreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_INFRARED: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_ir_FrameQueue.enqueue(f); });
+			m_irStreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_INFRARED1: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_ir1_FrameQueue.enqueue(f); });
+			m_ir1StreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_INFRARED2: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_ir2_FrameQueue.enqueue(f); });
+			m_ir2StreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_COLOR: {
+			m_colorSensor.open(stream_profile);
+			m_colorSensor.start([&](rs2::frame f) {m_colorFrameQueue.enqueue(f); });
+			m_colorStreamCheck = true;
+			break;
+		}
+		}
 	}
-	case RS400_STREAM_INFRARED2: {
-		m_stereoSensor.open(stream_profile);
-		m_stereoSensor.start([&](rs2::frame f) {m_ir2_FrameQueue.enqueue(f); });
-		break;
+}
+
+
+void Device::startStreaming(vector<rs2::stream_profile> &stream_profile) {
+	m_stereoSensor.open(stream_profile);
+	for (auto sp : stream_profile) {
+		RS_400_STREAM_TYPE spt = m_stream2Enum(sp.stream_name());
+		switch (spt) {
+		case RS400_STREAM_DEPTH: {m_depthStreamCheck = true;break;}
+		case RS400_STREAM_INFRARED: {m_irStreamCheck = true;break;}
+		case RS400_STREAM_INFRARED1: {m_ir1StreamCheck = true;break;}
+		case RS400_STREAM_INFRARED2: {m_ir2StreamCheck = true;break;}
+		}
 	}
-	case RS400_STREAM_COLOR: {
-		m_colorSensor.open(stream_profile);
-		m_colorSensor.start([&](rs2::frame f) {m_colorFrameQueue.enqueue(f); });
-		break;
-	}
-	}
+
+	m_stereoSensor.start([&](rs2::frame f) {
+		auto sp = f.get_profile();
+		RS_400_STREAM_TYPE streamType = m_stream2Enum(sp.stream_name());
+		switch (streamType) {
+		case RS400_STREAM_DEPTH: {
+			m_depthFrameQueue.enqueue(f);
+			break;
+		}
+		case RS400_STREAM_INFRARED: {
+			m_ir_FrameQueue.enqueue(f);
+			break;
+		}
+		case RS400_STREAM_INFRARED1: {
+			m_ir1_FrameQueue.enqueue(f);
+			break;
+		}
+		case RS400_STREAM_INFRARED2: {
+			m_ir2_FrameQueue.enqueue(f);
+			break;
+		}
+		}
+	});
+}
+
+void Device::stopStreaming(rs2::stream_profile& stream_profile) {
+
 }
 
 void Device::stopStreaming(RS_400_SENSOR sensorName) {
 	if (sensorName == STEREO_MODULE) {
 		m_stereoSensor.stop();
+		m_stereoSensor.close();
+		m_depthStreamCheck = false;
+		m_irStreamCheck = false;
+		m_ir1StreamCheck = false;
+		m_ir2StreamCheck = false;
 	}
 	else if (sensorName == RGB_CAMERA) {
 		m_colorSensor.stop();
+		m_colorSensor.close();
+		m_colorStreamCheck = false;
 	}
 }
 
@@ -324,6 +422,32 @@ rs2::frame Device::capture(RS_400_STREAM_TYPE streamType) {
 	case RS400_STREAM_COLOR: {
 		return m_colorFrameQueue.wait_for_frame();
 	}
+	}
+}
+
+void Device::EnableEmitter(float value) {
+	if (m_stereoSensor.supports(rs2_option::RS2_OPTION_EMITTER_ENABLED))
+	{
+		m_stereoSensor.set_option(rs2_option::RS2_OPTION_EMITTER_ENABLED, value);
+	}
+}
+
+
+/** 
+ * Private Function area.
+ */
+void Device::m_getProfile(vector<stream_profile> &profile_set) {
+	if (m_depthStreamCheck) {
+		profile_set.push_back(m_depthFrameQueue.wait_for_frame().get_profile());
+	}
+	if (m_irStreamCheck) {
+		profile_set.push_back(m_ir_FrameQueue.wait_for_frame().get_profile());
+	}
+	if (m_ir1StreamCheck) {
+		profile_set.push_back(m_ir1_FrameQueue.wait_for_frame().get_profile());
+	}
+	if (m_ir2StreamCheck) {
+		profile_set.push_back(m_ir2_FrameQueue.wait_for_frame().get_profile());
 	}
 }
 

@@ -77,37 +77,41 @@ void CalibrationModule::startStreaming(streamType st) {
 	string devSerialNumber = getFirstSerial();
 	Device* device = new Device(devSerialNumber);
 	device->printDeviceInfo();
+	device->EnableEmitter(0.0f);
 	//device->printSensorInfo();
 	device->selectSensorAndStreamProps();
 
+	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
 	while (1) {
-		auto f = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
-		cv::Mat image(cv::Size(640, 480), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
-		cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-		cv::imshow("namedWindow", image);
+		auto fColor = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+		auto fLeft = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
+		auto fRight = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
+		int w = 640, h = 480;
+
+		cv::Mat colorImage(cv::Size(w, h), CV_8UC3, (void*)fColor.get_data(), cv::Mat::AUTO_STEP);
+		cv::Mat leftImage(cv::Size(w, h), CV_8U, (void*)fLeft.get_data(), cv::Mat::AUTO_STEP);
+		cv::Mat rightImage(cv::Size(w, h), CV_8U, (void*)fRight.get_data(), cv::Mat::AUTO_STEP);
+
+		
+		/*cv::imshow("namedWindow", leftImage);
+		cv::imshow("namedWindow", rightImage);*/
 		cv::waitKey(1);
-		QImage q_image(image.data, 640, 480, QImage::Format_RGB888);
-		QPixmap buf = QPixmap::fromImage(q_image);
-		ui.rgbLabel->setPixmap(buf);
+		QImage color_image(colorImage.data, w, h, QImage::Format_RGB888);
+		QImage lq_image(leftImage.data, w, h, QImage::Format_Grayscale8);
+		QImage rq_image(rightImage.data, w, h, QImage::Format_Grayscale8);
+		QPixmap cbuf = QPixmap::fromImage(color_image);
+		QPixmap lbuf = QPixmap::fromImage(lq_image);
+		QPixmap rbuf = QPixmap::fromImage(rq_image);
+		ui.rgbLabel->setPixmap(cbuf);
+		ui.irLeftLabel->setPixmap(lbuf);
+		ui.irRightLabel->setPixmap(rbuf);
 		ui.rgbLabel->setScaledContents(true);
+		ui.irLeftLabel->setScaledContents(true);
+		ui.irRightLabel->setScaledContents(true);
 		ui.rgbLabel->show();
+		ui.irLeftLabel->show();
+		ui.irRightLabel->show();
 	}
-
-	
-
-	//QImage q_image; q_image.load("test.jpg");
-	
-
-	/*while (1) {
-		auto f = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
-		cv::Mat image(cv::Size(640, 480), CV_8U, (void*)f.get_data(), cv::Mat::AUTO_STEP);
-		cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-		cv::imshow("namedWindow", image);
-		cv::waitKey(1);
-	}*/
-
-	
-	
 }
 
 

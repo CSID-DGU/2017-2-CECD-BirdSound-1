@@ -48,7 +48,6 @@ namespace realsense {
 	void ConvertLuminance16ToLuminance8(const uint16_t* image, int width, int height, uint8_t* output);
 
 
-
 	enum RS_400_SENSOR {
 		STEREO_MODULE,
 		RGB_CAMERA
@@ -111,6 +110,7 @@ namespace realsense {
 		std::string serial;
 		std::string fw_ver;
 		std::string pid;
+		
 		bool isRGB;
 		bool isWide;
 	};
@@ -122,14 +122,18 @@ namespace realsense {
 		void printSensorInfo();
 		void selectSensorAndStreamProps();
 		void startStreaming(rs2::stream_profile& stream_profile);
+		void Device::startStreaming(vector<rs2::stream_profile> &stream_profile);
+		void Device::stopStreaming(rs2::stream_profile& stream_profile);
 		rs2::frame capture(RS_400_STREAM_TYPE);
+		void EnableEmitter(float value);
 		void stopStreaming(RS_400_SENSOR);
+
 
 		/*camera_info InitializeCamera(string serial_number);
 		bool SetMediaMode(int width, int height, int frameRate, int colorWidth, int colorHeight, bool enableColor);
 		bool GetProfile(rs2::stream_profile& profile, rs2_stream stream, int width, int height, int fps, int index);
 		void EnableAutoExposure(float value);
-		void EnableEmitter(float value);
+		
 		void SetAeControl(unsigned int point);
 		void StartCapture();
 		void StartCapture(std::function<void(const void *leftImage, const void *rightImage, const void *depthImage, const uint64_t timeStamp)> callback);
@@ -142,11 +146,13 @@ namespace realsense {
 		std::uint8_t* colorImage;
 		std::uint8_t* depthImage;
 
+
 	private:
 		RS_400_STREAM_TYPE m_stream2Enum(string streamName);
 		RS_400_FORMAT m_format2Enum(rs2_format format);
 		RS_400_RESOLUTION m_resolution2Enum(string resolution);
 		RS_400_FPS m_fps2Enum(int fps);
+		void m_getProfile(vector<stream_profile> &profile_set);
 		/*std::function<void(const void *leftImage, const void *rightImage, const void *colorImage, const uint64_t timeStamp)> callback;
 		std::vector<rs2::stream_profile> depthProfiles;
 		std::vector<rs2::stream_profile> colorProfile;
@@ -165,6 +171,11 @@ namespace realsense {
 		rs2::frame_queue m_ir1_FrameQueue;
 		rs2::frame_queue m_ir2_FrameQueue;
 		rs2::frame_queue m_colorFrameQueue;
+		bool m_colorStreamCheck;
+		bool m_depthStreamCheck;
+		bool m_irStreamCheck;
+		bool m_ir1StreamCheck;
+		bool m_ir2StreamCheck;
 		RS_400_SENSOR m_selectedSensor;
 
 		/*std::unique_ptr<uint8_t[]> m_grayImage;
