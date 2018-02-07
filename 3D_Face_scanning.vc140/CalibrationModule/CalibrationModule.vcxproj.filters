@@ -58,18 +58,6 @@
     <ClCompile Include="..\DepthModule\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rs400Device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomCalibration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomCalibrationWrapper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CalibrationManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="CalibrationModule.h">
@@ -87,21 +75,6 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rs400Device.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomCalibration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomCalibrationWrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CalibrationManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DS5CalibCoefficients.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

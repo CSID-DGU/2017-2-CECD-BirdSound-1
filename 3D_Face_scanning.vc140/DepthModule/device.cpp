@@ -1,743 +1,559 @@
 #include "device.h"
 
-void Realsense::init() {
-	rs2::context ctx;
-	this->deviceList = ctx.query_devices();
-	if (this->deviceList.size() == 0) {
-		//throw runtime_error("감지된 장치가 없습니다. 장치연결을 확인해주세요.");
-		cout << "감지된 장치가 없습니다. 장치연결을 확인해주세요." << endl;
-		exit(0);
-	}
-	this->deviceNum = this->deviceList.size();
-	cout << "장치연결을 확인하였습니다. 현재 장치의 갯수는 " << this->deviceNum << "개 입니다." << endl;
+using namespace realsense;
+
+string realsense::getFirstSerial() {
+	return realsense::getSerial(0);
 }
 
-void Realsense::info(int devNum) {
-	this->isInit();
-	if ((devNum < MIN_CAM_NUM - 1) || (devNum>this->deviceNum - 1)) {
-		string message = "연결된 장치의 Index값을 넘어섰습니다. 현재 장치의 갯수는 ";
-		message += to_string(this->deviceNum); message += "개 입니다. 입력된 index 값 : ";
-		message += to_string(devNum);
-		//throw runtime_error(message);
-		cout << message << endl;
-		exit(0);
+string realsense::getSerial(int devIdx) {
+	if (devIdx < 0) return "None";
+	rs2::context ctx;
+	if (ctx.query_devices().size() < devIdx) return "None";
+	rs2::device dev = ctx.query_devices()[devIdx];
+	string serial_number = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+	return serial_number;
+}
+
+void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output)
+{
+	int n = width*height;
+	auto src = image;
+	auto dst = output;
+	for (; n; n -= 16, src += 32)
+	{
+		int16_t y[16] = {
+			src[0], src[2], src[4], src[6],
+			src[8], src[10], src[12], src[14],
+			src[16], src[18], src[20], src[22],
+			src[24], src[26], src[28], src[30],
+		}, u[16] = {
+			src[1], src[1], src[5], src[5],
+			src[9], src[9], src[13], src[13],
+			src[17], src[17], src[21], src[21],
+			src[25], src[25], src[29], src[29],
+		}, v[16] = {
+			src[3], src[3], src[7], src[7],
+			src[11], src[11], src[15], src[15],
+			src[19], src[19], src[23], src[23],
+			src[27], src[27], src[31], src[31],
+		};
+		uint8_t r[16], g[16], b[16];
+			for (int i = 0; i < 16; i++)
+			{
+				int32_t c = y[i] - 16;
+				int32_t d = u[i] - 128;
+				int32_t e = v[i] - 128;
+				int32_t t;
+#define clamp(x) ((t=(x)) > 255 ? 255 : t < 0 ? 0 : t)
+				r[i] = clamp((298 * c + 409 * e + 128) >> 8);
+				g[i] = clamp((298 * c - 100 * d - 208 * e + 128) >> 8);
+				b[i] = clamp((298 * c + 516 * d + 128) >> 8);
+#undef clamp
+			}
+		uint8_t out[16 * 4] = {
+			r[0], g[0], b[0], 255, r[1], g[1], b[1], 255,
+			r[2], g[2], b[2], 255, r[3], g[3], b[3], 255,
+			r[4], g[4], b[4], 255, r[5], g[5], b[5], 255,
+			r[6], g[6], b[6], 255, r[7], g[7], b[7], 255,
+			r[8], g[8], b[8], 255, r[9], g[9], b[9], 255,
+			r[10], g[10], b[10], 255, r[11], g[11], b[11], 255,
+			r[12], g[12], b[12], 255, r[13], g[13], b[13], 255,
+			r[14], g[14], b[14], 255, r[15], g[15], b[15], 255,
+		};
+#ifdef _WIN32
+		memcpy_s((void *)dst, sizeof out, out, sizeof out);
+#else
+		memcpy((void *)dst, out, sizeof out);
+#endif
+		dst += sizeof out;
+	}
+}
+
+void realsense::ConvertYUY2ToLuminance8(const uint8_t* image, int width, int height, uint8_t* output)
+{
+	auto out = output;
+	auto in = image;
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j += 2)
+		{
+			*out++ = in[0];
+			*out++ = in[2];
+			in += 4;
+		}
+	}
+}
+
+void realsense::ConvertLuminance16ToLuminance8(const uint16_t* image, int width, int height, uint8_t* output)
+{
+	auto ptr = output;
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			uint8_t val = (uint8_t)(image[i * width + j] >> 8);
+			*ptr++ = val;
+		}
+	}
+}
+
+
+
+Device::Device(string serialNumber) {
+	#ifdef _WIN32
+	InitializeCriticalSection(&m_mutex);
+	#else
+	if (0 != pthread_mutex_init(&m_mutex, NULL)) throw
+		std::runtime_error("pthread_mutex_init failed");
+	#endif
+	m_stereoSensor = nullptr;
+	m_colorSensor = nullptr;
+	m_colorStreamCheck = false;
+	m_depthStreamCheck = false;
+	m_irStreamCheck = false;
+	m_ir1StreamCheck = false;
+	m_ir2StreamCheck = false;
+
+	//set target device object
+	m_context = new context;
+	device_list devices = m_context->query_devices();
+	for (size_t i = 0; i < devices.size(); i++) {
+		if (devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == serialNumber) {
+			m_device = devices[i];
+		}
+	}
+	
+	//check is advanced?
+	/*if (m_device.is<rs400::advanced_mode>()){
+		rs400::advanced_mode advanced = m_device.as<rs400::advanced_mode>();
+		if (advanced.is_enabled()) {
+			advanced.toggle_advanced_mode(true);
+			delete m_context;
+			m_context = new context;
+			devices = m_context->query_devices();
+			for (size_t i = 0; i < devices.size(); i++) {
+				if (devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == serialNumber) {
+					m_device = devices[i];
+				}
+			}
+		}
+	}*/
+
+	//sensor catch
+	m_sensors = m_device.query_sensors();
+	m_stereoSensor = m_sensors[0];
+	m_colorSensor = m_sensors[1];
+
+
+	//stream initialize per sensor
+	vector<rs2::stream_profile> stream_profiles = m_stereoSensor.get_stream_profiles();
+	for (auto&& sp : stream_profiles)
+	{
+		auto streamType = m_stream2Enum(sp.stream_name()); //Infrared 1, Infrared 2, Infrared, Depth, Color
+		
+		if (sp.is<rs2::video_stream_profile>()) //"Is" will test if the type tested is of the type given
+		{
+			// "As" will try to convert the instance to the given type
+			rs2::video_stream_profile video_stream_profile = sp.as<rs2::video_stream_profile>();
+
+			string t_resolution = to_string(video_stream_profile.width()) + "x" + to_string(video_stream_profile.height());
+			auto resolution = m_resolution2Enum(t_resolution);
+			auto format = m_format2Enum(video_stream_profile.format());
+			auto fps = m_fps2Enum(video_stream_profile.fps());
+			auto code = resolution * 100 + format * 10 + fps;
+			m_streoUniqueStreams[streamType][code] = pair<int, rs2::stream_profile>(sp.unique_id(), sp);
+		}
+		
+		//m_streoUniqueStreams[std::make_pair(sp.stream_type(), sp.stream_index())]++;
 	}
 
-	auto dev = this->deviceList[devNum];
+	stream_profiles = m_colorSensor.get_stream_profiles();
+	for (auto&& sp : stream_profiles)
+	{
+		auto streamType = m_stream2Enum(sp.stream_name()); //Infrared 1, Infrared 2, Infrared, Depth, Color
+
+		if (sp.is<rs2::video_stream_profile>()) //"Is" will test if the type tested is of the type given
+		{
+			// "As" will try to convert the instance to the given type
+			rs2::video_stream_profile video_stream_profile = sp.as<rs2::video_stream_profile>();
+
+			string t_resolution = to_string(video_stream_profile.width()) + "x" + to_string(video_stream_profile.height());
+			auto resolution = m_resolution2Enum(t_resolution);
+			auto format = m_format2Enum(video_stream_profile.format());
+			auto fps = m_fps2Enum(video_stream_profile.fps());
+			auto code = resolution * 100 + format * 10 + fps;
+			m_colorUniqueStreams[streamType][code] = pair<int, rs2::stream_profile>(sp.unique_id(), sp);
+		}
+		//m_colorUniqueStreams[std::make_pair(sp.stream_type(), sp.stream_index())]++;
+	}
+
+
+	//device info record
+	info.name = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_NAME);
+	info.pid = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_PRODUCT_ID);
+	info.serial = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_SERIAL_NUMBER);
+	info.fw_ver = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_FIRMWARE_VERSION);
+
+}
+
+void Device::printDeviceInfo() {
 	cout << " Device info: \n";
 	for (auto j = 0; j < RS2_CAMERA_INFO_COUNT; ++j)
 	{
 		auto param = static_cast<rs2_camera_info>(j);
-		if (dev.supports(param))
+		if (m_device.supports(param))
 			cout << "    " << left << setw(30) << rs2_camera_info_to_string(rs2_camera_info(param))
-			<< ": \t" << dev.get_info(param) << endl;
+			<< ": \t" << m_device.get_info(param) << endl;
 	}
-	//스트리밍 확인 
-
-
-
-}
-
-void Realsense::startStreaming(int devNum, int streamType) {
-	this->isInit();
-	auto dev = this->deviceList[devNum];
-	string serial_number = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
-
-	//config를 통해 해당 카메라만 제어함.
-	//https://github.com/IntelRealSense/librealsense/blob/master/include/librealsense2/hpp/rs_pipeline.hpp#L118 참조
-	rs2::config c;
-	c.enable_device(serial_number);
-
-	//stream 의 종류 : RS2_STREAM_ANY, RS2_STREAM_DEPTH, RS2_STREAM_COLOR , RS2_STREAM_GPIO, RS2_STREAM_COUNT 등
-	//https://github.com/IntelRealSense/librealsense/blob/c8ee8fa1912b9297df13bfe097d527667fe0afba/include/librealsense2/h/rs_sensor.h#L37
-	if (streamType == color)
-		c.enable_stream(RS2_STREAM_COLOR);
-	else if (streamType == depth)
-		//c.enable_stream(RS2_STREAM_DEPTH);
-		c.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
-
-
-	rs2::pipeline pipe;
-	rs2::pipeline_profile profile = pipe.start(c);
-	this->pipe_map.emplace(devNum, unit{ {}, pipe, profile });
-
-	//throw notImplemented_error();
-}
-
-void Realsense::stopStreaming(int devNum, int streamType) {
-
-	this->isInit();
-	auto dev = this->deviceList[devNum];
-	string serial_number = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
-
-	rs2::config c;
-	c.enable_device(serial_number);
-
-	if (streamType == color)
-		c.disable_stream(RS2_STREAM_COLOR);
-	else if (streamType == depth)
-		c.disable_stream(RS2_STREAM_DEPTH);
-}
-
-rs2::frame Realsense::capture(int devNum, int streamType, int restNum) {
-	unit cam_unit = this->pipe_map[devNum];
-	this->restFrame(cam_unit, restNum);
-	rs2::frameset data = cam_unit.pipe.wait_for_frames();
-	rs2::frame frameData;
-	if (streamType == color) {
-		frameData = data.get_color_frame();
-	}
-	else if (streamType == depth) {
-		frameData = data.get_depth_frame();
-		//frameData = data.first(RS2_STREAM_DEPTH);
-	}
-	else return NULL;
-	return frameData;
-}
-
-std::vector<rs2::frame> Realsense::capture(int devNum, int streamType, int frameNum, int restNum) {
-	unit cam_unit = this->pipe_map[devNum];
-	this->restFrame(cam_unit, restNum);
-	rs2::frameset data = cam_unit.pipe.wait_for_frames();
-	std::vector<rs2::frame> frameData;
-	for (int i = 0; i < frameNum; i++) {
-		if (streamType == color) {
-			frameData.push_back(data.get_color_frame());
-		}
-		else if (streamType == depth) {
-			frameData.push_back(data.get_depth_frame());
-		}
-		else return frameData;
-		data = cam_unit.pipe.wait_for_frames();
-	}
-	return frameData;
-}
-
-std::string Realsense::saveImage(rs2::frame &frame, string filepath, int filetype) {
-	throw notImplemented_error();
-	rs2::colorizer color_map;
-
-	if (auto vf = frame.as<rs2::video_frame>())
+	
+	auto sensors = m_sensors;
+	cout << "\nSensor info: \n";
+	int index = 0;
+	for (rs2::sensor sensor : sensors)
 	{
-		auto stream = frame.get_profile().stream_type();
-		// Use the colorizer to get an rgb image for the depth stream
-		if (vf.is<rs2::depth_frame>()) vf = color_map(frame);
+		if (sensor.supports(RS2_CAMERA_INFO_NAME)) {
+			cout << "    " << index++ << " : " << sensor.get_info(RS2_CAMERA_INFO_NAME) << endl;
+		}
 
-		// Write images to disk
-		std::stringstream png_file;
-		png_file << "rs-save-to-disk-output-" << vf.get_profile().stream_name() << ".png";
-		//stbi_write_png(png_file.str().c_str(), vf.get_width(), vf.get_height(), vf.get_bytes_per_pixel(), vf.get_data(), vf.get_stride_in_bytes());
-		std::cout << "Saved " << png_file.str() << std::endl;
 	}
-	return "아직 미구현 입니다~";
 }
 
-vtkPoints* Realsense::frameToVtkPoints(rs2::frame &frame)
-{
-	rs2::pointcloud pc;
-	rs2::points rsPoints;
-	//cout << sizeof(frame);
-	rsPoints = pc.calculate(frame);
-	vtkPoints * vtkPoints = vtkPoints::New();
-	auto v = rsPoints.get_vertices();
-
-	std::cout << rsPoints.size() << " number of points exist!!\n";
-	for (auto i = 0; i < rsPoints.size(); i++)
-	{
-		//if (v[i].z != 0) 
-		if (v[i].z>1 || v[i].z<-1)
-			vtkPoints->InsertNextPoint(0, 0, 0);
-		else
+void Device::printSensorInfo() {
+	cout << "\n\nSensor detail Info" << endl;
+	auto sensors = m_sensors;
+	for (rs2::sensor sensor : sensors) {
+		cout << "\n [" << sensor.get_info(RS2_CAMERA_INFO_NAME) << "]" << endl;
+		for (int i = 0; i < static_cast<int>(RS2_OPTION_COUNT); i++)
 		{
-			vtkPoints->InsertNextPoint(v[i]);
+			rs2_option option_type = static_cast<rs2_option>(i);
+			//SDK enum types can be streamed to get a string that represents them
+			cout << "    " << i << " : " << option_type;
+
+			// To control an option, use the following api:
+
+			// First, verify that the sensor actually supports this option
+			if (sensor.supports(option_type))
+			{
+				std::cout << std::endl;
+
+				// Get a human readable description of the option
+				const char* description = sensor.get_option_description(option_type);
+				std::cout << "       Description   : " << description << std::endl;
+
+				// Get the current value of the option
+				float current_value = sensor.get_option(option_type);
+				std::cout << "       Current Value : " << current_value << std::endl;
+
+				//To change the value of an option, please follow the change_sensor_option() function
+			}
+			else
+			{
+				std::cout << " is not supported" << std::endl;
+			}
 		}
 	}
-	return vtkPoints;
-}
-
-// private function
-void Realsense::restFrame(unit &cam_unit, int num)
-{
-	for (int i = 0; i < num; i++) {
-		cam_unit.pipe.wait_for_frames();
-	}
-}
-
-bool Realsense::isInit() {
-	if (this->deviceNum == NULL) {
-		//throw runtime_error("장치 초기화 프로세스 : init()이 이루어지지 않았습니다. 이를 먼저 수행해 주세요.");
-		cout << "장치 초기화 프로세스 : init()이 이루어지지 않았습니다. 이를 먼저 수행해 주세요." << endl;
-		return false;
-	}
-	return true;
-}
-
-
-double Realsense::getDistane(double *src, double *tar)
-{
-	double retv = 0.0;
-	//if (tar[0] == 0)return INF;
-	//retv += (src[0] - tar[0])*(src[0] - tar[0]);
-	//retv += (src[1] - tar[1])*(src[1] - tar[1]);
-	retv += (src[2] - tar[2])*(src[2] - tar[2]);
-	return retv;
-}
-
-void Realsense::cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp)
-{
-	cell->InsertNextCell(number);
-	cell->InsertCellPoint(index1 + disp); cell->InsertCellPoint(index2 + disp); cell->InsertCellPoint(index3 + disp);
 	
 }
 
-void Realsense::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
-{
-	vtkRenderer *threadRenderer;
-	vtkRenderWindow *win = vtkRenderWindow::New();
-	vtkRenderWindowInteractor * interactor = vtkRenderWindowInteractor::New();
-	interactor->SetRotation(0.1);
+//help function...
+//하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
+void Device::selectSensorAndStreamProps() {
 
-	//std::cout << point->GetNumberOfPoints() << "\n";
-
-	threadRenderer = vtkRenderer::New();
-	const int ThreadNum = ThreadSize;
-	//omp_set_num_threads(4);
-
-	#pragma omp parallel num_threads(ThreadNum)		 
-	{
-		vtkPoints *threadPoint = vtkPoints::New();
-		vtkCellArray *threadCell = vtkCellArray::New();
-		vtkPolyData *threadPoly = vtkPolyData::New();
-		vtkPolyDataMapper *threadMapper = vtkPolyDataMapper::New();
-		vtkActor *threadActor = vtkActor::New();
-
-		threadPoint->SetNumberOfPoints(width*height / ThreadNum);
-		
-		#pragma omp for
-		for (int i = 0; i < width*height; i++)
-		{
-			double temp[3];
-			point->GetPoint(i, temp);
-			threadPoint->SetPoint(i-(omp_get_thread_num()) * width*height / ThreadNum, temp);
-			//threadPoint->InsertNextPoint(temp);		
-		}
-		//printf("%lf\n\n", omp_get_wtime() - _start);
-
-		for (vtkIdType i = 0; i < threadPoint->GetNumberOfPoints(); i++)
-		{
-			if (i + 1 + width > threadPoint->GetNumberOfPoints())break;
-			if ((i + 1) % width == 0)continue;
-
-			double orign[3],right[3],down[3],diga[3];
-			//printf("%d %d\n", i,omp_get_thread_num());	
-			threadPoint->GetPoint(i, orign);
-			if (orign[0] == 0)continue;
-
-			threadPoint->GetPoint(i + 1, right);
-			threadPoint->GetPoint(i + width, down);
-			threadPoint->GetPoint(i + width + 1, diga);
-			
-			double _dia = getDistane(orign, diga);
-			double _down = getDistane(orign, down);
-
-			if (_down < _dia)
-			{
-				if (right[0] != 0 && down[0] != 0)
-				{
-					cellInsert(threadCell, 3, i, i + 1, i + width);
-					if (diga[0] != 0)
-						cellInsert(threadCell, 3, i + 1, i + width + 1, i + width);
-				}
-			}
-
-			else
-			{
-				if (diga[0] != 0) 
-				{
-					if (right[0] != 0)
-						cellInsert(threadCell, 3, i, i + 1, i + width + 1);
-					if (down[0] != 0)
-						cellInsert(threadCell, 3, i, i + width + 1, i + width);
-				}
-			}
-
-		}
-
-		
-		threadPoly->SetPoints(threadPoint);
-		threadPoly->SetPolys(threadCell);
-
-		threadMapper->SetInputData(threadPoly);
-		threadActor->SetMapper(threadMapper);
-
-		#pragma omp critical
-		{
-			threadRenderer->AddActor(threadActor);
-		}
-
-		threadPoint->Delete();
-		threadCell->Delete();
-		threadPoly->Delete();
-		threadMapper->Delete();
-		threadActor->Delete();
-
-	}
-
-	//double _start = omp_get_wtime();
-	vtkPoints *boundary = vtkPoints::New();
-	vtkCellArray *cellBoundary = vtkCellArray::New();
-	vtkPolyData *polyBoundary = vtkPolyData::New();
-	vtkActor *actorBoundary = vtkActor::New();
-	vtkPolyDataMapper *mapperBoundary = vtkPolyDataMapper::New();
-
-	for (int j = 1; j <= ThreadNum - 1; j++)
-	{
-		for (int i = j*width * height / ThreadNum - width; i <j*width * height / ThreadNum + width * 2 - width; i++)
-		{
-			double temp[3];
-			point->GetPoint(i, temp);
-			boundary->InsertNextPoint(temp);
-		}
-	}
-
-
-	for (int j = 0; j < ThreadNum - 1; j++)
-	{
-		for (vtkIdType i = 2 * j*width; i < 2 * width*j + width; i++)
-		{
-			double orign[3], right[3], down[3], diga[3];
-			boundary->GetPoint(i, orign);
-			boundary->GetPoint(i + 1, right);
-			boundary->GetPoint(i + width, down);
-			boundary->GetPoint(i + width + 1, diga);
-			
-			if (orign[0] == 0)continue;
-
-			double _dia = getDistane(orign, diga);
-			double _down = getDistane(orign, down);
-
-			if (_down < _dia)
-			{
-				if (right[0] != 0 && down[0] != 0)
-				{
-					cellInsert(cellBoundary, 3, i, i + 1, i + width);
-					if (diga[0] != 0)
-						cellInsert(cellBoundary, 3, i + 1, i + width + 1, i + width);
-				}
-			}
-
-			else
-			{
-				if (diga[0] != 0)
-				{
-					if (right[0] != 0)
-						cellInsert(cellBoundary, 3, i, i + 1, i + width + 1);
-					if (down[0] != 0)
-						cellInsert(cellBoundary, 3, i, i + width + 1, i + width);
-				}
-			}
-
-		}
-	}
-	polyBoundary->SetPoints(boundary);
-	polyBoundary->SetPolys(cellBoundary);
-	mapperBoundary->SetInputData(polyBoundary);
-	actorBoundary->SetMapper(mapperBoundary);
-
-	threadRenderer->AddActor(actorBoundary);
-
-	threadRenderer->GetActiveCamera()->ParallelProjectionOff();
-	win->AddRenderer(threadRenderer);
-
-	interactor->SetRenderWindow(win);
-	//interactor->Start();
-
-	boundary->Delete();
-	cellBoundary->Delete();
-	polyBoundary->Delete();
-	actorBoundary->Delete();
-	mapperBoundary->Delete();
-
-	interactor->Delete();
-	threadRenderer->Delete();
-	win->Delete();
-
-	//printf("%lf\n\n", omp_get_wtime() - _start);
-}
-
-
-
-/*보완 필요*/
-void Realsense::MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType, int ThreadSize)
-{
-	vtkRenderer *threadRenderer = vtkRenderer::New();
-	vtkRenderWindow *win = vtkRenderWindow::New();
-	vtkRenderWindowInteractor * interactor = vtkRenderWindowInteractor::New();
-	interactor->SetRotation(0.1);
-
-	//std::cout << point->GetNumberOfPoints() << "\n";
-
-	const int ThreadNum = ThreadSize;
-
-	#pragma omp parallel num_threads(ThreadNum)	shared(threadRenderer) 
-	{
-		vtkPoints *threadPoint = vtkPoints::New();
-		vtkCellArray *threadCell = vtkCellArray::New();
-		vtkPolyData *threadPoly = vtkPolyData::New();
-		vtkPolyDataMapper *threadMapper = vtkPolyDataMapper::New();
-		vtkActor *threadActor = vtkActor::New();
-
-		__declspec(align(64)) double _orign[4] = { 0, };
-		__declspec(align(64)) double _right[4] = { 0, };
-		__declspec(align(64)) double _down[4] = { 0, };
-		__declspec(align(64)) double _diga[4] = { 0, };
-		__declspec(align(64)) double result[4] = { 0, };
-
-		#pragma omp for
-		for (int i = 0; i < width*height; i++)
-		{
-			double temp[3];
-			point->GetPoint(i, temp);
-			threadPoint->InsertNextPoint(temp);
-		}
-
-		for (int j = 0; j<threadPoint->GetNumberOfPoints() - width; j += 4)
-		{
-			/*seting*/
-			int index = 0;
-			double orign[3], right[3], down[3], diga[3];
-			for (int k = j; k < j + 4; k++)
-			{
-				threadPoint->GetPoint(k, orign);
-				threadPoint->GetPoint(k + 1, right);
-				threadPoint->GetPoint(k + width, down);
-				threadPoint->GetPoint(k + width + 1, diga);
-		
-				_orign[index] = orign[2];
-				_right[index] = right[2];
-				_down[index] = down[2];
-				_diga[index] = diga[2];
-				index++;
-			}
-
-			/*chunk calculate*/
-			__m256d __m256d_orign = _mm256_loadu_pd(_orign);
-			__m256d __m256d_down = _mm256_loadu_pd(_down);
-			__m256d __m256d_diga = _mm256_loadu_pd(_diga);
-			__m256d __m256d_result = _mm256_sub_pd(_mm256_sub_pd(__m256d_orign, __m256d_down), \
-				_mm256_sub_pd(__m256d_orign, __m256d_diga));
-
-			__m256d_result = _mm256_mul_pd(__m256d_result, __m256d_result);//거리를 제곱으로 구함.
-			_mm256_store_pd(result, __m256d_result);
-
-			/*make poly*/
-			for (int i = 0; i < 4; i++)
-			{
-				if (_orign[i] == 0)continue;
-
-				if (result[i] > 0)//아래랑 연결
-				{
-					if (_right[i] != 0 && _down[i] != 0)
-					{
-						cellInsert(threadCell, 3, i, i + 1, i + width, j);
-						if (_diga[i] != 0)
-							cellInsert(threadCell, 3, i + 1, i + width + 1, i + width, j);
-					}
-				}
-
-				else //if (result[i] < 0)//대각선연결
-				{
-					if (_diga[i] != 0)
-					{
-						if (_right[i] != 0)
-							cellInsert(threadCell, 3, i, i + 1, i + width + 1, j);
-						if (_down[i] != 0)
-							cellInsert(threadCell, 3, i, i + width + 1, i + width, j);
-					}
-				}
-			}
-		}
-
-		//_start = omp_get_wtime();
-
-		threadPoly->SetPoints(threadPoint);
-		threadPoly->SetPolys(threadCell);
-
-		threadMapper->SetInputData(threadPoly);
-		threadActor->SetMapper(threadMapper);
-
-		#pragma omp critical
-		{
-			threadRenderer->AddActor(threadActor);
-		}
-		threadPoint->Delete();
-		threadCell->Delete();
-		threadPoly->Delete();
-		threadMapper->Delete();
-		threadActor->Delete();
-		
-		//printf("%lf\n\n", omp_get_wtime() - _start);
-	}
-
-
-	vtkPoints *boundary = vtkPoints::New();
-	vtkCellArray *cellBoundary = vtkCellArray::New();
-	vtkPolyData *polyBoundary = vtkPolyData::New();
-	vtkActor *actorBoundary = vtkActor::New();
-	vtkPolyDataMapper *mapperBoundary = vtkPolyDataMapper::New();
-
-	for (int j = 1; j <= ThreadNum - 1; j++)
-	{
-		for (int i = j*width * height / ThreadNum - width; i <j*width * height / ThreadNum + width * 2 - width; i++)
-		{
-			double temp[3];
-			point->GetPoint(i, temp);
-			boundary->InsertNextPoint(temp);
-		}
-	}
-
-	/*여기도 simd적용해볼 것.*/
-	for (int j = 0; j < ThreadNum - 1; j++)
-	{
-		double orign[3], right[3], down[3], diga[3];
-		for (vtkIdType i = 2 * j*width; i < 2 * width*j + width; i++)
-		{
-			boundary->GetPoint(i, orign);
-			boundary->GetPoint(i + 1, right);
-			boundary->GetPoint(i + width, down);
-			boundary->GetPoint(i + width + 1, diga);
-
-
-			if (orign[0] == 0)continue;
-
-			double _dia = getDistane(orign, diga);
-			double _down = getDistane(orign, down);
-
-			if (_down < _dia)
-			{
-				if (right[0] != 0 && down[0] != 0)
-				{
-					cellInsert(cellBoundary, 3, i, i + 1, i + width);
-					if (diga[0] != 0)
-						cellInsert(cellBoundary, 3, i + 1, i + width + 1, i + width);
-				}
-			}
-
-			else
-			{
-				if (diga[0] != 0)
-				{
-					if (right[0] != 0)
-						cellInsert(cellBoundary, 3, i, i + 1, i + width + 1);
-					if (down[0] != 0)
-						cellInsert(cellBoundary, 3, i, i + width + 1, i + width);
-				}
-			}
-
-		}
-	}
-	polyBoundary->SetPoints(boundary);
-	polyBoundary->SetPolys(cellBoundary);
-	mapperBoundary->SetInputData(polyBoundary);
-	actorBoundary->SetMapper(mapperBoundary);
-
-	threadRenderer->AddActor(actorBoundary);
-
-	threadRenderer->GetActiveCamera()->ParallelProjectionOff();
-	win->AddRenderer(threadRenderer);
-	//win->Render();
-
-
-	interactor->SetRenderWindow(win);
-	//interactor->Start();
-
-	boundary->Delete();
-	cellBoundary->Delete();
-	polyBoundary->Delete();
-	actorBoundary->Delete();
-	mapperBoundary->Delete();
-
-	interactor->Delete();
-	threadRenderer->Delete();
-	win->Delete();
-
-	//printf("%lf\n\n", omp_get_wtime() - _start);
-}
-
-void Realsense::MeshConstruct(vtkPoints *point, int saveType)
-{
-	vtkCellArray *cell = vtkCellArray::New();
-
-	//std::cout << point->GetNumberOfPoints() << "\n";
 	
-	for (vtkIdType i = 0; i < point->GetNumberOfPoints() - width; i++)
-	{
-		double orign[3], right[3], down[3], diga[3];
-		//printf("%d %d\n", i,omp_get_thread_num());	
-		point->GetPoint(i, orign);
-		if (orign[0] == 0)continue;
+	/*size_t command_sensor;
+	size_t command_stream;
+	size_t command_code;
+	cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
+	cout << "1. 카메라 센서 \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
+	cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
+	cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;
 
-		point->GetPoint(i + 1, right);
-		point->GetPoint(i + width, down);
-		point->GetPoint(i + width + 1, diga);
-
-		if ((i + 1) % width == 0)continue;
-		if (orign[0] == 0)continue;
-
-		double _dia = getDistane(orign, diga);
-		double _down = getDistane(orign, down);
-
-		if (_down < _dia)
-		{
-			if (right[0] != 0 && down[0] != 0)
-			{
-				cellInsert(cell, 3, i, i + 1, i + width);
-				if (diga[0] != 0)
-					cellInsert(cell, 3, i + 1, i + width + 1, i + width);
-			}
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+		
+	cout << "스트리밍을 시작합니다..";
+	try {
+		if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
+			startStreaming(m_streoUniqueStreams[command_stream][command_code].second);
+			
 		}
-
-		else
-		{
-			if (diga[0] != 0)
-			{
-				if (right[0] != 0)
-					cellInsert(cell, 3, i, i + 1, i + width + 1);
-				if (down[0] != 0)
-					cellInsert(cell, 3, i, i + width + 1, i + width);
-			}
+		else if (m_selectedSensor == RS_400_SENSOR::RGB_CAMERA) {
+			startStreaming(m_colorUniqueStreams[command_stream][command_code].second);
 		}
 	}
+	catch(...) {
+		cout << "잘못된 접근입니다. 코드표를 참조해주세요" << endl;
+	}*/
+	
 
+	m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
 
-	vtkPolyData *poly = vtkPolyData::New();
-	poly->SetPoints(point);
-	poly->SetPolys(cell);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
+	
+	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
+	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
 
-	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-	mapper->SetInputData(poly);
+	//Depth #0 (640x480 / Z16 / 30Hz)
+	//startStreaming(m_streoUniqueStreams[RS400_STREAM_DEPTH][493].second);
 
-	vtkRenderer *renderer = vtkRenderer::New();
-	renderer->GetActiveCamera()->ParallelProjectionOff();
+}
 
-	vtkActor *actor = vtkActor::New();
-	actor->SetMapper(mapper);
-	renderer->AddActor(actor);
-
-	vtkRenderWindow *win = vtkRenderWindow::New();
-	vtkRenderWindowInteractor * interactor = vtkRenderWindowInteractor::New();
-	interactor->SetRotation(0.1);
-	win->AddRenderer(renderer);
-
-
-	if (saveType == 1)
-	{
-		vtkSTLWriter* stlWriter = vtkSTLWriter::New();
-		stlWriter->SetFileName("my.stl");
-
-		stlWriter->SetInputData(poly);
-		stlWriter->Write();
-		stlWriter->Delete();
+void Device::startStreaming(rs2::stream_profile& stream_profile) {
+	RS_400_STREAM_TYPE streamType = m_stream2Enum(stream_profile.stream_name());
+	if ((streamType > 4)||(streamType<0)) {
+		throw std::invalid_argument("Invalid Stream profile");
 	}
-
-	else if (saveType == 2) {
-		vtkOBJExporter *obj = vtkOBJExporter::New();
-		obj->SetInput(win);
-		obj->SetFilePrefix("mine");
-		obj->Write();
-		obj->Delete();
+	
+	if ((m_selectedSensor == STEREO_MODULE)&&(m_depthStreamCheck || m_irStreamCheck || m_ir1StreamCheck || m_ir2StreamCheck)) {
+		//Multiple Streaming
+		vector <rs2::stream_profile> profile_set;
+		m_getProfile(profile_set);
+		profile_set.push_back(stream_profile);
+		stopStreaming(RS_400_SENSOR::STEREO_MODULE);
+		startStreaming(profile_set);
 	}
-
-	interactor->SetRenderWindow(win);
-	//interactor->Start();//window를 띄우려면 이 부분의 주석을 해제하세요.
-
-	poly->Delete();
-	mapper->Delete();
-	renderer->Delete();
-	actor->Delete();
-	win->Delete();
-	interactor->Delete();
-	cell->Delete();
+	else {//Single Stream
+		switch (streamType) {
+		case RS400_STREAM_DEPTH: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_depthFrameQueue.enqueue(f); });
+			m_depthStreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_INFRARED: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_ir_FrameQueue.enqueue(f); });
+			m_irStreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_INFRARED1: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_ir1_FrameQueue.enqueue(f); });
+			m_ir1StreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_INFRARED2: {
+			m_stereoSensor.open(stream_profile);
+			m_stereoSensor.start([&](rs2::frame f) {m_ir2_FrameQueue.enqueue(f); });
+			m_ir2StreamCheck = true;
+			break;
+		}
+		case RS400_STREAM_COLOR: {
+			m_colorSensor.open(stream_profile);
+			m_colorSensor.start([&](rs2::frame f) {m_colorFrameQueue.enqueue(f); });
+			m_colorStreamCheck = true;
+			break;
+		}
+		}
+	}
 }
 
 
-/*
-stramData를 vector을 통해 넘겨주도록 구현할 것
-현재는 프로토타입으로 파일 입출력을 통해 raw stream을 출력하는 것으로 구현하였음.
-넘기는 방식만 변경하면 됨.
-*/
-void Realsense::viewRawStream()
-{
-	std::ifstream iff("1lefthex.txt");
-	std::vector<unsigned short> rawData;
-
-	while (!iff.eof())
-	{
-		unsigned short value;
-		std::string stream;
-		iff >> stream;
-
-		int pos = std::string::npos;
-
-		std::stringstream str;
-
-		while ((pos = stream.find("0x", 1)) != std::string::npos)
-		{
-			std::string hexInString = stream.substr(0, pos);
-			stream = stream.substr(pos, stream.size());
-
-			str << hexInString;
-			str >> std::hex >> value;
-			rawData.push_back(value);
-			//	std::cout << value << "\n";
-			str.clear();
-		}
-
-		pos = stream.find("0x");
-		if (pos != std::string::npos)
-		{
-			str.clear();
-			str << stream;
-			str >> std::hex >> value;
-			rawData.push_back(value);
+void Device::startStreaming(vector<rs2::stream_profile> &stream_profile) {
+	m_stereoSensor.open(stream_profile);
+	for (auto sp : stream_profile) {
+		RS_400_STREAM_TYPE spt = m_stream2Enum(sp.stream_name());
+		switch (spt) {
+		case RS400_STREAM_DEPTH: {m_depthStreamCheck = true;break;}
+		case RS400_STREAM_INFRARED: {m_irStreamCheck = true;break;}
+		case RS400_STREAM_INFRARED1: {m_ir1StreamCheck = true;break;}
+		case RS400_STREAM_INFRARED2: {m_ir2StreamCheck = true;break;}
 		}
 	}
 
-	double dimensions[3] = { 1920, 1080, 1 };
-	const int nComponents = 1;//(unsigned short), scalarType = 4(short)
-
-	vtkImageData*imageData = vtkImageData::New();
-	imageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
-
-	imageData->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
-	imageData->Modified();
-
-	//	int nScalar = dimensions[2] * dimensions[1] * dimensions[0];
-	//	auto scalarPointer = imageData->GetScalarPointer(0, 0, 0);
-
-
-	for (int i = 0; i<dimensions[0]; i++)
-	{
-		for (int j = 0; j<dimensions[1]; j++)
-		{
-			unsigned short* pixel = static_cast<unsigned short*>(imageData->GetScalarPointer(i, j, 0));
-			*pixel = rawData[i + j * dimensions[0]];
+	m_stereoSensor.start([&](rs2::frame f) {
+		auto sp = f.get_profile();
+		RS_400_STREAM_TYPE streamType = m_stream2Enum(sp.stream_name());
+		switch (streamType) {
+		case RS400_STREAM_DEPTH: {
+			m_depthFrameQueue.enqueue(f);
+			break;
 		}
+		case RS400_STREAM_INFRARED: {
+			m_ir_FrameQueue.enqueue(f);
+			break;
+		}
+		case RS400_STREAM_INFRARED1: {
+			m_ir1_FrameQueue.enqueue(f);
+			break;
+		}
+		case RS400_STREAM_INFRARED2: {
+			m_ir2_FrameQueue.enqueue(f);
+			break;
+		}
+		}
+	});
+}
+
+void Device::stopStreaming(rs2::stream_profile& stream_profile) {
+
+}
+
+void Device::stopStreaming(RS_400_SENSOR sensorName) {
+	if (sensorName == STEREO_MODULE) {
+		m_stereoSensor.stop();
+		m_stereoSensor.close();
+		m_depthStreamCheck = false;
+		m_irStreamCheck = false;
+		m_ir1StreamCheck = false;
+		m_ir2StreamCheck = false;
 	}
-	vtkImageViewer2 *viewer = vtkImageViewer2::New();
-	viewer->SetInputData(imageData);
+	else if (sensorName == RGB_CAMERA) {
+		m_colorSensor.stop();
+		m_colorSensor.close();
+		m_colorStreamCheck = false;
+	}
+}
 
-	vtkRenderer *renderer = vtkRenderer::New();
-	vtkRenderWindow *renderWindow = vtkRenderWindow::New();
-	renderWindow->AddRenderer(renderer);
+rs2::frame Device::capture(RS_400_STREAM_TYPE streamType) {
+	switch (streamType) {
+	case RS400_STREAM_DEPTH: {
+		return m_depthFrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_INFRARED: {
+		return m_ir_FrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_INFRARED1: {
+		return m_ir1_FrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_INFRARED2: {
+		return m_ir2_FrameQueue.wait_for_frame();
+	}
+	case RS400_STREAM_COLOR: {
+		return m_colorFrameQueue.wait_for_frame();
+	}
+	}
+}
 
-	vtkRenderWindowInteractor* interactor = vtkRenderWindowInteractor::New();
-	interactor->SetRenderWindow(renderWindow);
+void Device::EnableEmitter(float value) {
+	if (m_stereoSensor.supports(rs2_option::RS2_OPTION_EMITTER_ENABLED))
+	{
+		m_stereoSensor.set_option(rs2_option::RS2_OPTION_EMITTER_ENABLED, value);
+	}
+}
 
-	viewer->SetupInteractor(interactor);
 
-	interactor->Initialize();
-	viewer->GetRenderer()->ResetCamera();
-	viewer->Render();
-	interactor->Start();
+/** 
+ * Private Function area.
+ */
+void Device::m_getProfile(vector<stream_profile> &profile_set) {
+	if (m_depthStreamCheck) {
+		profile_set.push_back(m_depthFrameQueue.wait_for_frame().get_profile());
+	}
+	if (m_irStreamCheck) {
+		profile_set.push_back(m_ir_FrameQueue.wait_for_frame().get_profile());
+	}
+	if (m_ir1StreamCheck) {
+		profile_set.push_back(m_ir1_FrameQueue.wait_for_frame().get_profile());
+	}
+	if (m_ir2StreamCheck) {
+		profile_set.push_back(m_ir2_FrameQueue.wait_for_frame().get_profile());
+	}
+}
+
+RS_400_STREAM_TYPE Device::m_stream2Enum(string streamName) {
+	if (streamName == "Infrared") {
+		return RS_400_STREAM_TYPE::RS400_STREAM_INFRARED;
+	}
+	else if (streamName == "Infrared 1") {
+		return RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1;
+	}
+	else if (streamName == "Infrared 2") {
+		return RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2;
+	}
+	else if (streamName == "Depth") {
+		return RS_400_STREAM_TYPE::RS400_STREAM_DEPTH;
+	}
+	else if (streamName == "Color") {
+		return RS_400_STREAM_TYPE::RS400_STREAM_COLOR;
+	}
+}
+
+RS_400_FORMAT Device::m_format2Enum(rs2_format format) {
+	if (format == RS2_FORMAT_RAW16) {
+		return RS_400_FORMAT::RAW16;
+	}
+	else if (format == RS2_FORMAT_Y16) {
+		return RS_400_FORMAT::Y16;
+	}
+	else if (format == RS2_FORMAT_Y8) {
+		return RS_400_FORMAT::Y8;
+	}
+	else if (format == RS2_FORMAT_BGRA8) {
+		return RS_400_FORMAT::BGRA8;
+	}
+	else if (format == RS2_FORMAT_RGBA8) {
+		return RS_400_FORMAT::RGBA8;
+	}
+	else if (format == RS2_FORMAT_BGR8) {
+		return RS_400_FORMAT::BGR8;
+	}
+	else if (format == RS2_FORMAT_RGB8) {
+		return RS_400_FORMAT::RGB8;
+	}
+	else if (format == RS2_FORMAT_YUYV) {
+		return RS_400_FORMAT::YUYV;
+	}
+	else if (format == RS2_FORMAT_UYVY) {
+		return RS_400_FORMAT::UYVY;
+	}
+	else if (format == RS2_FORMAT_Z16) {
+		return RS_400_FORMAT::Z16;
+	}
+
+}
+
+RS_400_RESOLUTION Device::m_resolution2Enum(string resolution) {
+	if (resolution == "1920x1080") {
+		return RS_400_RESOLUTION::R1920_1080;
+	}
+	else if (resolution == "1280x720") {
+		return RS_400_RESOLUTION::R1280_720;
+	}
+	else if (resolution == "960x540") {
+		return RS_400_RESOLUTION::R960_540;
+	}
+	else if (resolution == "848x480") {
+		return RS_400_RESOLUTION::R848_480;
+	}
+	else if (resolution == "640x480") {
+		return RS_400_RESOLUTION::R640_480;
+	}
+	else if (resolution == "640x360") {
+		return RS_400_RESOLUTION::R640_360;
+	}
+	else if (resolution == "480x270") {
+		return RS_400_RESOLUTION::R480_270;
+	}
+	else if (resolution == "424x240") {
+		return RS_400_RESOLUTION::R424_240;
+	}
+	else if (resolution == "320x240") {
+		return RS_400_RESOLUTION::R320_240;
+	}
+	else if (resolution == "320x180") {
+		return RS_400_RESOLUTION::R320_180;
+	}
+}
+
+RS_400_FPS Device::m_fps2Enum(int fps) {
+	if (fps == 90) {
+		return RS_400_FPS::HZ90;
+	}
+	else if (fps == 60) {
+		return RS_400_FPS::HZ60;
+	}
+	else if (fps == 30) {
+		return RS_400_FPS::HZ30;
+	}
+	else if (fps == 25) {
+		return RS_400_FPS::HZ25;
+	}
+	else if (fps == 15) {
+		return RS_400_FPS::HZ15;
+	}
+	else if (fps == 6) {
+		return RS_400_FPS::HZ6;
+	}
 }

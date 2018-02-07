@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1121</width>
-    <height>504</height>
+    <width>1308</width>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CalibrationModule</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">border-color: rgb(0, 0, 0);</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="deviceName">
@@ -79,73 +82,100 @@
      <string>Stop</string>
     </property>
    </widget>
-   <widget class="QWidget" name="irCam1" native="true">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>40</y>
-      <width>231</width>
-      <height>231</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QWidget" name="irCam2" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>40</y>
-      <width>231</width>
-      <height>231</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QWidget" name="rgbCam" native="true">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>40</y>
-      <width>231</width>
-      <height>231</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>280</y>
-      <width>56</width>
-      <height>12</height>
+      <x>230</x>
+      <y>300</y>
+      <width>71</width>
+      <height>16</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
     <property name="text">
-     <string>RGB CAM</string>
+     <string>↑RGB CAM</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="rgbLabel">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>280</y>
-      <width>56</width>
-      <height>12</height>
+      <x>220</x>
+      <y>10</y>
+      <width>512</width>
+      <height>288</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
     <property name="text">
-     <string>IR CAM 1</string>
+     <string>RGB Image</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="irRightLabel">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>320</y>
+      <width>512</width>
+      <height>288</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
+    <property name="text">
+     <string>IR2</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="irLeftLabel">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>320</y>
+      <width>512</width>
+      <height>288</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
+    <property name="text">
+     <string>IR1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>280</y>
-      <width>56</width>
-      <height>12</height>
+      <x>750</x>
+      <y>610</y>
+      <width>111</width>
+      <height>16</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
     <property name="text">
-     <string>IR CAM 2</string>
+     <string>↑IR CAM 2(RIGHT)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>610</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
+    <property name="text">
+     <string>↑IR CAM 1(LEFT)</string>
     </property>
    </widget>
   </widget>
@@ -154,7 +184,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1121</width>
+     <width>1308</width>
      <height>21</height>
     </rect>
    </property>

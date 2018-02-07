@@ -2,7 +2,7 @@
 
 ## Project Infomation
 Project duration : 2017 fall ~ 2018 spring semester  
-Lecture info : Computer Engineering Capstone Design 1(CSE4066-1), Dongho Kim <<dongho.kim@dgu.edu>>
+Lecture info : Computer Engineering Capstone Design 1&2(CSE4066), Dongho Kim <<dongho.kim@dgu.edu>>
 
 ## Team & Member
 1조 새소리 (Team 1 BirdSound)
@@ -25,6 +25,8 @@ Dental Division S/W Team Deputy General Manager, Yonghyun Lim
 
 ## Runing Environment  
 - Only Window10, 64bit
+
+## Install Guide
 - **위의 Qt 5.9.1을 먼저 설치해 주세요**
 - 아래의 파일을 다운로드&압축해제 후, 프로젝트 폴더 root에 덮어쓰기 해주세요.
 
