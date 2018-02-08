@@ -46,7 +46,7 @@ namespace realsense {
 	void ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output);
 	void ConvertYUY2ToLuminance8(const uint8_t* image, int width, int height, uint8_t* output);
 	void ConvertLuminance16ToLuminance8(const uint16_t* image, int width, int height, uint8_t* output);
-
+	void ReorderY16(const uint16_t* image, int width, int height);
 
 	enum RS_400_SENSOR {
 		STEREO_MODULE,

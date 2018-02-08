@@ -11,6 +11,7 @@ class CalibrationModule : public QMainWindow
 public:
 	CalibrationModule(QWidget *parent = Q_NULLPTR);
 	void startStreaming(streamType);
+	void captureFrame();
 private:
 	Ui::CalibrationModuleClass ui;
 };

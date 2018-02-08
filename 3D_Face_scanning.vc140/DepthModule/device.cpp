@@ -15,6 +15,19 @@ string realsense::getSerial(int devIdx) {
 	return serial_number;
 }
 
+void realsense::ReorderY16(const uint16_t* image, int width, int height) {
+	auto range = width*height/2;
+	for (size_t i = 0; i < range; i++) {
+		uint16_t pix1 = image[i];
+		uint16_t pix2 = image[range-i];
+		uint16_t tmp = pix1;
+		pix2 = pix1;
+		pix2 = tmp;
+	}
+}
+
+
+
 void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output)
 {
 	int n = width*height;
@@ -288,8 +301,8 @@ void Device::selectSensorAndStreamProps() {
 
 	m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
 
-	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
-	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][12].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][12].second);
 	
 	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
 	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);

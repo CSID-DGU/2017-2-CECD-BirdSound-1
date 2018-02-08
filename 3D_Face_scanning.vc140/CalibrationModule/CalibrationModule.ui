@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1308</width>
-    <height>756</height>
+    <width>1291</width>
+    <height>712</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,12 +22,15 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>81</width>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>연결된 장치</string>
+     <string>연결된 장치 : </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="deviceFirmware">
@@ -35,20 +38,23 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>81</width>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>카메라 펌웨어</string>
+     <string>카메라 펌웨어 : </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="startStreaming">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
-      <width>75</width>
+      <y>80</y>
+      <width>91</width>
       <height>23</height>
      </rect>
     </property>
@@ -60,8 +66,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
-      <width>75</width>
+      <y>110</y>
+      <width>91</width>
       <height>23</height>
      </rect>
     </property>
@@ -73,8 +79,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>120</y>
-      <width>75</width>
+      <y>140</y>
+      <width>91</width>
       <height>23</height>
      </rect>
     </property>
@@ -85,14 +91,14 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>260</x>
       <y>300</y>
       <width>71</width>
       <height>16</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"> border-radius: 25px; background: white;</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>↑RGB CAM</string>
@@ -101,7 +107,7 @@
    <widget class="QLabel" name="rgbLabel">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>250</x>
       <y>10</y>
       <width>512</width>
       <height>288</height>
@@ -111,13 +117,19 @@
      <string notr="true"> border-radius: 25px; background: white;</string>
     </property>
     <property name="text">
-     <string>RGB Image</string>
+     <string>RGB</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="irRightLabel">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>770</x>
       <y>320</y>
       <width>512</width>
       <height>288</height>
@@ -127,13 +139,16 @@
      <string notr="true"> border-radius: 25px; background: white;</string>
     </property>
     <property name="text">
-     <string>IR2</string>
+     <string>IR RIGHT</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="irLeftLabel">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>250</x>
       <y>320</y>
       <width>512</width>
       <height>288</height>
@@ -143,20 +158,23 @@
      <string notr="true"> border-radius: 25px; background: white;</string>
     </property>
     <property name="text">
-     <string>IR1</string>
+     <string>IR LEFT</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>780</x>
       <y>610</y>
       <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"> border-radius: 25px; background: white;</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>↑IR CAM 2(RIGHT)</string>
@@ -165,17 +183,111 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>260</x>
       <y>610</y>
       <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"> border-radius: 25px; background: white;</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>↑IR CAM 1(LEFT)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>221</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: white; border-color: coral;
+    border-width: 7px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="depthLabel">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>10</y>
+      <width>512</width>
+      <height>288</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> border-radius: 25px; background: white;</string>
+    </property>
+    <property name="text">
+     <string>DEPTH</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>300</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>↑DEPRH MAP</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="camName">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>10</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="firmwareVer">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>30</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>615</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Saved file</string>
     </property>
    </widget>
   </widget>
@@ -184,7 +296,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1308</width>
+     <width>1291</width>
      <height>21</height>
     </rect>
    </property>
