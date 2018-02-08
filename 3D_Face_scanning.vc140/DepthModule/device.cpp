@@ -27,7 +27,6 @@ void realsense::ReorderY16(const uint16_t* image, int width, int height) {
 }
 
 
-
 void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output)
 {
 	int n = width*height;
@@ -112,7 +111,9 @@ void realsense::ConvertLuminance16ToLuminance8(const uint16_t* image, int width,
 }
 
 
-
+/** 
+ * Class Device
+ */
 Device::Device(string serialNumber) {
 	#ifdef _WIN32
 	InitializeCriticalSection(&m_mutex);
@@ -362,7 +363,6 @@ void Device::startStreaming(rs2::stream_profile& stream_profile) {
 	}
 }
 
-
 void Device::startStreaming(vector<rs2::stream_profile> &stream_profile) {
 	m_stereoSensor.open(stream_profile);
 	for (auto sp : stream_profile) {
@@ -445,7 +445,6 @@ void Device::EnableEmitter(float value) {
 		m_stereoSensor.set_option(rs2_option::RS2_OPTION_EMITTER_ENABLED, value);
 	}
 }
-
 
 /** 
  * Private Function area.
