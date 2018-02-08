@@ -302,8 +302,8 @@ void Device::selectSensorAndStreamProps() {
 
 	m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
 
-	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][12].second);
-	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][12].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
 	
 	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
 	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
