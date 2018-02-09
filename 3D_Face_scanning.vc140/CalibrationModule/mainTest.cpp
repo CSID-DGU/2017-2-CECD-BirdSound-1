@@ -1,5 +1,6 @@
 #pragma once
 #include "../DepthModule/device.h"
+#include "opencv2\opencv.hpp"
 
 using namespace realsense;
 int main(void) {
@@ -23,7 +24,7 @@ int main(void) {
 	vector<cv::Point2f> pointBuf1;
 	vector<cv::Point2f> pointBuf2;
 
-
+	
 
 	while (1) {
 

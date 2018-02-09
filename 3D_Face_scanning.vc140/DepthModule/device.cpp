@@ -26,7 +26,6 @@ void realsense::ReorderY16(const uint16_t* image, int width, int height) {
 	}
 }
 
-
 void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output)
 {
 	int n = width*height;
@@ -399,7 +398,9 @@ void Device::startStreaming(vector<rs2::stream_profile> &stream_profile) {
 	});
 }
 
-void Device::stopStreaming(rs2::stream_profile& stream_profile) {
+void Device::stopStreaming(RS_400_STREAM_TYPE stream) {
+	vector <rs2::stream_profile> profile_set;
+	m_getProfile(profile_set);
 
 }
 
@@ -418,6 +419,7 @@ void Device::stopStreaming(RS_400_SENSOR sensorName) {
 		m_colorStreamCheck = false;
 	}
 }
+
 
 rs2::frame Device::capture(RS_400_STREAM_TYPE streamType) {
 	switch (streamType) {
