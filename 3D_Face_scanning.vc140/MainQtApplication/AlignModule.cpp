@@ -19,91 +19,35 @@ void AlignModule::align()
 		std::vector<double3>frontMark;
 		std::vector<double3>rightMark;
 
-		leftMark = extractLandMark(left);
-		frontMark = extractLandMark(front);
-		rightMark = extractLandMark(right);
+		leftMark = extractLandMark(left,LEFT);
+		frontMark = extractLandMark(front,FRONT);
+		rightMark = extractLandMark(right,RIGHT);
 
 
-		vtkPoints*left = vtkPoints::New();
-		vtkPoints*right = vtkPoints::New();
-		vtkPoints*front = vtkPoints::New();
+		vtkPoints*leftPts = vtkPoints::New();
+		vtkPoints*rightPts = vtkPoints::New();
+		vtkPoints*frontPts = vtkPoints::New();
 
 		for (int i = 0; i < leftMark.size(); i++)
 		{
-			left->InsertNextPoint(leftMark[i].getData());
-			right->InsertNextPoint(rightMark[i].getData());
-			front->InsertNextPoint(frontMark[i].getData());
+			leftPts->InsertNextPoint(leftMark[i].getData());
+			//rightPts->InsertNextPoint(rightMark[i].getData());
+			frontPts->InsertNextPoint(frontMark[i].getData());
 
 		}
 
-
-
 		// Setup the transform
 		vtkLandmarkTransform*landmarkTransform = vtkLandmarkTransform::New();
-		landmarkTransform->SetSourceLandmarks(left);
-		landmarkTransform->SetTargetLandmarks(front);
+		landmarkTransform->SetSourceLandmarks(frontPts);
+		landmarkTransform->SetTargetLandmarks(leftPts);
 		landmarkTransform->SetModeToRigidBody();
 		landmarkTransform->Update(); //should this be here?
 
-		vtkPolyData*leftPoly = vtkPolyData::New();
-		leftPoly->SetPoints(left);
+		
+		leftActor->SetUserTransform(landmarkTransform);
 
-		vtkPolyData*frontPoly = vtkPolyData::New();
-		frontPoly->SetPoints(front);
-
-		vtkVertexGlyphFilter*leftFilter = vtkVertexGlyphFilter::New();
-
-
-		leftFilter->SetInputData(leftPoly);
-		leftFilter->Update();
-
-		vtkVertexGlyphFilter*frontFilter = vtkVertexGlyphFilter::New();
-
-		frontFilter->SetInputData(frontPoly);
-		frontFilter->Update();
-
-		vtkTransformPolyDataFilter*transformFilter = vtkTransformPolyDataFilter::New();
-		transformFilter->SetInputConnection(leftFilter->GetOutputPort());
-		transformFilter->SetTransform(landmarkTransform);
-		transformFilter->Update();
-
-		// Display the transformation matrix that was computed
-		vtkMatrix4x4* mat = landmarkTransform->GetMatrix();
-
-		// Visualize
-		vtkPolyDataMapper*leftMapper = vtkPolyDataMapper::New();
-		leftMapper->SetInputConnection(leftFilter->GetOutputPort());
-
-		vtkActor*leftActor = vtkActor::New();
-		leftActor->SetMapper(leftMapper);
-		leftActor->GetProperty()->SetColor(0, 1, 0);
-		leftActor->GetProperty()->SetPointSize(4);
-
-		vtkPolyDataMapper*frontMapper = vtkPolyDataMapper::New();
-		frontMapper->SetInputConnection(frontFilter->GetOutputPort());
-
-		vtkActor*frontActor = vtkActor::New();
-		frontActor->SetMapper(frontMapper);
-		frontActor->GetProperty()->SetColor(1, 0, 0);
-		frontActor->GetProperty()->SetPointSize(4);
-
-		vtkPolyDataMapper*solutionMapper = vtkPolyDataMapper::New();
-		solutionMapper->SetInputConnection(transformFilter->GetOutputPort());
-
-		vtkActor*leftNfront = vtkActor::New();
-		leftNfront->SetMapper(solutionMapper);
-		leftNfront->GetProperty()->SetColor(0, 0, 1);
-		leftNfront->GetProperty()->SetPointSize(3);
-
-
-
-
-
-
-
-
-		// Create a renderer, render window, and interactor
 		vtkRenderer*renderer = vtkRenderer::New();
+
 		vtkRenderWindow*renderWindow = vtkRenderWindow::New();
 		renderWindow->AddRenderer(renderer);
 		vtkRenderWindowInteractor*renderWindowInteractor = vtkRenderWindowInteractor::New();
@@ -112,17 +56,80 @@ void AlignModule::align()
 		// Add the actor to the scene
 		renderer->AddActor(leftActor);
 		renderer->AddActor(frontActor);
-		renderer->AddActor(leftNfront);
 
 
 		// Render and interact
 		renderWindow->Render();
 		renderWindowInteractor->Start();
+
+		//vtkPolyData*leftPoly = vtkPolyData::New();
+		//leftPoly->SetPoints(leftPts);
+
+		//vtkPolyData*frontPoly = vtkPolyData::New();
+		//frontPoly->SetPoints(frontPts);
+
+		//vtkVertexGlyphFilter*leftFilter = vtkVertexGlyphFilter::New();
+
+
+		//leftFilter->SetInputData(leftPoly);
+		//leftFilter->Update();
+
+		//vtkVertexGlyphFilter*frontFilter = vtkVertexGlyphFilter::New();
+
+		//frontFilter->SetInputData(frontPoly);
+		//frontFilter->Update();
+
+		//vtkTransformPolyDataFilter*transformFilter = vtkTransformPolyDataFilter::New();
+		//transformFilter->SetInputConnection(leftFilter->GetOutputPort());
+		//transformFilter->SetTransform(landmarkTransform);
+		//transformFilter->Update();
+
+		//// Display the transformation matrix that was computed
+		//vtkMatrix4x4* mat = landmarkTransform->GetMatrix();
+		//std::cout << "Matrix: " << *mat << std::endl;
+
+		//// Visualize
+		//vtkPolyDataMapper*leftMapper = vtkPolyDataMapper::New();
+		//leftMapper->SetInputConnection(leftFilter->GetOutputPort());
+
+		//vtkActor*leftActor = vtkActor::New();
+		//leftActor->SetMapper(leftMapper);
+
+
+		//vtkPolyDataMapper*frontMapper = vtkPolyDataMapper::New();
+		//frontMapper->SetInputConnection(frontFilter->GetOutputPort());
+
+		//vtkActor*frontActor = vtkActor::New();
+		//frontActor->SetMapper(frontMapper);
+
+		//vtkPolyDataMapper*leftNfrontMapper = vtkPolyDataMapper::New();
+		//leftNfrontMapper->SetInputConnection(transformFilter->GetOutputPort());
+
+		//vtkActor*leftNfront = vtkActor::New();
+		//leftNfront->SetMapper(leftNfrontMapper);
+
+
+		//// Create a renderer, render window, and interactor
+		//vtkRenderer*renderer = vtkRenderer::New();
+		//vtkRenderWindow*renderWindow = vtkRenderWindow::New();
+		//renderWindow->AddRenderer(renderer);
+		//vtkRenderWindowInteractor*renderWindowInteractor = vtkRenderWindowInteractor::New();
+		//renderWindowInteractor->SetRenderWindow(renderWindow);
+
+		//// Add the actor to the scene
+		//renderer->AddActor(leftActor);
+		//renderer->AddActor(frontActor);
+		//renderer->AddActor(leftNfront);
+
+
+		//// Render and interact
+		//renderWindow->Render();
+		//renderWindowInteractor->Start();
 	}
 
 }
 
-std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
+std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend, int flag)
 {
 	std::vector<double3>vec;
 	if (rend == NULL)return vec;
@@ -132,9 +139,16 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 
 	for (vtkIdType i = 0; i < actorCol->GetNumberOfItems(); i++)
 	{
+		vtkActor *nextActor = actorCol->GetNextActor();
+		if (i == 0)
+		{
+			if (flag == LEFT)leftActor = nextActor;
+			if (flag == RIGHT)rightActor = nextActor;
+			if (flag == FRONT)frontActor = nextActor;
+		}
 		if (i >= 1)
 		{
-			vtkActor *nextActor = actorCol->GetNextActor();
+			
 			double *pos = nextActor->GetCenter();
 			std::cout << pos[0] << " " << pos[1] << " " << pos[2] << "\n";
 
@@ -147,11 +161,11 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 }
 void AlignModule::setRight(vtkRenderer *rend)
 {
-	left = rend;
+	right = rend;
 }
 void AlignModule::setFront(vtkRenderer *rend)
 {
-	left = rend;
+	front = rend;
 }
 void AlignModule::setLeft(vtkRenderer *rend)
 {

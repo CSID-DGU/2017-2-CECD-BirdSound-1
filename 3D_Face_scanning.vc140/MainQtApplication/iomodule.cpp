@@ -542,9 +542,9 @@ void IOModule::slotAlignBtnClicked()
 {
 	AlignModule *alig =new AlignModule();
 	
-	alig->setFront(this->m_MeshPreviewer[0]->GetRenderer());
+	alig->setLeft(this->m_MeshPreviewer[0]->GetRenderer());
 	alig->setFront(this->m_MeshPreviewer[1]->GetRenderer());
-	alig->setFront(this->m_MeshPreviewer[2]->GetRenderer());
+	alig->setRight(this->m_MeshPreviewer[2]->GetRenderer());
 
 	alig->align();
 }
