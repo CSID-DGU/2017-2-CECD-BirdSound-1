@@ -1,5 +1,5 @@
 #include "iomodule.h"
-
+#include"AlignModule.h"
 
 IOModule::IOModule(QWidget *parent)
 	: QMainWindow(parent)
@@ -540,29 +540,13 @@ void IOModule::slotToOrignBtn_3Clicked()
 
 void IOModule::slotAlignBtnClicked()
 {
-	std::vector<double3> left; 
-	std::vector<double3> front; 
-	std::vector<double3> right;
+	AlignModule *alig =new AlignModule();
+	
+	alig->setFront(this->m_MeshPreviewer[0]->GetRenderer());
+	alig->setFront(this->m_MeshPreviewer[1]->GetRenderer());
+	alig->setFront(this->m_MeshPreviewer[2]->GetRenderer());
 
-	if(m_MeshLandmarkStyle[0])
-		left = m_MeshLandmarkStyle[0]->getData();
-
-	if (m_MeshLandmarkStyle[1])
-		front = m_MeshLandmarkStyle[1]->getData();
-
-	if (m_MeshLandmarkStyle[2])
-		right = m_MeshLandmarkStyle[2]->getData();
-
-	for (int i = 0; i < left.size(); i++)
-		std::cout << left[i] << "\n";
-	std::cout << "\n";
-
-	for (int i = 0; i < front.size(); i++)
-		std::cout << front[i] << "\n";
-	std::cout << "\n";
-
-	for (int i = 0; i < right.size(); i++)
-		std::cout << right[i] << "\n";
+	alig->align();
 }
 
 

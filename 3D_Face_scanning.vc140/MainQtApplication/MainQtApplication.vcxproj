@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlignModule.cpp" />
     <ClCompile Include="BMPExport.cpp" />
     <ClCompile Include="BMPImport.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_iomodule.cpp">
@@ -175,7 +176,6 @@
     <ClCompile Include="iomodule.cpp" />
     <ClCompile Include="JPGExport.cpp" />
     <ClCompile Include="JPGImport.cpp" />
-    <ClCompile Include="LandMark3DStyle.cpp" />
     <ClCompile Include="LandMarkInteractorStyle.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshIO.cpp" />
@@ -231,14 +231,15 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlignModule.h" />
     <ClInclude Include="BMPExport.h" />
     <ClInclude Include="BMPImport.h" />
+    <ClInclude Include="double3.h" />
     <ClInclude Include="GeneratedFiles\ui_iomodule.h" />
     <ClInclude Include="ImageIO.h" />
     <ClInclude Include="ImagePreview.h" />
     <ClInclude Include="JPGExport.h" />
     <ClInclude Include="JPGImport.h" />
-    <ClInclude Include="LandMark3DStyle.h" />
     <ClInclude Include="LandMarkInteractorStyle.h" />
     <ClInclude Include="MeshIO.h" />
     <ClInclude Include="MeshPreview.h" />
