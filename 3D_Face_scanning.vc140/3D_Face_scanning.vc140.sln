@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DepthModule", "DepthModule\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CalibrationModule", "CalibrationModule\CalibrationModule.vcxproj", "{9875212D-FCA4-497D-8510-34FB0F97EB76}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanModule", "ScanModule\ScanModule.vcxproj", "{E576089B-9657-426E-9339-728B16F186A8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanModule", "ScanModule\ScanModule.vcxproj", "{9543A29B-6BD1-48E1-9790-F86277D7314B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,12 +48,14 @@ Global
 		{9875212D-FCA4-497D-8510-34FB0F97EB76}.Release|x64.ActiveCfg = Release|x64
 		{9875212D-FCA4-497D-8510-34FB0F97EB76}.Release|x64.Build.0 = Release|x64
 		{9875212D-FCA4-497D-8510-34FB0F97EB76}.Release|x86.ActiveCfg = Release|x64
-		{E576089B-9657-426E-9339-728B16F186A8}.Debug|x64.ActiveCfg = Debug|x64
-		{E576089B-9657-426E-9339-728B16F186A8}.Debug|x64.Build.0 = Debug|x64
-		{E576089B-9657-426E-9339-728B16F186A8}.Debug|x86.ActiveCfg = Debug|x64
-		{E576089B-9657-426E-9339-728B16F186A8}.Release|x64.ActiveCfg = Release|x64
-		{E576089B-9657-426E-9339-728B16F186A8}.Release|x64.Build.0 = Release|x64
-		{E576089B-9657-426E-9339-728B16F186A8}.Release|x86.ActiveCfg = Release|x64
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Debug|x64.ActiveCfg = Debug|x64
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Debug|x64.Build.0 = Debug|x64
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Debug|x86.ActiveCfg = Debug|Win32
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Debug|x86.Build.0 = Debug|Win32
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Release|x64.ActiveCfg = Release|x64
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Release|x64.Build.0 = Release|x64
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Release|x86.ActiveCfg = Release|Win32
+		{9543A29B-6BD1-48E1-9790-F86277D7314B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,7 +63,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C} = {370091BA-D623-47E7-A349-70D714C6F351}
 		{9875212D-FCA4-497D-8510-34FB0F97EB76} = {370091BA-D623-47E7-A349-70D714C6F351}
-		{E576089B-9657-426E-9339-728B16F186A8} = {370091BA-D623-47E7-A349-70D714C6F351}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		Qt5Version = $(DefaultQtVersion)
