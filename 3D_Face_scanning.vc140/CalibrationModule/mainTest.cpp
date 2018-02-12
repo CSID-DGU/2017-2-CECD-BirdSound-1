@@ -3,14 +3,13 @@
 #include "opencv2\opencv.hpp"
 
 using namespace realsense;
+using namespace std;
+using namespace cv;
 int main(void) {
 
 	context ctx;
 	device_list devl = ctx.query_devices();
 	device dev = devl[0];
-
-
-
 	string devSerialNumber = getFirstSerial();
 	Device* device = new Device(devSerialNumber);
 	device->printDeviceInfo();
@@ -21,52 +20,73 @@ int main(void) {
 	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
 
 	vector<cv::Point2f> pointBuf;
-	vector<cv::Point2f> pointBuf1;
-	vector<cv::Point2f> pointBuf2;
-
+	vector<vector<cv::Point3f>> object_points;
+	vector<vector<cv::Point2f>> image_points;
+	vector <cv::Point3f > obj;
+		
+	int wSq = 7, hSq = 9;
+	int numSq = wSq*hSq;
 	
+	for (int j = 0; j<numSq; j++)
+		obj.push_back(cv::Point3f(j / wSq, j%wSq, 0.0f));
 
+	int numShot = 10;
+	int success = 0;
+	int wImage = 640, hImage = 480;
+	Mat gray_image;
+	Mat colorImage;
 	while (1) {
 
 		auto fColor = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
-		auto fLeft = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
-		auto fRight = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
-		int w = 640, h = 480;
-		cv::Mat colorImage(cv::Size(w, h), CV_8UC3, (void*)fColor.get_data(), cv::Mat::AUTO_STEP);
-		cv::Mat leftImage(cv::Size(w, h), CV_8U, (void*)fLeft.get_data(), cv::Mat::AUTO_STEP);
-		cv::Mat rightImage(cv::Size(w, h), CV_8U, (void*)fRight.get_data(), cv::Mat::AUTO_STEP);
+		
+		colorImage = Mat(cv::Size(wImage, hImage), CV_8UC3, (void*)fColor.get_data(), cv::Mat::AUTO_STEP);
+		bool found = cv::findChessboardCorners(colorImage, cv::Size(wSq, hSq), pointBuf, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 
-
-		bool found = cv::findChessboardCorners(colorImage, cv::Size(7, 9), pointBuf, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
-		bool foundir1 = cv::findChessboardCorners(leftImage, cv::Size(7, 9), pointBuf1, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
-		bool foundir2 = cv::findChessboardCorners(rightImage, cv::Size(7, 9), pointBuf2, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 		if (found)
 		{
-			//cv::cornerSubPix(colorImage, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
-			cv::drawChessboardCorners(colorImage, cv::Size(7, 9), cv::Mat(pointBuf), found);
+			cv::cvtColor(colorImage, gray_image, CV_BGR2GRAY);
+			cv::cornerSubPix(gray_image, pointBuf, cv::Size(wSq,hSq), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+			cv::drawChessboardCorners(colorImage, cv::Size(wSq, hSq), cv::Mat(pointBuf), found);
+			cv::imshow("grayImage", gray_image);
 		}
-		if (foundir1)
-		{
-			//cv::cornerSubPix(colorImage, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
-			cv::drawChessboardCorners(leftImage, cv::Size(7, 9), cv::Mat(pointBuf1), found);
-		}
-		if (foundir2)
-		{
-			//cv::cornerSubPix(colorImage, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
-			cv::drawChessboardCorners(rightImage, cv::Size(7, 9), cv::Mat(pointBuf2), found);
+		cv::imshow("colorImage", colorImage); 
+		
+		char key = cv::waitKey(1); 
+		if (key == ' ') {
+			image_points.push_back(pointBuf);
+			object_points.push_back(obj); 
+			success++; 
+			printf("Snap stored"); 
+		
+			if (success > numShot-1) break;
 		}
 
+	}
+	
+	Mat intrinsic = Mat(3, 3, CV_64F);
+	Mat distCoeffs = Mat::zeros(8, 1, CV_64F);
+	vector<Mat> rvecs;
+	vector<Mat> tvecs;
+	intrinsic.ptr<float>(0)[0] = 1;
+	intrinsic.ptr<float>(1)[1] = 1;
 
-		cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-		cv::imshow("leftImage", leftImage);
-		cv::imshow("rightImage", rightImage);
-		cv::imshow("colorImage", colorImage);
+	cv::calibrateCamera(object_points, image_points, Size(wImage,hImage), intrinsic, distCoeffs, rvecs, tvecs);
+	
+	Mat imageUndistored;
+	
+	while (1) {
+
+		auto fColor = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+		colorImage = Mat(cv::Size(wImage, hImage), CV_8UC3, (void*)fColor.get_data(), cv::Mat::AUTO_STEP);
+		undistort(colorImage, imageUndistored, intrinsic, distCoeffs);
+		imshow("original", colorImage);
 		cv::waitKey(1);
+		imshow("after", imageUndistored);
 	}
 
-}
-
+} 
 //
+
 ///*** CV**/
 //rs2::frame _lastFrame;
 //
