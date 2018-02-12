@@ -101,10 +101,13 @@
     <ClCompile Include="STLImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RelalSensePreviewer.cpp">
+    <ClCompile Include="AlignModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AlignModule.cpp">
+    <ClCompile Include="..\DepthModule\device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RealSensePreviewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -174,13 +177,16 @@
     <ClInclude Include="STLImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RelalSensePreviewer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AlignModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="double3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DepthModule\device.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RealSensePreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

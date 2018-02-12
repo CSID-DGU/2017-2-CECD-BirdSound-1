@@ -34,17 +34,26 @@ void AlignModule::align()
 			//rightPts->InsertNextPoint(rightMark[i].getData());
 			frontPts->InsertNextPoint(frontMark[i].getData());
 
+			std::cout << (leftMark[i]) << " is left \n";
+			std::cout << (frontMark[i]) << "is front \n";
+
 		}
 
-		// Setup the transform
+
+
 		vtkLandmarkTransform*landmarkTransform = vtkLandmarkTransform::New();
 		landmarkTransform->SetSourceLandmarks(frontPts);
 		landmarkTransform->SetTargetLandmarks(leftPts);
 		landmarkTransform->SetModeToRigidBody();
 		landmarkTransform->Update(); //should this be here?
 
-		
+	
 		leftActor->SetUserTransform(landmarkTransform);
+		/*
+		
+		*/
+
+
 
 		vtkRenderer*renderer = vtkRenderer::New();
 
@@ -61,70 +70,6 @@ void AlignModule::align()
 		// Render and interact
 		renderWindow->Render();
 		renderWindowInteractor->Start();
-
-		//vtkPolyData*leftPoly = vtkPolyData::New();
-		//leftPoly->SetPoints(leftPts);
-
-		//vtkPolyData*frontPoly = vtkPolyData::New();
-		//frontPoly->SetPoints(frontPts);
-
-		//vtkVertexGlyphFilter*leftFilter = vtkVertexGlyphFilter::New();
-
-
-		//leftFilter->SetInputData(leftPoly);
-		//leftFilter->Update();
-
-		//vtkVertexGlyphFilter*frontFilter = vtkVertexGlyphFilter::New();
-
-		//frontFilter->SetInputData(frontPoly);
-		//frontFilter->Update();
-
-		//vtkTransformPolyDataFilter*transformFilter = vtkTransformPolyDataFilter::New();
-		//transformFilter->SetInputConnection(leftFilter->GetOutputPort());
-		//transformFilter->SetTransform(landmarkTransform);
-		//transformFilter->Update();
-
-		//// Display the transformation matrix that was computed
-		//vtkMatrix4x4* mat = landmarkTransform->GetMatrix();
-		//std::cout << "Matrix: " << *mat << std::endl;
-
-		//// Visualize
-		//vtkPolyDataMapper*leftMapper = vtkPolyDataMapper::New();
-		//leftMapper->SetInputConnection(leftFilter->GetOutputPort());
-
-		//vtkActor*leftActor = vtkActor::New();
-		//leftActor->SetMapper(leftMapper);
-
-
-		//vtkPolyDataMapper*frontMapper = vtkPolyDataMapper::New();
-		//frontMapper->SetInputConnection(frontFilter->GetOutputPort());
-
-		//vtkActor*frontActor = vtkActor::New();
-		//frontActor->SetMapper(frontMapper);
-
-		//vtkPolyDataMapper*leftNfrontMapper = vtkPolyDataMapper::New();
-		//leftNfrontMapper->SetInputConnection(transformFilter->GetOutputPort());
-
-		//vtkActor*leftNfront = vtkActor::New();
-		//leftNfront->SetMapper(leftNfrontMapper);
-
-
-		//// Create a renderer, render window, and interactor
-		//vtkRenderer*renderer = vtkRenderer::New();
-		//vtkRenderWindow*renderWindow = vtkRenderWindow::New();
-		//renderWindow->AddRenderer(renderer);
-		//vtkRenderWindowInteractor*renderWindowInteractor = vtkRenderWindowInteractor::New();
-		//renderWindowInteractor->SetRenderWindow(renderWindow);
-
-		//// Add the actor to the scene
-		//renderer->AddActor(leftActor);
-		//renderer->AddActor(frontActor);
-		//renderer->AddActor(leftNfront);
-
-
-		//// Render and interact
-		//renderWindow->Render();
-		//renderWindowInteractor->Start();
 	}
 
 }

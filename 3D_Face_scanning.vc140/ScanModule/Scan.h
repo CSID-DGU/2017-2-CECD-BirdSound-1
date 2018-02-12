@@ -1,4 +1,7 @@
 #pragma once
+#undef foreach
+#undef Q_FOREACH
+
 
 #include "vtkAutoInit.h" 
 VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
@@ -51,8 +54,10 @@ public:
 	std::string saveImage(rs2::frame &frame, std::string filepath, int filetype){
 	}
 
-	/*mode0 : omp  mode1 : omp with simd   else serial*/
+	
 	void frame2Points(const rs2::frame& frame);
+
+	/*mode0 : omp  mode1 : omp with simd   else serial*/
 	void MeshConstruction(int mode, int saveType, int ThreadSize = 4);
 	void viewRawStream();
 

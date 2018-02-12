@@ -272,7 +272,8 @@ void Device::printSensorInfo() {
 
 //help function...
 //하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
-void Device::selectSensorAndStreamProps() {
+void Device::selectSensorAndStreamProps() 
+{
 
 	
 	size_t command_sensor;
@@ -283,11 +284,18 @@ void Device::selectSensorAndStreamProps() {
 	//cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
 	//cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;
 
-	command_sensor = 0;
+	/**mode depth*/
+	/*command_sensor = 0;
 	command_stream = 0;
 	command_code=193;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);*/
 		
+	/**mode color*/
+	command_sensor = 1;
+	command_stream = 4;
+	command_code=003;
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+
 
 	cout << "스트리밍을 시작합니다..";
 	try {

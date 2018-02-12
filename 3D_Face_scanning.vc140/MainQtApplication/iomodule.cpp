@@ -44,13 +44,12 @@ void IOModule::InitializeScene()
 		m_IsMeshViewer[i] = 1;
 	}
 
-	m_RelalSensePreviewer = new RelalSensePreviewer();
-	//m_RelalSensePreviewer->Create2DScene();
+	m_RelalSensePreviewer = new RealSensePreviewer();
+	m_RelalSensePreviewer->Create2DScene();
 	m_IsRelalSensePreviewer = 1;
 
 	m_ImagePreviewer = new ImagePreview;
 	m_ImagePreviewer->Create2DScene();
-
 	m_IsImageViewer = 1;
 }
 
@@ -115,15 +114,16 @@ void IOModule::InitializeUi()
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_1->width();	sizeY = this->ui.Viewer_cad_1->height();
 	m_MeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_1->winId()), sizeX, sizeY);
+	sizeX = this->ui.Viewer_cad_2->width();	sizeY = this->ui.Viewer_cad_2->height();
 	m_MeshPreviewer[1]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_2->winId()), sizeX, sizeY);
+	sizeX = this->ui.Viewer_cad_3->width();	sizeY = this->ui.Viewer_cad_3->height();
 	m_MeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3->winId()), sizeX, sizeY);
 
+	sizeX = this->ui.Viewer_cad_RS->width();	sizeY = this->ui.Viewer_cad_RS->height();
+	m_RelalSensePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RS->winId()), sizeX, sizeY);
+	
 	sizeX = this->ui.Viewer_2d->width();	sizeY = this->ui.Viewer_2d->height();
 	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_2d->winId()), sizeX, sizeY);
-	
-	
-	sizeX = this->ui.Viewer_cad_RS->width();	sizeY = this->ui.Viewer_cad_RS->height();
-	//m_RelalSensePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RS->winId()), sizeX, sizeY);
 }
 
 void IOModule::resizeEvent(QResizeEvent * event)
@@ -132,6 +132,8 @@ void IOModule::resizeEvent(QResizeEvent * event)
 	m_MeshPreviewer[1]->GetRenderWindow()->SetSize(ui.Viewer_cad_2->width(), ui.Viewer_cad_2->height());
 	m_MeshPreviewer[2]->GetRenderWindow()->SetSize(ui.Viewer_cad_3->width(), ui.Viewer_cad_3->height());
 	m_ImagePreviewer->GetRenderWindow()->SetSize(ui.Viewer_2d->width(), ui.Viewer_2d->height());
+
+	m_RelalSensePreviewer->GetRenderWindow()->SetSize(ui.Viewer_cad_RS->width(), ui.Viewer_cad_RS->height());
 }
 
 
@@ -151,10 +153,12 @@ void IOModule::DestroyVariables()
 		delete m_ImagePreviewer;
 		m_ImagePreviewer = NULL;
 	}
+	if (m_IsRelalSensePreviewer)
+	{
+		delete m_RelalSensePreviewer;
+		m_RelalSensePreviewer = NULL;
+	}
 
-	/*
-	land mark style 삭제하는 코드도 추가할 것.
-	*/
 }
 
 
@@ -547,6 +551,8 @@ void IOModule::slotAlignBtnClicked()
 	alig->setRight(this->m_MeshPreviewer[2]->GetRenderer());
 
 	alig->align();
+
+	delete alig;
 }
 
 
@@ -556,8 +562,17 @@ void IOModule::slotCapColBtnClicked()
 void IOModule::slotCapDepBtnClicked()
 {}
 
+
+/*Ir의 raw data를 streming하는 코드*/
+
+
 void IOModule::slotRecordBtnClicked()
 {
-	//std::cout << "@@";
-	//m_RelalSensePreviewer->drawStream();
+
+	//while (1)
+	{
+		m_RelalSensePreviewer->streamingColor();
+	}
+
+	//ui.Viewer_cad_RS = m_RelalSensePreviewer->GetRenderer();
 }

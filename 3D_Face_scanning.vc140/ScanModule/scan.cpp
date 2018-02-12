@@ -25,6 +25,7 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 	vtkRenderWindowInteractor * interactor = vtkRenderWindowInteractor::New();
 	interactor->SetRotation(0.1);
 
+	
 	//std::cout << point->GetNumberOfPoints() << "\n";
 
 	threadRenderer = vtkRenderer::New();
@@ -167,6 +168,9 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 
 		}
 	}
+
+
+
 	polyBoundary->SetPoints(boundary);
 	polyBoundary->SetPolys(cellBoundary);
 	mapperBoundary->SetInputData(polyBoundary);
@@ -176,6 +180,15 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 
 	threadRenderer->GetActiveCamera()->ParallelProjectionOff();
 	win->AddRenderer(threadRenderer);
+
+
+	vtkOBJExporter *objWriter = vtkOBJExporter::New();
+	objWriter->SetFilePrefix("my");
+	objWriter->SetInput(win);
+	objWriter->Write();
+
+
+
 
 	interactor->SetRenderWindow(win);
 	interactor->Start();

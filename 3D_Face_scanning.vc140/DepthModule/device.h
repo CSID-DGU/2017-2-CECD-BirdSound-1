@@ -16,6 +16,9 @@
 ("pthread_mutex_unlock failed")
 #endif
 
+#undef foreach
+#undef Q_FOREACH
+
 
 //#define STB_IMAGE_WRITE_IMPLEMENTATION
 //#include "stb_image_write.h"

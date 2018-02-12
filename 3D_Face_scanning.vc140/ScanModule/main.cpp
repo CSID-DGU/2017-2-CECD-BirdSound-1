@@ -15,7 +15,8 @@ int main()
 	
 	Scan *sc = new Scan();
 	sc->frame2Points(fra);//frame을 넣을때마다 updata되게 하는것도 좋을거 같은데
-	sc->MeshConstruction(0, 0);
+	sc->MeshConstruction(0, 0, 4);
+
 
 
 	return 0;
