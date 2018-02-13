@@ -284,30 +284,33 @@ void Device::selectSensorAndStreamProps()
 	size_t command_sensor;
 	size_t command_stream;
 	size_t command_code;
-	cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
-	//cout << "1. 카메라 센서 \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
-	//cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
-	//cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;
+	/*cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
+	cout << "depth면 00 193 & color이면 14 3";
+	cout << "1. 카메라 센서 \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
+	cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
+	cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;*/
 
 	/**mode depth*/
-	command_sensor = 0;
-	command_stream = 0;
-	command_code=193;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+//	command_sensor = 0;
+//	command_stream = 0;
+//	command_code=193;
+//	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
 		
 
 	/**mode depth2
 	Depth #0 (1280x720 / Z16 / 30Hz)
 	*/
-	command_sensor = 0;
-	command_stream = 0;
-	command_code = 193;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+//	command_sensor = 0;
+//	command_stream = 0;
+//	command_code = 193;
+//	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+
+
 	/**mode color*/
-	/*command_sensor = 1;
+	command_sensor = 1;
 	command_stream = 4;
-	command_code=003;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);*/
+	command_code=063;
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
 
 
 	cout << "스트리밍을 시작합니다..";

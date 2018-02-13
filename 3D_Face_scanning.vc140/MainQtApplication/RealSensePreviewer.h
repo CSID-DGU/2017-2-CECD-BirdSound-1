@@ -73,8 +73,8 @@ public:
 	int MeshSave(std::string meshPath, int extType);
 	int TextureMeshSave(std::string meshPath, int meshExtType, std::string imagePath, int imgExtType);
 	int NonTextureMeshSave(std::string meshPath, int meshExtType);
-	void streamingColor();
-	
+	void streamingColorRaw16();
+	void streamingColorRGB8();
 	
 	void Rendering();
 };

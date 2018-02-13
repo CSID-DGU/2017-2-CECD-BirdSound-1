@@ -273,7 +273,49 @@ void RealSensePreviewer::Rendering()
 }
 
 
-void RealSensePreviewer::streamingColor()
+void RealSensePreviewer::streamingColorRGB8()
+{
+	std::string devSerialNumber = realsense::getFirstSerial();
+	realsense::Device* device = new realsense::Device(devSerialNumber);
+	double dimensions[3] = { 1920, 1080, 1 };
+	const int nComponents = m_ImageData->GetNumberOfScalarComponents();
+	int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents*3;
+
+	m_ImageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
+	m_ImageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
+	m_ImageData->Modified();
+
+
+	device->EnableEmitter(0.0f);
+	
+	device->selectSensorAndStreamProps();
+	while (1)
+	{
+		auto fColor = device->capture(realsense::RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+		const unsigned char* data = static_cast<const unsigned char*>(fColor.get_data());
+		/*getstream ****************************/
+
+		unsigned char* scalarPointer = static_cast<unsigned char*>(m_ImageData->GetScalarPointer(0, 0, 0));
+
+		for (int i = 0; i < nScalar; i++)
+		{
+			scalarPointer[i] = data[i];
+			//std::cout << int(data[i]) << " ";
+			//std::cout << i << " ";
+		}
+
+		m_ImageMapper->SetInputData(m_ImageData);
+		m_ImageActor->SetMapper(m_ImageMapper);
+		m_Renderer->AddActor2D(m_ImageActor);
+		m_RenWin->Render();
+
+		_sleep(10);
+	}
+}
+
+
+/*raw16 format을 steaming하는 것*/
+void RealSensePreviewer::streamingColorRaw16()
 {
 
 	std::string devSerialNumber = realsense::getFirstSerial();
@@ -301,6 +343,7 @@ void RealSensePreviewer::streamingColor()
 		for (int i = 0; i < nScalar; i++)
 		{
 			scalarPointer[i] = data[i];
+			//std::cout << i << " ";
 		}
 
 		m_ImageMapper->SetInputData(m_ImageData);

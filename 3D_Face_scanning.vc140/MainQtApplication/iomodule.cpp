@@ -570,7 +570,7 @@ void IOModule::slotRecordBtnClicked()
 {
 
 	
-	m_RelalSensePreviewer->streamingColor();
+	m_RelalSensePreviewer->streamingColorRGB8();
 
 
 	//ui.Viewer_cad_RS = m_RelalSensePreviewer->GetRenderer();
