@@ -275,6 +275,7 @@ void RealSensePreviewer::Rendering()
 
 void RealSensePreviewer::streamingColor()
 {
+
 	std::string devSerialNumber = realsense::getFirstSerial();
 	realsense::Device* device = new realsense::Device(devSerialNumber);
 	double dimensions[3] = { 1920, 1080, 1 };
@@ -290,6 +291,7 @@ void RealSensePreviewer::streamingColor()
 	device->selectSensorAndStreamProps();
 	while (1)
 	{
+
 		auto fColor = device->capture(realsense::RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 		const unsigned short* data = static_cast<const unsigned short*>(fColor.get_data());
 		/*getstream ****************************/
@@ -314,8 +316,5 @@ void RealSensePreviewer::streamingColor()
 
 		_sleep(10);
 	}
-		
 
-	
-	
 }

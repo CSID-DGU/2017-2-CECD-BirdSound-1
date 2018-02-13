@@ -1,6 +1,7 @@
 #include"Scan.h"
 
-
+#include"vtkImageMapper.h"
+#include"vtkActor2D.h"
 double Scan::getDistane(double *src, double *tar)
 {
 	double retv = 0.0;
@@ -182,10 +183,10 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 	win->AddRenderer(threadRenderer);
 
 
-	vtkOBJExporter *objWriter = vtkOBJExporter::New();
+	/*vtkOBJExporter *objWriter = vtkOBJExporter::New();
 	objWriter->SetFilePrefix("my");
 	objWriter->SetInput(win);
-	objWriter->Write();
+	objWriter->Write();*/
 
 
 
@@ -595,29 +596,29 @@ void Scan::MeshConstruction(int mode, int saveType, int ThreadSize)
 		MeshConstruct(this->points, saveType);
 	}
 }
+
+/*
+이 부분 omp적용하는거 고려해볼 것.
+*/
 void Scan::frame2Points(const rs2::frame& frame)
 {
 	rs2::pointcloud pc;
 	rs2::points rsPoints;
-	cout << sizeof(frame);
 	rsPoints = pc.calculate(frame);
-	
+
+	//insert Next Point부분이 critical section일것이니까
+	//4부분으로 나눈다음에 다시 points에 넣는 구조로 만드는게 더 좋을거 같다.
+	//*/
+
 	if (points == nullptr)
 	{
 		points = vtkPoints::New();
 	}
 	auto v = rsPoints.get_vertices();
 
-	std::cout <<" "<< rsPoints.size() << " number of points exist!!\n";
-
-	/*
-	insert Next Point부분이 critical section일것이니까
-	4부분으로 나눈다음에 다시 points에 넣는 구조로 만드는게 더 좋을거 같다.
-	*/
-
+	////std::ofstream str("test.txt");
 	for (auto i = 0; i < width*height; i++)
 	{
-
 		if (v[i].z > 1 || v[i].z < -1)
 		{
 			points->InsertNextPoint(0, 0, 0);
@@ -625,13 +626,7 @@ void Scan::frame2Points(const rs2::frame& frame)
 		else
 		{
 			points->InsertNextPoint(v[i]);
-			//cout << v << endl;
-			//cout << v[i].x << " " << v[i].y << " " << v[i].z << endl;
 		}
-		
-
-		//else points->InsertNextPoint(0, 0, 0);
 	}
 
-	
 }

@@ -569,10 +569,9 @@ void IOModule::slotCapDepBtnClicked()
 void IOModule::slotRecordBtnClicked()
 {
 
-	//while (1)
-	{
-		m_RelalSensePreviewer->streamingColor();
-	}
+	
+	m_RelalSensePreviewer->streamingColor();
+
 
 	//ui.Viewer_cad_RS = m_RelalSensePreviewer->GetRenderer();
 }

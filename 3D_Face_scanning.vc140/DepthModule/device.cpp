@@ -209,6 +209,11 @@ Device::Device(string serialNumber) {
 	info.serial = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_SERIAL_NUMBER);
 	info.fw_ver = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_FIRMWARE_VERSION);
 
+
+	m_stereoSensor.set_option(RS2_OPTION_DEPTH_UNITS, 0.0001);
+	
+	//std::cout<<m_stereoSensor.get_option(RS2_OPTION_ACCURACY)<<"\n";
+	
 }
 
 void Device::printDeviceInfo() {
@@ -285,16 +290,24 @@ void Device::selectSensorAndStreamProps()
 	//cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;
 
 	/**mode depth*/
-	/*command_sensor = 0;
+	command_sensor = 0;
 	command_stream = 0;
 	command_code=193;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);*/
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
 		
+
+	/**mode depth2
+	Depth #0 (1280x720 / Z16 / 30Hz)
+	*/
+	command_sensor = 0;
+	command_stream = 0;
+	command_code = 193;
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
 	/**mode color*/
-	command_sensor = 1;
+	/*command_sensor = 1;
 	command_stream = 4;
 	command_code=003;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);*/
 
 
 	cout << "스트리밍을 시작합니다..";

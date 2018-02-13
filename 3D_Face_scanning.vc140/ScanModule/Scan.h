@@ -42,15 +42,136 @@ private:
 	const int width = 1280;
 	const int height = 720;
 	const int INF = 999999999;
-	
+	std::vector<rs2::frame> frames;
+
 public:
+	void InsertFrame(rs2::frame &frame)
+	{
+		frames.push_back(frame);
+	}
+
 	Scan()
 	{
 		points = nullptr;
 	}
+	/**
+	input				frames 
+	op					frame
+	*/
+	void frames2Points()
+	{
+		if (points == nullptr)
+		{
+			points = vtkPoints::New();
+		}
+
+		rs2::pointcloud pc;
+		rs2::points rsPoints;
+		std::vector<const rs2::vertex*> ver;
+
+		for (int i = 0; i < frames.size(); i++)
+		{
+			rsPoints = pc.calculate(frames[i]);
+			ver.push_back(rsPoints.get_vertices());
+		}
+
+		for (int j = 0; j < 1280 * 720; j++)
+		{
+			int cnt = 0;
+			double X, Y, Z;
+			X = Y = Z=0;
+
+			for (int i = 0; i < frames.size(); i++)
+			{
+				if (ver[i][j].z != 0 && ver[i][j].z < 1 && ver[i][j].z > -1)
+				{
+					X += ver[i][j].x;
+					Y += ver[i][j].y;
+					Z += ver[i][j].z;
+					cnt++;
+				}			
+			}
+			
+			if(cnt==0)
+				points->InsertNextPoint(0, 0, 0);
+			else
+			{
+				X /= cnt; Y /= cnt; Z /= cnt;
+				points->InsertNextPoint(X, Y, Z);
+			}
+		}
+	
+		ver.clear();
+		frames.clear();
+
+	}
+
+
 
 	
-	
+	void frames2PointsCutOutlier()
+	{
+		if (points == nullptr)
+		{
+			points = vtkPoints::New();
+		}
+
+		rs2::pointcloud pc;
+		rs2::points rsPoints;
+		std::vector<const rs2::vertex*> ver;
+
+		for (int i = 0; i < frames.size(); i++)
+		{
+			rsPoints = pc.calculate(frames[i]);
+			ver.push_back(rsPoints.get_vertices());
+		}
+
+		for (int j = 0; j < 1280 * 720; j++)
+		{
+
+			std::vector<double> X, Y, Z;
+			for (int i = 0; i < frames.size(); i++)
+			{
+				if (ver[i][j].z != 0 && ver[i][j].z < 1 && ver[i][j].z > -1)
+				{
+					X.push_back(ver[i][j].x);
+					Y.push_back(ver[i][j].y);
+					Z.push_back(ver[i][j].z);
+				}
+			}
+
+			double _X, _Y, _Z;
+			_X = _Y = _Z = 0;
+
+			std::sort(X.begin(),X.end());
+			std::sort(Y.begin(), Y.end());
+			std::sort(Z.begin(), Z.end());
+
+			int cnt = 0;
+			for (int i = X.size()*0.3; i < X.size()*0.7; i++)
+			{
+				_X += X[i];
+				_Y += Y[i];
+				_Z += Z[i];
+				cnt++;
+			}
+			if (cnt <= 1)
+				points->InsertNextPoint(0, 0, 0);
+			else
+			{
+				_X /= cnt; _Y /= cnt; _Z /= cnt;
+				points->InsertNextPoint(_X, _Y, _Z);
+			}
+
+			X.clear(); Y.clear(); Z.clear();
+
+			//std::cout << j << " ";
+		}
+
+		ver.clear();
+		frames.clear();
+
+	}
 	std::string saveImage(rs2::frame &frame, std::string filepath, int filetype){
 	}
 
