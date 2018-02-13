@@ -1,7 +1,20 @@
 # Advanced Mode Parameters...
+버전 2.10.0 기준의 advanced_mode preset [링크](https://github.com/IntelRealSense/librealsense/blob/v2.10.0/src/ds5/advanced_mode/presets.cpp)  
+현재 사용중인 리얼센스 라이브러리의 버전은 2.9.0....  
+400,420 - 63개  
+405, 410, 430 - 65개  
+( 2개의 차이는  
+p.laser_state.laser_state = 1;  p.laser_power.laser_power = 150.f;  
+차이임. )
+넘버링이 가장 유사한 D410을 가지고 프리셋을 분석하면 될듯.
+ * 2.9.0 advanced_mode 컴파일 문의 : https://communities.intel.com/thread/121550?q=advanced
+ * advanced_mode doc : https://github.com/IntelRealSense/librealsense/blob/master/doc/rs400/rs400_advanced_mode.md
+
+[v 2.10.0 preset](https://github.com/IntelRealSense/librealsense/blob/f11482ddc645594f12dc003044db74e1c1895b13/src/ds5/advanced_mode/presets.cpp#L146)
 
 ## Depth Control
-#### 1. DS Second Peak Threshold
+#### 1. DS Second Peak Threshold = 325
+
 #### 2. DS Neighbor Threshold
 #### 3. DS Median Threshold
 #### 4. Estimate Median Increment

@@ -12,10 +12,9 @@ int main(void) {
 	string devSerialNumber = getFirstSerial();
 	Device* device = new Device(devSerialNumber);
 	device->printDeviceInfo();
-	//device->printSensorInfo();
+	device->printSensorInfo();
 	device->EnableEmitter(0.0f);
 	device->selectSensorAndStreamProps();
-
 	//simple visual check
 	while (1) {
 		auto fLeft = device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);

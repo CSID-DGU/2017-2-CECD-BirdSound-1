@@ -402,36 +402,6 @@
      <string>All Stop</string>
     </property>
    </widget>
-   <widget class="QListView" name="rgbSavedList">
-    <property name="geometry">
-     <rect>
-      <x>1070</x>
-      <y>200</y>
-      <width>221</width>
-      <height>121</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListView" name="irLeftSavedList">
-    <property name="geometry">
-     <rect>
-      <x>1070</x>
-      <y>350</y>
-      <width>221</width>
-      <height>121</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListView" name="irRightSavedList">
-    <property name="geometry">
-     <rect>
-      <x>1070</x>
-      <y>500</y>
-      <width>221</width>
-      <height>121</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
@@ -599,6 +569,36 @@ background-image: url(:/myImage.png);
      <string>Calibrate!!</string>
     </property>
    </widget>
+   <widget class="QListWidget" name="rgbCaptureList">
+    <property name="geometry">
+     <rect>
+      <x>1070</x>
+      <y>200</y>
+      <width>221</width>
+      <height>121</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="ir1CaptureList">
+    <property name="geometry">
+     <rect>
+      <x>1070</x>
+      <y>350</y>
+      <width>221</width>
+      <height>121</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="ir2CaptureList">
+    <property name="geometry">
+     <rect>
+      <x>1070</x>
+      <y>500</y>
+      <width>221</width>
+      <height>121</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>label_9</zorder>
    <zorder>label</zorder>
    <zorder>rgbLabel</zorder>
@@ -625,9 +625,6 @@ background-image: url(:/myImage.png);
    <zorder>startStreaming</zorder>
    <zorder>camName</zorder>
    <zorder>stopStreaming</zorder>
-   <zorder>rgbSavedList</zorder>
-   <zorder>irLeftSavedList</zorder>
-   <zorder>irRightSavedList</zorder>
    <zorder>label_4</zorder>
    <zorder>label_8</zorder>
    <zorder>message</zorder>
@@ -638,6 +635,9 @@ background-image: url(:/myImage.png);
    <zorder>leftCount</zorder>
    <zorder>rightCount</zorder>
    <zorder>startCalibration</zorder>
+   <zorder>rgbCaptureList</zorder>
+   <zorder>ir1CaptureList</zorder>
+   <zorder>ir2CaptureList</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

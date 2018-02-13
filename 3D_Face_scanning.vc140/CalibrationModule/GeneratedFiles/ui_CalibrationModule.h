@@ -15,7 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QListView>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -54,9 +54,6 @@ public:
     QPushButton *startStreaming;
     QLabel *camName;
     QPushButton *stopStreaming;
-    QListView *rgbSavedList;
-    QListView *irLeftSavedList;
-    QListView *irRightSavedList;
     QLabel *label_4;
     QLabel *label_8;
     QLabel *label_9;
@@ -68,6 +65,9 @@ public:
     QLabel *leftCount;
     QLabel *rightCount;
     QPushButton *startCalibration;
+    QListWidget *rgbCaptureList;
+    QListWidget *ir1CaptureList;
+    QListWidget *ir2CaptureList;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -178,15 +178,6 @@ public:
         stopStreaming = new QPushButton(centralWidget);
         stopStreaming->setObjectName(QStringLiteral("stopStreaming"));
         stopStreaming->setGeometry(QRect(1160, 70, 91, 23));
-        rgbSavedList = new QListView(centralWidget);
-        rgbSavedList->setObjectName(QStringLiteral("rgbSavedList"));
-        rgbSavedList->setGeometry(QRect(1070, 200, 221, 121));
-        irLeftSavedList = new QListView(centralWidget);
-        irLeftSavedList->setObjectName(QStringLiteral("irLeftSavedList"));
-        irLeftSavedList->setGeometry(QRect(1070, 350, 221, 121));
-        irRightSavedList = new QListView(centralWidget);
-        irRightSavedList->setObjectName(QStringLiteral("irRightSavedList"));
-        irRightSavedList->setGeometry(QRect(1070, 500, 221, 121));
         label_4 = new QLabel(centralWidget);
         label_4->setObjectName(QStringLiteral("label_4"));
         label_4->setGeometry(QRect(1070, 480, 111, 16));
@@ -230,6 +221,15 @@ public:
         startCalibration = new QPushButton(centralWidget);
         startCalibration->setObjectName(QStringLiteral("startCalibration"));
         startCalibration->setGeometry(QRect(1160, 100, 91, 23));
+        rgbCaptureList = new QListWidget(centralWidget);
+        rgbCaptureList->setObjectName(QStringLiteral("rgbCaptureList"));
+        rgbCaptureList->setGeometry(QRect(1070, 200, 221, 121));
+        ir1CaptureList = new QListWidget(centralWidget);
+        ir1CaptureList->setObjectName(QStringLiteral("ir1CaptureList"));
+        ir1CaptureList->setGeometry(QRect(1070, 350, 221, 121));
+        ir2CaptureList = new QListWidget(centralWidget);
+        ir2CaptureList->setObjectName(QStringLiteral("ir2CaptureList"));
+        ir2CaptureList->setGeometry(QRect(1070, 500, 221, 121));
         CalibrationModuleClass->setCentralWidget(centralWidget);
         label_9->raise();
         label->raise();
@@ -257,9 +257,6 @@ public:
         startStreaming->raise();
         camName->raise();
         stopStreaming->raise();
-        rgbSavedList->raise();
-        irLeftSavedList->raise();
-        irRightSavedList->raise();
         label_4->raise();
         label_8->raise();
         message->raise();
@@ -270,6 +267,9 @@ public:
         leftCount->raise();
         rightCount->raise();
         startCalibration->raise();
+        rgbCaptureList->raise();
+        ir1CaptureList->raise();
+        ir2CaptureList->raise();
         menuBar = new QMenuBar(CalibrationModuleClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1313, 21));

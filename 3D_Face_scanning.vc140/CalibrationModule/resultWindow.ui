@@ -13,6 +13,19 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>200</y>
+     <width>541</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>서브 윈도우 입니다.</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
