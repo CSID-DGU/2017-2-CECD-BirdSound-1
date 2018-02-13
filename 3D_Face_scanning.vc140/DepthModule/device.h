@@ -117,10 +117,11 @@ namespace realsense {
 		void selectSensorAndStreamProps();
 		void startStreaming(rs2::stream_profile& stream_profile);
 		void Device::startStreaming(vector<rs2::stream_profile> &stream_profile);
-		void Device::stopStreaming(rs2::stream_profile& stream_profile);
+		void Device::stopStreaming(RS_400_STREAM_TYPE stream);
+		void stopStreaming(RS_400_SENSOR);
 		rs2::frame capture(RS_400_STREAM_TYPE);
 		void EnableEmitter(float value);
-		void stopStreaming(RS_400_SENSOR);
+		
 
 
 		/*camera_info InitializeCamera(string serial_number);
