@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CalibrationModule", "Calibr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanModule", "ScanModule\ScanModule.vcxproj", "{E576089B-9657-426E-9339-728B16F186A8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ValueTestModule", "ValueTestModule\ValueTestModule.vcxproj", "{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -54,6 +56,12 @@ Global
 		{E576089B-9657-426E-9339-728B16F186A8}.Release|x64.ActiveCfg = Release|x64
 		{E576089B-9657-426E-9339-728B16F186A8}.Release|x64.Build.0 = Release|x64
 		{E576089B-9657-426E-9339-728B16F186A8}.Release|x86.ActiveCfg = Release|x64
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}.Debug|x64.ActiveCfg = Debug|x64
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}.Debug|x64.Build.0 = Debug|x64
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}.Debug|x86.ActiveCfg = Debug|x64
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}.Release|x64.ActiveCfg = Release|x64
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}.Release|x64.Build.0 = Release|x64
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +70,7 @@ Global
 		{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C} = {370091BA-D623-47E7-A349-70D714C6F351}
 		{9875212D-FCA4-497D-8510-34FB0F97EB76} = {370091BA-D623-47E7-A349-70D714C6F351}
 		{E576089B-9657-426E-9339-728B16F186A8} = {370091BA-D623-47E7-A349-70D714C6F351}
+		{025DEAB6-9CD7-4E15-8B12-9D816C8A618C} = {370091BA-D623-47E7-A349-70D714C6F351}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		Qt5Version = $(DefaultQtVersion)
