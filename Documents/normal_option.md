@@ -161,4 +161,4 @@ DepthModule 솔루션에 정의된(device.cpp, device.h) printSensorInfo를 통�
       Current Value : 55.0319
 ```
 
-대략적인 파라미터들 값에 대한 설명은 [Document](file://./assets/Intel-RealSense-D40-Series-Datasheet.pdf) 의 
+대략적인 파라미터들 값에 대한 대략적인 설명은 [Intel-RealSense-D40-Series-Datasheet.pdf](file://./assets/Intel-RealSense-D40-Series-Datasheet.pdf) 의 67페이지 4.7 Depth Camera Functions 에 나와있다.

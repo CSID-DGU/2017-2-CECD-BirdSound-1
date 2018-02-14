@@ -125,6 +125,18 @@
     <ClCompile Include="MainModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CalibrationModule.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CalibrationModule\CalibrationModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationModule.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DepthModule\device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">
@@ -153,6 +165,9 @@
     </CustomBuild>
     <CustomBuild Include="scanmodule.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\CalibrationModule\CalibrationModule.hpp">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_scanmodule.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DepthModule\device.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

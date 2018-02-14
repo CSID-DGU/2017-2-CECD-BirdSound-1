@@ -1,8 +1,9 @@
-#include "CalibrationModule.h"
+#include "CalibrationModule.hpp"
+#include "../DepthModule/device.h"
 
 using namespace realsense;
 
-CalibrationModule::CalibrationModule(QWidget *parent) : QMainWindow(parent)
+CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 

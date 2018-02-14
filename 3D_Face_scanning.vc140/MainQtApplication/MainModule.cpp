@@ -1,4 +1,5 @@
 #include "MainModule.hpp"
+#include "../../CalibrationModule/CalibrationModule.hpp"
 
 
 MainModule::MainModule(QWidget *parent) : QWidget(parent) {
@@ -11,7 +12,8 @@ MainModule::MainModule(QWidget *parent) : QWidget(parent) {
 }
 
 void MainModule::runCalibrationModule() {
-
+	CalibrationModule* c = new CalibrationModule();
+	c->show();
 }
 
 void MainModule::runScanModule() {
@@ -19,7 +21,7 @@ void MainModule::runScanModule() {
 }
 
 void MainModule::runViewerModule() {
-
+	
 }
 
 void MainModule::runExpModule() {

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CALIB_H
+#define CALIB_H
 #include <QtWidgets/QMainWindow>
 #include "ui_CalibrationModule.h"
 #include "opencv2/opencv.hpp"
@@ -10,7 +12,7 @@
 
 using namespace realsense;
 
-class CalibrationModule : public QMainWindow
+class CalibrationModule : public QWidget
 {
 	Q_OBJECT
 		enum class streamType { infrared_left, infrared_right, color };
@@ -23,12 +25,12 @@ public:
 	void CalibrationModule::capture(RS_400_STREAM_TYPE stream);
 	void CalibrationModule::calibration();
 private:
+	Ui::CalibrationModule ui;
 	bool m_streamingAll = false;
 	bool m_streamingColor = false;
 	bool m_streamingIR1 = false;
 	bool m_strmingIR2 = false;
 	realsense::Device* m_device;
-	Ui::CalibrationModuleClass ui;
 	int m_stored = 0;
 	int m_color_stored = 0;
 	int m_left_stored = 0;
@@ -49,3 +51,4 @@ private:
 	std::vector<cv::Point2f> m_pointBufRight;
 };
 
+#endif

@@ -1,7 +1,7 @@
 #pragma warning (disable : 4996)
 #include "iomodule.h"
-#include "initializemodule.hpp" //초기화 부분 모듈 및 ui include
-#include "mainmodule.hpp"
+#include "InitializeModule.hpp" //초기화 부분 모듈 및 ui include
+#include "MainModule.hpp"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])

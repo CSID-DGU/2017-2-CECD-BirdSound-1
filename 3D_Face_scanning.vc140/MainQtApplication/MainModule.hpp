@@ -1,4 +1,5 @@
 #include "ui_mainmodule.h"
+#include "ui_calibrationmodule.h"
 
 class MainModule : public QWidget { //QWidget »ó¼Ó..
 	Q_OBJECT
