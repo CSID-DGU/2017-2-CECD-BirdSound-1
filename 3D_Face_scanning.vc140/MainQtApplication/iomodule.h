@@ -3,26 +3,18 @@
 #include <QtWidgets/QMainWindow>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
-#include <vtkPointHandleRepresentation2D.h>//
-#include <vtkSeedRepresentation.h>//
-#include <vtkSeedWidget.h>//
-#include <vtkSphereSource.h>//
 #include <LandMarkInteractorStyle.h>
-#include <vtkProperty2D.h>//
 
 
 #include "ui_iomodule.h"
-
 #include "MeshPreview.h"
 #include "ImagePreview.h"
 #include"RealSensePreviewer.h"
-#include <vtkAutoInit.h>
 #include"../DepthModule/device.h"
-#include<vtkImageViewer2.h>
-#include<vtkImageDataStreamer.h>
+
 #include<string>
 
-
+#include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingFreeType);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 

@@ -560,7 +560,9 @@ void IOModule::slotCapColBtnClicked()
 {}
 
 void IOModule::slotCapDepBtnClicked()
-{}
+{
+	
+}
 
 
 /*Ir의 raw data를 streming하는 코드*/
@@ -568,10 +570,9 @@ void IOModule::slotCapDepBtnClicked()
 
 void IOModule::slotRecordBtnClicked()
 {
-
-	
+	m_RelalSensePreviewer->ReleaseModel();
 	m_RelalSensePreviewer->streamingColorRGB8();
 
-
+	
 	//ui.Viewer_cad_RS = m_RelalSensePreviewer->GetRenderer();
 }

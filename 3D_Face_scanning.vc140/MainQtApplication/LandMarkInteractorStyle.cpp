@@ -66,7 +66,7 @@ void LandMarkInteractorStyle::Reset()
 
 	if (LastPickedActor)
 	{
-		LastPickedActor->Delete();
+		//LastPickedActor->Delete();위에 모든 actor을 지우면서 lastPicked Actor을 이미 지워짐.
 		LastPickedActor = NULL;
 	}
 

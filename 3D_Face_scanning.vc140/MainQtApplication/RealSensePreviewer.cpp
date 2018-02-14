@@ -134,6 +134,14 @@ int RealSensePreviewer::Create2DScene()
 	m_RenWin->SetInteractor(m_IRen);
 	m_RenWin->Modified();
 
+
+
+	
+	m_ImageActor->SetMapper(m_ImageMapper);
+	m_Renderer->AddActor2D(m_ImageActor);
+
+
+
 	m_IRen->SetRenderWindow(m_RenWin);
 	return 1;
 }
@@ -279,7 +287,7 @@ void RealSensePreviewer::streamingColorRGB8()
 	realsense::Device* device = new realsense::Device(devSerialNumber);
 	double dimensions[3] = { 1920, 1080, 1 };
 	const int nComponents = m_ImageData->GetNumberOfScalarComponents();
-	int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents*3;
+	int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents * 3;
 
 	m_ImageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
 	m_ImageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
@@ -287,7 +295,7 @@ void RealSensePreviewer::streamingColorRGB8()
 
 
 	device->EnableEmitter(0.0f);
-	
+
 	device->selectSensorAndStreamProps();
 	while (1)
 	{
@@ -333,7 +341,7 @@ void RealSensePreviewer::streamingColorRaw16()
 	device->selectSensorAndStreamProps();
 	while (1)
 	{
-
+		
 		auto fColor = device->capture(realsense::RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 		const unsigned short* data = static_cast<const unsigned short*>(fColor.get_data());
 		/*getstream ****************************/
@@ -353,11 +361,11 @@ void RealSensePreviewer::streamingColorRaw16()
 
 		//m_Renderer->GetActiveCamera()->SetFocalPoint(m_ImageData->GetCenter());
 		//m_Renderer->GetActiveCamera()->SetPosition(m_ImageData->GetCenter()[0], m_ImageData->GetCenter()[1], 100000.0);
-		/*m_Renderer->ResetCamera();
-		m_Renderer->Modified();*/
+		m_Renderer->ResetCamera();
+		m_Renderer->Modified();
 		m_RenWin->Render();
 
-		_sleep(10);
+		//_sleep(100);
 	}
 
 }
