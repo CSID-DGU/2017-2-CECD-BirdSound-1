@@ -259,7 +259,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <CustomBuild Include="..\CalibrationModule\CalibrationModule.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing CalibrationModule.hpp...</Message>
@@ -283,13 +282,8 @@
     <ClInclude Include="BMPImport.h" />
     <ClInclude Include="GeneratedFiles\ui_calibrationmodule.h" />
     <ClInclude Include="GeneratedFiles\ui_initializemodule.h" />
-=======
-    <ClInclude Include="..\DepthModule\device.h" />
     <ClInclude Include="AlignModule.h" />
-    <ClInclude Include="BMPExport.h" />
-    <ClInclude Include="BMPImport.h" />
     <ClInclude Include="double3.h" />
->>>>>>> origin/ScanModule
     <ClInclude Include="GeneratedFiles\ui_iomodule.h" />
     <ClInclude Include="GeneratedFiles\ui_mainmodule.h" />
     <ClInclude Include="GeneratedFiles\ui_scanmodule.h" />
