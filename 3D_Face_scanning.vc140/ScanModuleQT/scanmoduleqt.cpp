@@ -15,6 +15,12 @@ int ScanModuleQT::DestroyVariables()
 	delete m_MeshPreviewer;
 	delete m_ImagePreviewer;*/
 
+	for(int i=0;i<3;i++)
+		m_MiniMeshPreviewer[i]->DestroyVariables();
+
+	delete m_ImagePreviewer;
+	delete RealSenseD415;
+	delete Scanner;
 	return 1;
 }
 ScanModuleQT::~ScanModuleQT()
@@ -51,7 +57,7 @@ void ScanModuleQT::InitializeScene()
 		m_IsMiniMeshViewer[i] = 1;
 	}
 
-	Scanner->Viewer->Create3DScene();
+
 	m_ScannedMeshViewer = 1;
 
 	m_ImagePreviewer = new RealSensePreviewer;
@@ -78,10 +84,10 @@ void ScanModuleQT::InitializeUi()
 	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_2D->winId()), sizeX, sizeY);
 
 	sizeX = this->ui.Viewer_cad_3D->width();	sizeY = this->ui.Viewer_cad_3D->height();
-	Scanner->Viewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3D->winId()), sizeX, sizeY);
+	Scanner->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3D->winId()), sizeX, sizeY);
 
 
-
+	
 	sizeX = this->ui.Viewer_cad_FRONT->width();	sizeY = this->ui.Viewer_cad_FRONT->height();
 	m_MiniMeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_FRONT->winId()), sizeX, sizeY);
 
@@ -101,7 +107,7 @@ void ScanModuleQT::slotCapBtn()
 	
 	RealSenseD415->selectSensorAndStreamProps();
 
-	Scanner->ReleaseModel();
+	
 	//Scanner->eraseFrame();
 	//for (int i = 0; i < 5; i++)
 	//{
@@ -116,14 +122,18 @@ void ScanModuleQT::slotCapBtn()
 	//Scanner->frames2Points();
 	//printf("%lf", (double(clock()) - double(begin)) / 1000.0);
 	//Scanner->MeshConstruction(0, 0);
-
-
-	clock_t begin;
-	begin = clock();
-	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
-	Scanner->frame2Points(fra);
-	Scanner->MeshConstruction(0, 0);
-	printf("%lf", (double(clock()) - double(begin)) / 1000.0);
+	for (int i = 0; i < 1; i++) 
+	{
+		Scanner->ReleaseModel();
+		clock_t begin;
+		begin = clock();
+		rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+		std::cout << "!";
+		Scanner->frame2Points(fra);
+		std::cout << "!";
+		Scanner->MeshConstruction(0, 0);
+		printf("%d %lf", sizeof(fra), (double(clock()) - double(begin)) / 1000.0);
+	}
 	
 }
 void ScanModuleQT::slotNextBtn() {}

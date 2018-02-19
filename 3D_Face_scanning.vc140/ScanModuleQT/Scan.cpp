@@ -1,5 +1,4 @@
 #include"Scan.h"
-
 #include"vtkImageMapper.h"
 #include"vtkActor2D.h"
 
@@ -130,21 +129,17 @@ void Scan::frames2Points()
 	frames.clear();
 
 }
-vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
+void  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
 {
-	Viewer->ReleaseModel();
-	Viewer->GetInteractor()->SetRotation(0.1);
 	std::cout <<" "<< point->GetNumberOfPoints() << "\n";
 
-	//omp_set_num_threads(4);
 
 	#pragma omp parallel num_threads(ThreadSize)		 
 	{
 		vtkPoints *threadPoint = vtkPoints::New();
 		vtkCellArray *threadCell = vtkCellArray::New();
-		vtkPolyData *threadPoly = vtkPolyData::New();
-		vtkPolyDataMapper *threadMapper = vtkPolyDataMapper::New();
-		vtkActor *threadActor = vtkActor::New();
+	
+
 
 		threadPoint->SetNumberOfPoints(width*height / ThreadSize);
 
@@ -155,11 +150,10 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 			point->GetPoint(i, temp);
 			threadPoint->SetPoint(i - (omp_get_thread_num()) * width*height / ThreadSize, temp);	
 		}
-		//printf("%lf\n\n", omp_get_wtime() - _start);
 
 		for (vtkIdType i = 0; i < threadPoint->GetNumberOfPoints(); i++)
 		{
-			if (i + 1 + width > threadPoint->GetNumberOfPoints())break;
+			if (i + 1 + width > threadPoint->GetNumberOfPoints())continue;
 			if ((i + 1) % width == 0)continue;
 
 			double orign[3], right[3], down[3], diga[3];
@@ -197,31 +191,20 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 
 		}
 
-		threadPoly->SetPoints(threadPoint);
-		threadPoly->SetPolys(threadCell);
+		Viewer->m_PolyData[omp_get_thread_num()]->SetPoints(threadPoint);
+		Viewer->m_PolyData[omp_get_thread_num()]->SetPolys(threadCell);
 
-		threadMapper->SetInputData(threadPoly);
-		threadActor->SetMapper(threadMapper);
+		Viewer->m_Mapper[omp_get_thread_num()]->SetInputData(Viewer->m_PolyData[omp_get_thread_num()]);
+		Viewer->m_Actor[omp_get_thread_num()]->SetMapper(Viewer->m_Mapper[omp_get_thread_num()]);
 
-		#pragma omp critical
-		{
-			Viewer->GetRenderer()->AddActor(threadActor);
-		}
 
-		//threadPoint->Delete();
-		//threadCell->Delete();
-		//threadPoly->Delete();
-		//threadMapper->Delete();
-		//threadActor->Delete();
-
+		
+		threadPoint->Delete();
+		threadCell->Delete();
 	}
 
-	//double _start = omp_get_wtime();
 	vtkPoints *boundary = vtkPoints::New();
 	vtkCellArray *cellBoundary = vtkCellArray::New();
-	vtkPolyData *polyBoundary = vtkPolyData::New();
-	vtkActor *actorBoundary = vtkActor::New();
-	vtkPolyDataMapper *mapperBoundary = vtkPolyDataMapper::New();
 
 	for (int j = 1; j <= ThreadSize - 1; j++)
 	{
@@ -273,31 +256,28 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 		}
 	}
 
-	polyBoundary->SetPoints(boundary);
+	Viewer->m_PolyData[4]->SetPoints(boundary);
 	polyBoundary->SetPolys(cellBoundary);
 	mapperBoundary->SetInputData(polyBoundary);
 	actorBoundary->SetMapper(mapperBoundary);
 
-	Viewer->GetRenderer()->AddActor(actorBoundary);
-	//Viewer->m_Actor = actorBoundary;
-	Viewer->GetRenderWindow()->Modified();
-	Viewer->GetRenderWindow()->Render();
+	
+	Viewer->m_PolyData[ThreadSize] = polyBoundary;
+	Viewer->m_Mapper[ThreadSize] = mapperBoundary;
+	Viewer->m_Actor[ThreadSize] = actorBoundary;
 
-
-
+	//act[4] = actorBoundary;
 	/*vtkOBJExporter *objWriter = vtkOBJExporter::New();
 	objWriter->SetFilePrefix("my");
 	objWriter->SetInput(win);
 	objWriter->Write();*/
 
-	//boundary->Delete();
-	//cellBoundary->Delete();
-	//polyBoundary->Delete();
-	//actorBoundary->Delete();
-	//mapperBoundary->Delete();
+	boundary->Delete();
+	cellBoundary->Delete();
+	
+	Viewer->GetRenderWindow()->Modified();
+	Viewer->GetRenderWindow()->Render();
 
-
-	return Viewer->GetRenderer();
 }
 
 /*보완 필요*/
@@ -502,12 +482,10 @@ vtkRenderer* Scan::MeshConstruct(vtkPoints *point, int saveType)
 {
 	vtkCellArray *cell = vtkCellArray::New();
 
-	//std::cout << point->GetNumberOfPoints() << "\n";
 
 	for (vtkIdType i = 0; i < point->GetNumberOfPoints() - width; i++)
 	{
 		double orign[3], right[3], down[3], diga[3];
-		//printf("%d %d\n", i,omp_get_thread_num());	
 		point->GetPoint(i, orign);
 		if (orign[0] == 0)continue;
 
@@ -544,28 +522,23 @@ vtkRenderer* Scan::MeshConstruct(vtkPoints *point, int saveType)
 	}
 
 
+	Viewer->GetPolyDataAt(0)->SetPoints(point);
+	Viewer->GetPolyDataAt(0)->SetPolys(cell);
+	Viewer->GetMapperAt(0)->SetInputData(Viewer->GetPolyDataAt(0));
+
+	Viewer->GetActorAt(0)->SetMapper(Viewer->GetMapperAt(0));
 	
-	Viewer->GetPolyData()->SetPoints(point);
-	Viewer->GetPolyData()->SetPolys(cell);
-	Viewer->GetMapper()->SetInputData(Viewer->GetPolyData());
+	Viewer->GetRenderer()->AddActor(Viewer->GetActorAt(0));
+
 	Viewer->GetRenderer()->GetActiveCamera()->ParallelProjectionOff();
 
 
-	Viewer->GetActor()->SetMapper(Viewer->GetMapper());
-	Viewer->GetRenderer()->AddActor(Viewer->GetActor());
-
-
-	Viewer->GetInteractor()->SetRotation(0.1);
-	
-	Viewer->GetRenderWindow()->AddRenderer(Viewer->GetRenderer());
-
-
+	//std::cout << Viewer->GetPolyDataAt(0)->GetNumberOfPolys() << "@!#!@#!@#";
 	if (saveType == 1)
 	{
 		vtkSTLWriter* stlWriter = vtkSTLWriter::New();
 		stlWriter->SetFileName("my.stl");
-
-		stlWriter->SetInputData(Viewer->GetPolyData());
+		stlWriter->SetInputData(Viewer->GetPolyDataAt(0));
 		stlWriter->Write();
 		stlWriter->Delete();
 	}
@@ -578,38 +551,39 @@ vtkRenderer* Scan::MeshConstruct(vtkPoints *point, int saveType)
 		obj->Delete();
 	}
 
-	Viewer->GetInteractor()->SetRenderWindow(Viewer->GetRenderWindow());
-	
 	cell->Delete();
+
+	Viewer->GetRenderWindow()->Modified();
+	Viewer->GetRenderWindow()->Render();
 	return Viewer->GetRenderer();
 }
 
-vtkRenderer* Scan::MeshConstruction(int mode, int saveType, int ThreadSize)
+void Scan::MeshConstruction(int mode, int saveType, int ThreadSize)
 {
-	vtkRenderer *retv;
 	if (this->points == nullptr)
 	{
 		std::cout << "Points are not setted";
-		return nullptr;
+		return;
 	}
 	switch (mode)
 	{
 	case 0:
-		retv=MeshConstructWithOMP(this->points, saveType, ThreadSize);
+		MeshConstructWithOMP(this->points, saveType, ThreadSize);
+		break;
 	case 1:
-		retv=MeshConstructWithOMPnSIMD(this->points, saveType, ThreadSize);
+		MeshConstructWithOMPnSIMD(this->points, saveType, ThreadSize);
+		break;
 	default:
-		retv=MeshConstruct(this->points, saveType);
+		MeshConstruct(this->points, saveType);
+		break;
 	}
-
-	return retv;
 }
 
 void Scan::ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCtrlSize)
 {
 
-	Viewer->m_RenWin->SetParentId(uiCtrl);
-	Viewer->m_RenWin->SetSize(xCtrlSize, yCtrlSize);
+	Viewer->GetRenderWindow()->SetParentId(uiCtrl);
+	Viewer->GetRenderWindow()->SetSize(xCtrlSize, yCtrlSize);
 }
 
 /*
@@ -626,22 +600,19 @@ void Scan::frame2Points(const rs2::frame& frame)
 	//*/
 
 	if (points == nullptr)
-	{
 		points = vtkPoints::New();
-	}
+	
 	auto v = rsPoints.get_vertices();
 
 	////std::ofstream str("test.txt");
 	for (auto i = 0; i < width*height; i++)
 	{
 		if (v[i].z > 1 || v[i].z < -1)
-		{
 			points->InsertNextPoint(0, 0, 0);
-		}
+		
 		else
-		{
 			points->InsertNextPoint(v[i]);
-		}
+		
 	}
 
 }

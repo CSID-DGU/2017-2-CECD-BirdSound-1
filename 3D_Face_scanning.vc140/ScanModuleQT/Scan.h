@@ -38,6 +38,7 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 enum { color, depth };
 enum { omp, ompNsimd, serial };
 
+
 class Scan
 {
 private:
@@ -47,19 +48,28 @@ private:
 	std::vector<rs2::frame> frames;
 
 public:
-	void eraseFrame()
-	{
-		frames.clear();
-	}
+
 	void InsertFrame(rs2::frame &frame)
 	{
 		frames.push_back(frame);
 	}
 
+	~Scan()
+	{
+		Viewer->DestroyVariables();
+
+		delete Viewer;
+		if(points !=NULL && points!=nullptr)	
+			points->Delete();
+		points = NULL;
+		frames.clear();
+	}
 	Scan()
 	{
 		points = nullptr;
 		Viewer = new MeshPreview();
+		Viewer->setSize(5);//if omp type parameter is 5, else parameter to nothing or 1
+		Viewer->Create3DScene();
 	}
 
 	void frames2Points();
@@ -69,42 +79,24 @@ public:
 	void frame2Points(const rs2::frame& frame);
 
 	/*mode0 : omp  mode1 : omp with simd   else serial*/
-	vtkRenderer* MeshConstruction(int mode, int saveType, int ThreadSize = 4);
+	void MeshConstruction(int mode, int saveType, int ThreadSize = 4);
 	void viewRawStream();
 	
 	void ReleaseModel()
 	{
-		if (points != NULL)
+		
+		if (points != NULL && points!=nullptr)
 		{
-			points->Reset();
 			points->Delete();
 			points=NULL;
 		}
 
 		points = vtkPoints::New();
-
-
-		vtkActorCollection *actors;
 	
-
-
-		actors = Viewer->GetRenderer()->GetActors();
-		const int NumberOfActors= actors->GetNumberOfItems();
-		std::cout << NumberOfActors << "\n";
-		for (int i = 0; i<NumberOfActors; i++) 
-		{
-			std::cout << i << "째 actor삭제 ";
-			vtkActor *temp = actors->GetNextActor();
-			if (temp != NULL && temp != nullptr)
-			{
-				std::cout << i << " 완료 \n  ";
-				Viewer->GetRenderer()->RemoveActor(temp);
-				temp->Delete();
-			}
-			else std::cout << i << " 실패 \n  ";
-		}
-
+		Viewer->ReleaseModel();
 		Viewer->GetRenderWindow()->Modified();
+
+		frames.clear();
 
 	}
 	void Delete()
@@ -114,18 +106,18 @@ public:
 
 		Viewer->DestroyVariables();
 		Viewer = NULL;
+
+		frames.clear();
 	}
 
 	MeshPreview *Viewer;
 
 private:
-
-	
 	vtkPoints *points;
 	vtkRenderer* MeshConstruct(vtkPoints *point, int saveType);
 	double getDistane(double *src, double *tar);
 	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp=0);
-	vtkRenderer* MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize);
+	void MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize);
 	vtkRenderer* MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType, int ThreadSize);
 
 
