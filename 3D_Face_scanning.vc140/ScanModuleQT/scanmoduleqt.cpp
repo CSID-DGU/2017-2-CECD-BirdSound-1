@@ -34,8 +34,8 @@ void ScanModuleQT::InitializeVariables()
 	m_IsImageViewer = 0;
 	m_ImagePreviewer = NULL;
 
-	m_IsMeshViewer = 0;
-	m_MeshPreviewer = NULL;
+	m_ScannedMeshViewer = 0;
+//	Scanner->Viewer = NULL;
 
 	std::string serial = realsense::getFirstSerial();
 	RealSenseD415=new realsense::Device(serial);
@@ -51,9 +51,8 @@ void ScanModuleQT::InitializeScene()
 		m_IsMiniMeshViewer[i] = 1;
 	}
 
-	m_MeshPreviewer = new MeshPreview();
-	m_MeshPreviewer->Create3DScene();
-	m_IsMeshViewer = 1;
+	Scanner->Viewer->Create3DScene();
+	m_ScannedMeshViewer = 1;
 
 	m_ImagePreviewer = new RealSensePreviewer;
 	m_ImagePreviewer->Create2DScene();
@@ -79,7 +78,7 @@ void ScanModuleQT::InitializeUi()
 	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_2D->winId()), sizeX, sizeY);
 
 	sizeX = this->ui.Viewer_cad_3D->width();	sizeY = this->ui.Viewer_cad_3D->height();
-	m_MeshPreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3D->winId()), sizeX, sizeY);
+	Scanner->Viewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3D->winId()), sizeX, sizeY);
 
 
 
@@ -99,23 +98,32 @@ void ScanModuleQT::InitializeUi()
 void ScanModuleQT::slotCapBtn() 
 {
 
+	
 	RealSenseD415->selectSensorAndStreamProps();
 
-	for (int i = 0; i < 5; i++)
-	{
-		rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
-		Scanner->InsertFrame(fra);
-	}
+	Scanner->ReleaseModel();
+	//Scanner->eraseFrame();
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+	//	Scanner->InsertFrame(fra);
+	//}
+
+
+	//clock_t begin;
+	//begin = clock();
+	////sc->frame2Points(fra);
+	//Scanner->frames2Points();
+	//printf("%lf", (double(clock()) - double(begin)) / 1000.0);
+	//Scanner->MeshConstruction(0, 0);
 
 
 	clock_t begin;
 	begin = clock();
-	//sc->frame2Points(fra);
-	Scanner->frames2Points();
-	printf("%lf", (double(clock()) - double(begin)) / 1000.0);
+	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+	Scanner->frame2Points(fra);
 	Scanner->MeshConstruction(0, 0);
-
-	
+	printf("%lf", (double(clock()) - double(begin)) / 1000.0);
 	
 }
 void ScanModuleQT::slotNextBtn() {}
@@ -126,6 +134,7 @@ void ScanModuleQT::slotFrontSaveBtn() {}
 
 void ScanModuleQT::slotStreamingBtn() 
 {
+	RealSenseD415->selectSensorAndStreamPropsForPreviewer();
 	m_ImagePreviewer->ReleaseModel();
-	m_ImagePreviewer->streamingColorRaw16();
+	m_ImagePreviewer->streamingColorRaw16(RealSenseD415);
 }

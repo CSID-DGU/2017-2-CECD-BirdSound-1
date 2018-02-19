@@ -23,7 +23,6 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -73,7 +72,6 @@ public:
     QPushButton *RightSaveBtn;
     QPushButton *StreamingBtn;
     QMenuBar *menuBar;
-    QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *ScanModuleQTClass)
@@ -237,9 +235,6 @@ public:
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1372, 21));
         ScanModuleQTClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(ScanModuleQTClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        ScanModuleQTClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(ScanModuleQTClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         ScanModuleQTClass->setStatusBar(statusBar);

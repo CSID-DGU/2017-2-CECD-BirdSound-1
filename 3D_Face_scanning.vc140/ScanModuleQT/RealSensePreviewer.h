@@ -12,6 +12,7 @@
 #include<vtkImageMapper.h>
 #include<vtkActor2D.h>
 
+#include<vtkActor2DCollection.h>
 #include<qthread.h>
 typedef QThread vtkThread;
 
@@ -64,8 +65,6 @@ public:
 
 	bool keepGo=true;
 
-
-	void setStyle(vtkInteractorStyle *_style);
 	int InitializeVariables();
 	int DestroyVariables();
 
@@ -80,7 +79,7 @@ public:
 	int MeshSave(std::string meshPath, int extType);
 	int TextureMeshSave(std::string meshPath, int meshExtType, std::string imagePath, int imgExtType);
 	int NonTextureMeshSave(std::string meshPath, int meshExtType);
-	void streamingColorRaw16();
+	void streamingColorRaw16(realsense::Device* device);
 	void streamingColorRGB8();
 	
 	void Rendering();

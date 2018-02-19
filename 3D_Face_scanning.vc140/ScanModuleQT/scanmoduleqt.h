@@ -19,8 +19,8 @@ public:
 	MeshPreview*							m_MiniMeshPreviewer[3];//left, front, right순서
 	int										m_IsMiniMeshViewer[3];
 	
-	MeshPreview*							m_MeshPreviewer;//left, front, right순서
-	int										m_IsMeshViewer;
+	
+	int										m_ScannedMeshViewer;
 
 	RealSensePreviewer*						m_ImagePreviewer;
 	int										m_IsImageViewer;

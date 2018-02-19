@@ -19,11 +19,6 @@ void RealSensePreviewer::ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCt
 	m_RenWin->SetSize(xCtrlSize, yCtrlSize);
 }
 
-void RealSensePreviewer::setStyle(vtkInteractorStyle *_style)
-{
-	m_IRen->SetInteractorStyle(_style);
-}
-
 
 int RealSensePreviewer::CreateModel(std::string meshPath, int extType)
 {
@@ -116,6 +111,7 @@ int RealSensePreviewer::ReleaseModel()
 		m_ImageData = vtkImageData::New();
 	}
 
+	
 
 	return 1;
 }
@@ -312,11 +308,10 @@ void RealSensePreviewer::streamingColorRGB8()
 
 
 /*raw16 format을 steaming하는 것*/
-void RealSensePreviewer::streamingColorRaw16()
+void RealSensePreviewer::streamingColorRaw16(realsense::Device* device)
 {
-
-	std::string devSerialNumber = realsense::getFirstSerial();
-	realsense::Device* device = new realsense::Device(devSerialNumber);
+	
+	//realsense::Device* device = new realsense::Device(devSerialNumber);
 	double dimensions[3] = { 1920, 1080, 1 };
 	const int nComponents = m_ImageData->GetNumberOfScalarComponents();
 	int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
@@ -326,9 +321,9 @@ void RealSensePreviewer::streamingColorRaw16()
 	m_ImageData->Modified();
 
 
-	device->EnableEmitter(0.0f);
-	device->selectSensorAndStreamPropsForPreviewer();
-	//while (1)
+//	device->EnableEmitter(0.0f);
+
+//	while (1)
 	{
 
 		auto fColor = device->capture(realsense::RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
@@ -346,16 +341,30 @@ void RealSensePreviewer::streamingColorRaw16()
 		m_ImageMapper->SetInputData(m_ImageData);
 		m_ImageActor->SetMapper(m_ImageMapper);
 		//m_Renderer여기서 랜더러에 있는 actor을 지우고 해야하나.?
+
+		vtkActor2DCollection *colActor = m_Renderer->GetActors2D();
+		
+		if(colActor->GetNumberOfItems()>0)
+		{
+			vtkActor2D *act = colActor->GetNextActor2D();
+			m_Renderer->RemoveActor(act);
+		}
+
 		m_Renderer->AddActor2D(m_ImageActor);
 
 		//m_Renderer->GetActiveCamera()->SetFocalPoint(m_ImageData->GetCenter());
 		//m_Renderer->GetActiveCamera()->SetPosition(m_ImageData->GetCenter()[0], m_ImageData->GetCenter()[1], 100000.0);
 		m_Renderer->ResetCamera();
 		m_Renderer->Modified();
+
+		
 		m_RenWin->Render();
 
-		//_sleep(100);
+		_sleep(100);
+		
 	
 	}
+
+	//delete device;
 
 }

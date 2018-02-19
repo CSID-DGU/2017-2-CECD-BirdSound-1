@@ -132,12 +132,13 @@ void Scan::frames2Points()
 }
 vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
 {
+	Viewer->ReleaseModel();
 	Viewer->GetInteractor()->SetRotation(0.1);
 	std::cout <<" "<< point->GetNumberOfPoints() << "\n";
 
 	//omp_set_num_threads(4);
 
-#pragma omp parallel num_threads(ThreadSize)		 
+	#pragma omp parallel num_threads(ThreadSize)		 
 	{
 		vtkPoints *threadPoint = vtkPoints::New();
 		vtkCellArray *threadCell = vtkCellArray::New();
@@ -207,11 +208,11 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 			Viewer->GetRenderer()->AddActor(threadActor);
 		}
 
-		threadPoint->Delete();
-		threadCell->Delete();
-		threadPoly->Delete();
-		threadMapper->Delete();
-		threadActor->Delete();
+		//threadPoint->Delete();
+		//threadCell->Delete();
+		//threadPoly->Delete();
+		//threadMapper->Delete();
+		//threadActor->Delete();
 
 	}
 
@@ -278,7 +279,9 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 	actorBoundary->SetMapper(mapperBoundary);
 
 	Viewer->GetRenderer()->AddActor(actorBoundary);
-
+	//Viewer->m_Actor = actorBoundary;
+	Viewer->GetRenderWindow()->Modified();
+	Viewer->GetRenderWindow()->Render();
 
 
 
@@ -287,11 +290,11 @@ vtkRenderer*  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int Thr
 	objWriter->SetInput(win);
 	objWriter->Write();*/
 
-	boundary->Delete();
-	cellBoundary->Delete();
-	polyBoundary->Delete();
-	actorBoundary->Delete();
-	mapperBoundary->Delete();
+	//boundary->Delete();
+	//cellBoundary->Delete();
+	//polyBoundary->Delete();
+	//actorBoundary->Delete();
+	//mapperBoundary->Delete();
 
 
 	return Viewer->GetRenderer();
@@ -600,6 +603,13 @@ vtkRenderer* Scan::MeshConstruction(int mode, int saveType, int ThreadSize)
 	}
 
 	return retv;
+}
+
+void Scan::ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCtrlSize)
+{
+
+	Viewer->m_RenWin->SetParentId(uiCtrl);
+	Viewer->m_RenWin->SetSize(xCtrlSize, yCtrlSize);
 }
 
 /*

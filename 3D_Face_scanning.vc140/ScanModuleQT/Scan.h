@@ -47,15 +47,15 @@ private:
 	std::vector<rs2::frame> frames;
 
 public:
+	void eraseFrame()
+	{
+		frames.clear();
+	}
 	void InsertFrame(rs2::frame &frame)
 	{
 		frames.push_back(frame);
 	}
 
-	~Scan()
-	{
-		points->
-	}
 	Scan()
 	{
 		points = nullptr;
@@ -65,32 +65,68 @@ public:
 	void frames2Points();
 	void frames2PointsCutOutlier();
 	std::string saveImage(rs2::frame &frame, std::string filepath, int filetype){}
-
+	void ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCtrlSize);
 	void frame2Points(const rs2::frame& frame);
 
 	/*mode0 : omp  mode1 : omp with simd   else serial*/
 	vtkRenderer* MeshConstruction(int mode, int saveType, int ThreadSize = 4);
 	void viewRawStream();
-	void Reset() 
+	
+	void ReleaseModel()
 	{
 		if (points != NULL)
 		{
+			points->Reset();
 			points->Delete();
 			points=NULL;
 		}
 
-		points
+		points = vtkPoints::New();
+
+
+		vtkActorCollection *actors;
+	
+
+
+		actors = Viewer->GetRenderer()->GetActors();
+		const int NumberOfActors= actors->GetNumberOfItems();
+		std::cout << NumberOfActors << "\n";
+		for (int i = 0; i<NumberOfActors; i++) 
+		{
+			std::cout << i << "째 actor삭제 ";
+			vtkActor *temp = actors->GetNextActor();
+			if (temp != NULL && temp != nullptr)
+			{
+				std::cout << i << " 완료 \n  ";
+				Viewer->GetRenderer()->RemoveActor(temp);
+				temp->Delete();
+			}
+			else std::cout << i << " 실패 \n  ";
+		}
+
+		Viewer->GetRenderWindow()->Modified();
+
+	}
+	void Delete()
+	{
+		points->Delete();
+		points = NULL;
+
 		Viewer->DestroyVariables();
+		Viewer = NULL;
 	}
 
+	MeshPreview *Viewer;
 
 private:
+
+	
 	vtkPoints *points;
 	vtkRenderer* MeshConstruct(vtkPoints *point, int saveType);
 	double getDistane(double *src, double *tar);
 	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp=0);
 	vtkRenderer* MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize);
 	vtkRenderer* MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType, int ThreadSize);
-	MeshPreview *Viewer;
+
 
 };
