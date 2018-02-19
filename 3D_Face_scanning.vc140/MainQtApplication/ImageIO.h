@@ -15,6 +15,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkWindowToImageFilter.h>
 
+
 class ImageIO
 {
 public:

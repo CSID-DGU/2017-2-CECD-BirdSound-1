@@ -79,19 +79,4 @@ public:
 	void ChangeViewMode(int mode); //0 point 1 wire 2 face 3 edgeface
 
 	void Rendering();
-	
-	//void ChangeToOrgin()
-	//{
-	//
-	//	m_Renderer->RemoveActor(m_Actor);
-	//
-	//	m_Actor = m_OrignActor;
-	//	m_Renderer->AddActor(m_Actor);
-	//	
-	//	
-	//	//m_Renderer->ResetCamera();
-	//	m_Renderer->Modified();
-	//	m_Renderer->Render();
-	//}
-
 };

@@ -26,10 +26,10 @@
     <ClCompile Include="device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="trash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trash.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

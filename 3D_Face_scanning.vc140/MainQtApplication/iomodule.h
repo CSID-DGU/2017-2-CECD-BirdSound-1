@@ -1,25 +1,20 @@
 #ifndef IOMODULE_H
 #define IOMODULE_H
-
 #include <QtWidgets/QMainWindow>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
-#include <vtkPointHandleRepresentation2D.h>//
-#include <vtkSeedRepresentation.h>//
-#include <vtkSeedWidget.h>//
-#include <vtkSphereSource.h>//
 #include <LandMarkInteractorStyle.h>
-#include <vtkProperty2D.h>//
 
 
 #include "ui_iomodule.h"
-
 #include "MeshPreview.h"
 #include "ImagePreview.h"
-#include"RelalSensePreviewer.h"
+#include"RealSensePreviewer.h"
+#include"../DepthModule/device.h"
+
+#include<string>
+
 #include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingOpenGL2);
-VTK_MODULE_INIT(vtkInteractionStyle);
 VTK_MODULE_INIT(vtkRenderingFreeType);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 
@@ -51,7 +46,7 @@ public:
 	ImagePreview*	m_ImagePreviewer;
 	int				m_IsImageViewer;
 
-	RelalSensePreviewer*					m_RelalSensePreviewer;
+	RealSensePreviewer*						m_RelalSensePreviewer;
 	int										m_IsRelalSensePreviewer;
 	void InitializeVariables();
 	void InitializeScene();

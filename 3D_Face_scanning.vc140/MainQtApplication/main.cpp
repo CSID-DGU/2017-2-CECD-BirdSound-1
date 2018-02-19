@@ -1,6 +1,7 @@
 #pragma warning (disable : 4996)
+
 #include "iomodule.h"
-#include "InitializeModule.hpp" //ÃÊ±âÈ­ ºÎºÐ ¸ðµâ ¹× ui include
+#include "InitializeModule.hpp" //ï¿½Ê±ï¿½È­ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ui include
 #include "MainModule.hpp"
 #include <QtWidgets/QApplication>
 
@@ -8,19 +9,19 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
-	//ÃÊ±âÈ­ ÁøÇà..
+	//ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½..
 	InitializeModule i;
 	i.show();
-	_sleep(3000); //ÃÊ±âÈ­´Â 3ÃÊ¸é ÃæºÐÇÏÁö.
-	//ÃÊ±âÈ­ ³¡!
+	_sleep(3000); //ï¿½Ê±ï¿½È­ï¿½ï¿½ 3ï¿½Ê¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+	//ï¿½Ê±ï¿½È­ ï¿½ï¿½!
 	i.close();
-	
-	
-	//¸ÞÀÎÀ©µµ¿ì ÁøÇà
+
+
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//IOModule w;
 	//w.show();
 	MainModule m;
 	m.show();
-	//¸ÞÀÎÀ©µµ¿ì ³¡
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	return a.exec();
 }

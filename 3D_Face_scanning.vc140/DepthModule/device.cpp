@@ -208,6 +208,11 @@ Device::Device(string serialNumber) {
 	info.serial = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_SERIAL_NUMBER);
 	info.fw_ver = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_FIRMWARE_VERSION);
 
+
+	m_stereoSensor.set_option(RS2_OPTION_DEPTH_UNITS, 0.0001);
+	
+	//std::cout<<m_stereoSensor.get_option(RS2_OPTION_ACCURACY)<<"\n";
+	
 }
 
 void Device::printDeviceInfo() {
@@ -271,19 +276,42 @@ void Device::printSensorInfo() {
 
 //help function...
 //하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
-void Device::selectSensorAndStreamProps() {
+void Device::selectSensorAndStreamProps() 
+{
 
 	
-	/*size_t command_sensor;
+	size_t command_sensor;
 	size_t command_stream;
 	size_t command_code;
-	cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
+	/*cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
+	cout << "depth면 00 193 & color이면 14 3";
 	cout << "1. 카메라 센서 \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
 	cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
-	cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;
+	cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;*/
 
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+	/**mode depth*/
+//	command_sensor = 0;
+//	command_stream = 0;
+//	command_code=193;
+//	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
 		
+
+	/**mode depth2
+	Depth #0 (1280x720 / Z16 / 30Hz)
+	*/
+//	command_sensor = 0;
+//	command_stream = 0;
+//	command_code = 193;
+//	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+
+
+	/**mode color*/
+	command_sensor = 1;
+	command_stream = 4;
+	command_code=063;
+	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
+
+
 	cout << "스트리밍을 시작합니다..";
 	try {
 		if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
@@ -296,16 +324,18 @@ void Device::selectSensorAndStreamProps() {
 	}
 	catch(...) {
 		cout << "잘못된 접근입니다. 코드표를 참조해주세요" << endl;
-	}*/
+	}
 	
 
-	m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
+	/*m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
 
 	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
-	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);*/
+	//startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED3][423].second);
 	
-	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
-	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
+
+	//m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
+	//startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
 
 	//Depth #0 (640x480 / Z16 / 30Hz)
 	//startStreaming(m_streoUniqueStreams[RS400_STREAM_DEPTH][493].second);
