@@ -109,7 +109,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CalibrationModule.ui">
+    <CustomBuild Include="calibrationmodule.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
@@ -122,7 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DepthModule\device.h" />
-    <ClInclude Include="GeneratedFiles\ui_CalibrationModule.h" />
+    <ClInclude Include="GeneratedFiles\ui_calibrationmodule.h" />
     <ClInclude Include="GeneratedFiles\ui_resultWindow.h" />
   </ItemGroup>
   <ItemGroup>

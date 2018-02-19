@@ -1,5 +1,5 @@
 /********************************************************************************
-** Form generated from reading UI file 'CalibrationModule.ui'
+** Form generated from reading UI file 'calibrationmodule.ui'
 **
 ** Created by: Qt User Interface Compiler version 5.9.1
 **

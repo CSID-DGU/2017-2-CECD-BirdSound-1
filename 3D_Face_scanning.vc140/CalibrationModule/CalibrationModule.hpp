@@ -19,17 +19,25 @@ class CalibrationModule : public QWidget
 public:
 	QString toQstr(std::string);
 	CalibrationModule(QWidget *parent = Q_NULLPTR);
-	void startStreaming(streamType);
+	void startStreaming();
+	void startStreaming(RS_400_STREAM_TYPE stream);
 	void stopStreaming();
+	void stopStreaming(RS_400_STREAM_TYPE stream);
 	void capture();
-	void CalibrationModule::capture(RS_400_STREAM_TYPE stream);
-	void CalibrationModule::calibration();
+	void capture(RS_400_STREAM_TYPE stream);
+	void calibration();
 private:
+	std::mutex m;
+	std::vector<std::thread> m_thread_pool;
 	Ui::CalibrationModule ui;
-	bool m_streamingAll = false;
+
+	int m_numCornersHor = 7, m_numCornersVer = 9;
+	int m_numSquares = m_numCornersHor * m_numCornersVer;
+	cv::Size m_board_sz = cv::Size(m_numCornersHor, m_numCornersVer);
+	int m_w = 1920, m_h = 1080;
 	bool m_streamingColor = false;
 	bool m_streamingIR1 = false;
-	bool m_strmingIR2 = false;
+	bool m_streamingIR2 = false;
 	realsense::Device* m_device;
 	int m_stored = 0;
 	int m_color_stored = 0;
@@ -50,5 +58,6 @@ private:
 	std::vector<cv::Point2f> m_pointBufLeft;
 	std::vector<cv::Point2f> m_pointBufRight;
 };
+
 
 #endif

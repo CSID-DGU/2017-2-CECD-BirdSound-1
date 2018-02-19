@@ -1,6 +1,7 @@
 #include "CalibrationModule.hpp"
 #include "../DepthModule/device.h"
-
+#include <thread>
+#include <mutex>
 using namespace realsense;
 
 CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
@@ -9,14 +10,17 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 
 	string devSerialNumber = getFirstSerial();
 	m_device = new Device(devSerialNumber);
+	m_device->EnableEmitter(0.0f);
 	ui.camName->setText(toQstr(m_device->info.name));
 	ui.serialNum->setText(toQstr(m_device->info.serial));
 	ui.firmwareVer->setText(toQstr(m_device->info.fw_ver));
+	
 
-	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(streamType::color); });
-	connect(ui.rgbStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_COLOR); });
-	connect(ui.leftStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED1); });
-	connect(ui.rightStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED2); });
+	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
+	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(); });
+	connect(ui.rgbStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_COLOR); });
+	connect(ui.leftStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_INFRARED1); });
+	connect(ui.rightStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_INFRARED2); });
 	
 	connect(ui.captrueImage, &QPushButton::clicked, [this] {capture(); });
 	connect(ui.rgbCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_COLOR); });
@@ -29,18 +33,22 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 	connect(ui.startCalibration, &QPushButton::clicked, [this] {calibration(); });
 }
 
-void CalibrationModule::startStreaming(streamType st) {
+void CalibrationModule::startStreaming() {
+	std::thread t1([this] {this->startStreaming(RS400_STREAM_COLOR); });
+	std::thread t2([this] {this->startStreaming(RS400_STREAM_INFRARED1); });
+	std::thread t3([this] {this->startStreaming(RS400_STREAM_INFRARED2); });
 
-	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-
-	m_device->EnableEmitter(0.0f);
-	m_device->selectSensorAndStreamProps();
-
-
-
-	int numSquares = numCornersHor * numCornersVer;
+	t1.detach();
+	t2.detach();
+	t3.detach();
+	
+	
+	/*startStreaming(RS400_STREAM_COLOR);
+	startStreaming(RS400_STREAM_INFRARED1);
+	startStreaming(RS400_STREAM_INFRARED2);*/
+/*	int numSquares = numCornersHor * numCornersVer;
 	cv::Size board_sz = cv::Size(numCornersHor, numCornersVer);
-	m_streamingAll = true;
+	bool m_streamingAll = true;
 
 	while (m_streamingAll)
 	{
@@ -94,7 +102,96 @@ void CalibrationModule::startStreaming(streamType st) {
 		ui.rgbLabel->show();
 		ui.irLeftLabel->show();
 		ui.irRightLabel->show();
-	}
+	}*/
+
+}
+
+void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
+		//m.lock();
+		if (stream == RS400_STREAM_COLOR && m_streamingColor == false) {
+			//use unrectified format for calibration. noted Custom_Calib_paper.pdf 2.4 11page.
+			//IR1,2 = Y16, RGB = YUY2 (YUYV)
+			m_device->selectSensorAndStreamProps(stream, R1920_1080, YUYV, HZ15);
+			m_streamingColor = true;
+			unique_ptr<uint32_t[]> colorBuf = unique_ptr<uint32_t[]>(new uint32_t[m_w*(m_h + 1)]);
+			while (m_streamingColor) {
+				auto fColor = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+				uint32_t *color = colorBuf.get();
+				ConvertYUY2ToRGBA((uint8_t*)fColor.get_data(), m_w, m_h, (uint8_t*)color);
+				cv::Mat colorImage(cv::Size(m_w, m_h), CV_8U, (uint8_t*)color, cv::Mat::AUTO_STEP);
+				cv::Mat gray_image;
+				/*bool foundColor = cv::findChessboardCorners(colorImage, m_board_sz, m_pointBufColor, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
+				if (foundColor)
+				{
+				cv::cvtColor(colorImage, gray_image, CV_BGR2GRAY);
+				cv::cornerSubPix(gray_image, m_pointBufColor, cv::Size(7, 9), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+				cv::drawChessboardCorners(colorImage, cv::Size(7, 9), cv::Mat(m_pointBufColor), foundColor);
+				}*/
+				cv::waitKey(1);
+				//QImage color_image((uchar*)fColor.get_data(), w, h, QImage::Format_RGB888);
+				QImage color_image(colorImage.data, m_w, m_h, QImage::Format_RGB888);
+				QPixmap cbuf = QPixmap::fromImage(color_image);
+				ui.rgbLabel->setPixmap(cbuf);
+				ui.rgbLabel->setScaledContents(true);
+				ui.rgbLabel->show();
+			}
+		}
+		else if (stream == RS400_STREAM_INFRARED1 && m_streamingIR1 == false) {
+			m_device->selectSensorAndStreamProps(stream, R1920_1080, Y16, HZ15);
+			m_streamingIR1 = true;
+			//auto leftBuf = unique_ptr<uint8_t[]>(new uint8_t[m_w*(m_h + 1)]);
+			while (m_streamingIR1) {
+				auto fLeft = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
+				uint8_t *left = (uint8_t*)fLeft.get_data();
+				ConvertLuminance16ToLuminance8((uint16_t*)fLeft.get_data(), m_w, m_h, left);
+
+
+				//cv::Mat leftImage(cv::Size(m_w, m_h), CV_16U, (void*)fLeft.get_data(), cv::Mat::AUTO_STEP);
+
+
+				cv::Mat left8(cv::Size(m_w, m_h), CV_8U, left, cv::Mat::AUTO_STEP);
+				/*bool founLeft = cv::findChessboardCorners(left8, m_board_sz, m_pointBufLeft, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
+				if (founLeft)
+				{
+				cornerSubPix(left8, m_pointBufLeft, cv::Size(m_numCornersHor, m_numCornersVer), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+				cv::drawChessboardCorners(left8, cv::Size(m_numCornersHor, m_numCornersVer), cv::Mat(m_pointBufLeft), founLeft);
+				}*/
+				cv::waitKey(1);
+				QImage lq_image(left8.data, m_w, m_h, QImage::Format_Grayscale8);
+				QPixmap lbuf = QPixmap::fromImage(lq_image);
+				ui.irLeftLabel->setPixmap(lbuf);
+				ui.irLeftLabel->setScaledContents(true);
+				ui.irLeftLabel->show();
+			}
+
+		}
+		else if (stream == RS400_STREAM_INFRARED2 && m_streamingIR2 == false) {
+			m_device->selectSensorAndStreamProps(stream, R1920_1080, Y16, HZ15);
+			m_streamingIR2 = true;
+			//auto rightBuf = unique_ptr<uint8_t[]>(new uint8_t[m_w*(m_h + 1)]);
+			while (m_streamingIR2) {
+				auto fRight = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
+				uint8_t *right = (uint8_t*)fRight.get_data();
+				ConvertLuminance16ToLuminance8((uint16_t*)fRight.get_data(), m_w, m_h, right);
+
+				//cv::Mat rightImage(cv::Size(m_w, m_h), CV_16U, (void*)fRight.get_data(), cv::Mat::AUTO_STEP);
+
+				cv::Mat right8(cv::Size(m_w, m_h), CV_8U, right, cv::Mat::AUTO_STEP);
+				/*bool founRight = cv::findChessboardCorners(right8, m_board_sz, m_pointBufRight, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
+				if (founRight)
+				{
+				cornerSubPix(right8, m_pointBufRight, cv::Size(7, 9), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+				cv::drawChessboardCorners(right8, cv::Size(7, 9), cv::Mat(m_pointBufRight), founRight);
+				}*/
+				cv::waitKey(1);
+				QImage rq_image(right8.data, m_w, m_h, QImage::Format_Grayscale8);
+				QPixmap rbuf = QPixmap::fromImage(rq_image);
+				ui.irRightLabel->setPixmap(rbuf);
+				ui.irRightLabel->setScaledContents(true);
+				ui.irRightLabel->show();
+			}
+		}
+		//m.unlock();
 }
 
 void CalibrationModule::capture() {
@@ -146,9 +243,30 @@ void CalibrationModule::capture(RS_400_STREAM_TYPE stream) {
 }
 
 void CalibrationModule::stopStreaming() {
-	m_streamingAll = false;
-	m_device->stopStreaming(RS_400_SENSOR::RGB_CAMERA);
-	m_device->stopStreaming(RS_400_SENSOR::STEREO_MODULE);
+	//All stop streaming
+	stopStreaming(RS400_STREAM_COLOR);
+	stopStreaming(RS400_STREAM_INFRARED1);
+	stopStreaming(RS400_STREAM_INFRARED2);
+}
+
+void CalibrationModule::stopStreaming(RS_400_STREAM_TYPE stream) {
+	if (stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR && m_streamingColor == true) {
+		m_streamingColor = false;
+		m_device->stopStreaming(stream);
+		ui.rgbLabel->clear();
+	}
+	else if (stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1 && m_streamingIR1 == true) {
+		m_streamingIR1 = false;
+		m_device->stopStreaming(stream);
+		ui.irLeftLabel->clear();
+	}
+	else if (stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2 && m_streamingIR2 == true) {
+		m_streamingIR2 = false;
+		m_device->stopStreaming(stream);
+		ui.irRightLabel->clear();
+	}
+
+	
 }
 
 void CalibrationModule::calibration() {

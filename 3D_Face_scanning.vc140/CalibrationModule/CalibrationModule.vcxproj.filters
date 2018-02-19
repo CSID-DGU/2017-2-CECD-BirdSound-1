@@ -63,9 +63,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CalibrationModule.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="CalibrationModule.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
@@ -75,15 +72,18 @@
     <CustomBuild Include="CalibrationModule.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="calibrationmodule.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_CalibrationModule.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_resultWindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_calibrationmodule.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

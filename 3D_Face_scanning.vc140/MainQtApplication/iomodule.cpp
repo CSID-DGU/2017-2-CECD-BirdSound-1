@@ -108,9 +108,9 @@ void IOModule::InitializeUi()
 	connect(ui.ViewEdgedFace_3, SIGNAL(clicked()), this, SLOT(ViewEdgedFace_3()));
 
 	
-	connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(slotCapColBtnClicked()));
+	//connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(slotCapColBtnClicked()));
 	connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(slotCapDepBtnClicked()));
-	connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(slotRecordBtnClicked()));
+	//connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(slotRecordBtnClicked()));
 
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_1->width();	sizeY = this->ui.Viewer_cad_1->height();

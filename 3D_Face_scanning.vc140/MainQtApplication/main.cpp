@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	//초기화 진행..
 	InitializeModule i;
 	i.show();
-	_sleep(3000); //초기화는 3초면 충분하지.
+	_sleep(3); //초기화는 3초면 충분하지. 3000
 	//초기화 끝!
 	i.close();
 	
