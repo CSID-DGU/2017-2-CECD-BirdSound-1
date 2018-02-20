@@ -140,6 +140,15 @@
     <ClCompile Include="..\DepthModule\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DemoFirstPart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DemoFirstPart.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DemoFirstPart.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">
@@ -170,6 +179,12 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\CalibrationModule\CalibrationModule.hpp">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="demofirstpart.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DemoFirstPart.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -254,6 +269,9 @@
     </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_demofirstpart.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

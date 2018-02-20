@@ -3,6 +3,7 @@
 #include "iomodule.h"
 #include "InitializeModule.hpp" //�ʱ�ȭ �κ� ���� �� ui include
 #include "MainModule.hpp"
+#include "DemoFirstPart.hpp"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])
@@ -19,9 +20,11 @@ int main(int argc, char *argv[])
 
 	//���������� ����
 	//IOModule w;
-	//w.show();
-	MainModule m;
-	m.show();
+	//w.show();o
+	DemoFirstPart df;
+	df.show();
+	//MainModule m;
+	//m.show();
 	//���������� ��
 	return a.exec();
 }
