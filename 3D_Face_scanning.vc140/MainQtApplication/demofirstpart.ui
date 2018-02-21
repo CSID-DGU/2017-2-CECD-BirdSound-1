@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1102</width>
-    <height>846</height>
+    <height>843</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -107,9 +107,9 @@
    <property name="geometry">
     <rect>
      <x>670</x>
-     <y>450</y>
+     <y>470</y>
      <width>411</width>
-     <height>321</height>
+     <height>301</height>
     </rect>
    </property>
    <property name="widgetResizable">
@@ -119,11 +119,269 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
-      <width>409</width>
-      <height>319</height>
+      <y>-353</y>
+      <width>392</width>
+      <height>652</height>
      </rect>
     </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="2" column="0">
+      <widget class="QSlider" name="Exposure_">
+       <property name="minimum">
+        <number>20</number>
+       </property>
+       <property name="maximum">
+        <number>166000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>Laser Power : 0.000 ~ 360.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QSlider" name="MinDistance">
+       <property name="maximum">
+        <number>16</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QSlider" name="LaserPower">
+       <property name="maximum">
+        <number>360</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>Max Distance : 0.0000 ~ 16.0000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QSlider" name="MaxDistance">
+       <property name="maximum">
+        <number>16</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QSlider" name="Gain_2">
+       <property name="minimum">
+        <number>16</number>
+       </property>
+       <property name="maximum">
+        <number>248</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>Decimation Filter Magnitude : 1.000 ~ 5.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Exposure 20.000 ~ 166000.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>Min Distance : 0.0000 ~ 16.0000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Gain : 16.000 ~ 248.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="21" column="0">
+      <widget class="QCheckBox" name="TemporalFilter">
+       <property name="text">
+        <string>Temporal Filter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="24" column="0">
+      <widget class="QLabel" name="label_22">
+       <property name="text">
+        <string>Temporal Filter Smooth Alpha : 0.0000 ~ 1.0000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="25" column="0">
+      <widget class="QSlider" name="TemporalFilterSmoothAlpha">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QSlider" name="DecimationFilterMagnitude">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="label_18">
+       <property name="text">
+        <string>Spatial Filter Magnitude : 1.000 ~ 5000</string>
+       </property>
+      </widget>
+     </item>
+     <item row="19" column="0">
+      <widget class="QLabel" name="label_20">
+       <property name="text">
+        <string>Spatial Filter Smooth Delta : 1.000 ~ 50.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="27" column="0">
+      <widget class="QSlider" name="TemporalFilterSmoothDelta">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="0">
+      <widget class="QSlider" name="SpatialFilterMagnitude">
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="0">
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>Spatial Filter Smooth Alpha : 0.2500 ~ 1.0000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QCheckBox" name="DecimationFilter">
+       <property name="text">
+        <string>Decimation Filter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="20" column="0">
+      <widget class="QSlider" name="SpatialFilterSmoothDelta">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>50</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="23" column="0">
+      <widget class="QSlider" name="TemporalFilterMagnitude">
+       <property name="maximum">
+        <number>15</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="22" column="0">
+      <widget class="QLabel" name="label_21">
+       <property name="text">
+        <string>Temporal Filter Magnitude : 0.000 ~ 15.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="26" column="0">
+      <widget class="QLabel" name="label_23">
+       <property name="text">
+        <string>Temporal Filter Smooth Delta : 1.000 ~ 100.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="0">
+      <widget class="QSlider" name="SpatialFilterSmoothAlpha">
+       <property name="minimum">
+        <number>25</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="0">
+      <widget class="QCheckBox" name="SpatialFilter">
+       <property name="text">
+        <string>Spatial Filter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="AutoExposure_2">
+       <property name="text">
+        <string>Auto Exposure</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QScrollArea" name="scrollArea_3">
@@ -132,7 +390,7 @@
      <x>670</x>
      <y>120</y>
      <width>411</width>
-     <height>321</height>
+     <height>291</height>
     </rect>
    </property>
    <property name="widgetResizable">
@@ -142,11 +400,210 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
-      <width>409</width>
-      <height>319</height>
+      <y>-181</y>
+      <width>392</width>
+      <height>470</height>
      </rect>
     </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="AutoExposure">
+       <property name="text">
+        <string>Auto Exposure</string>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="0">
+      <widget class="QCheckBox" name="AutoWhiteBalance">
+       <property name="text">
+        <string>Enable Auto White Balance</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QSlider" name="Exposure">
+       <property name="minimum">
+        <number>-8</number>
+       </property>
+       <property name="maximum">
+        <number>0</number>
+       </property>
+       <property name="value">
+        <number>-2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Exposure : -8.000 ~ 0.000 </string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QSlider" name="Gain">
+       <property name="maximum">
+        <number>128</number>
+       </property>
+       <property name="value">
+        <number>35</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Gamma : 100.000 ~ 500.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QSlider" name="Gamma">
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>500</number>
+       </property>
+       <property name="value">
+        <number>234</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QSlider" name="Hue">
+       <property name="minimum">
+        <number>-180</number>
+       </property>
+       <property name="maximum">
+        <number>180</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Sharpness : 0.000 ~ 100.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Hue : -180.000 ~ 180.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Gain : 0.000 ~ 128.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Saturation : 0.000 ~ 100.000   </string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="0">
+      <widget class="QSlider" name="Saturation">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>22</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Brightness : -64.000 ~ 64.000</string>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="0">
+      <widget class="QSlider" name="Sharpness">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QSlider" name="Brightness">
+       <property name="minimum">
+        <number>-64</number>
+       </property>
+       <property name="maximum">
+        <number>64</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Contrast : 0.000 ~ 100.000 </string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QSlider" name="Contrast">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="19" column="0">
+      <widget class="QSlider" name="WhiteBalance">
+       <property name="minimum">
+        <number>2800</number>
+       </property>
+       <property name="maximum">
+        <number>6500</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>White Balance : 2800.000 ~ 6500.000 </string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QLabel" name="camName">
@@ -254,6 +711,20 @@
     <string/>
    </property>
   </widget>
+  <zorder>rgbLabel</zorder>
+  <zorder>label_2</zorder>
+  <zorder>depthLabel</zorder>
+  <zorder>label_4</zorder>
+  <zorder>capture</zorder>
+  <zorder>startStreaming</zorder>
+  <zorder>scrollArea_3</zorder>
+  <zorder>camName</zorder>
+  <zorder>deviceFirmware</zorder>
+  <zorder>deviceFirmware_2</zorder>
+  <zorder>deviceName</zorder>
+  <zorder>serialNum</zorder>
+  <zorder>firmwareVer</zorder>
+  <zorder>scrollArea_2</zorder>
  </widget>
  <resources/>
  <connections/>

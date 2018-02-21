@@ -21,6 +21,7 @@ public:
 	void DemoFirstPart::startStreaming(RS_400_STREAM_TYPE stream);
 	void startStreaming();
 	//void stopStreaming();
+	void slidertest();
 	void capture();
 	//void CalibrationModule::capture(RS_400_STREAM_TYPE stream);
 	//void CalibrationModule::calibration();

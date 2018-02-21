@@ -17,19 +17,9 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 	ui.firmwareVer->setText(toQstr(m_device->info.fw_ver));
 
 	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(); });
-	//connect(ui.rgbStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_COLOR); });
-	//connect(ui.leftStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED1); });
-	//connect(ui.rightStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED2); });
-
-	//connect(ui.captrueImage, &QPushButton::clicked, [this] {capture(); });
 	connect(ui.capture, &QPushButton::clicked, [this] {capture(); });
-	//connect(ui.leftCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED1); });
-	//connect(ui.rightCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED2); });
-
-	//connect(ui.stopStreaming, &QPushButton::clicked, [this] {stopStreaming(); });
-
-
-	//connect(ui.startCalibration, &QPushButton::clicked, [this] {calibration(); });
+	
+	connect(ui.Exposure, &QSlider::valueChanged, [this] {slidertest(); });
 }
 
 void DemoFirstPart::startStreaming() {
@@ -127,7 +117,9 @@ void DemoFirstPart::capture() {
 
 
 }
-
+void DemoFirstPart::slidertest() {
+	cout << "slider value changed!" << endl;
+}
 inline QString DemoFirstPart::toQstr(std::string str) {
 	return QString::fromUtf8(str.c_str());
 }
