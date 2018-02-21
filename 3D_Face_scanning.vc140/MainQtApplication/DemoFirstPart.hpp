@@ -23,6 +23,7 @@ public:
 	//void stopStreaming();
 	void sliderHandle(QString, int);
 	void capture();
+	void checkboxHandle(QString, Qt::CheckState);
 	inline std::string DemoFirstPart::toStdStr(QString str);
 	//void CalibrationModule::capture(RS_400_STREAM_TYPE stream);
 	//void CalibrationModule::calibration();

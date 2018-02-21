@@ -309,7 +309,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QStringLiteral("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, -181, 392, 470));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, -168, 392, 470));
         gridLayout = new QGridLayout(scrollAreaWidgetContents_3);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         AutoExposure = new QCheckBox(scrollAreaWidgetContents_3);
@@ -431,6 +431,7 @@ public:
         WhiteBalance->setMinimum(2800);
         WhiteBalance->setMaximum(6500);
         WhiteBalance->setSingleStep(10);
+        WhiteBalance->setPageStep(100);
         WhiteBalance->setOrientation(Qt::Horizontal);
 
         gridLayout->addWidget(WhiteBalance, 19, 0, 1, 1);

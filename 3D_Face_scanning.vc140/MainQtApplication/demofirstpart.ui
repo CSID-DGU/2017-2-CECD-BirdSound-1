@@ -400,7 +400,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>-181</y>
+      <y>-168</y>
       <width>392</width>
       <height>470</height>
      </rect>
@@ -590,6 +590,9 @@
        </property>
        <property name="singleStep">
         <number>10</number>
+       </property>
+       <property name="pageStep">
+        <number>100</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

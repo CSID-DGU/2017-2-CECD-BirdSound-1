@@ -29,11 +29,16 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 	connect(ui.Saturation, &QSlider::valueChanged, [this] {sliderHandle(ui.Saturation->objectName(), ui.Saturation->value()); });
 	connect(ui.Sharpness, &QSlider::valueChanged, [this] {sliderHandle(ui.Sharpness->objectName(), ui.Sharpness->value()); });
 	connect(ui.WhiteBalance, &QSlider::valueChanged, [this] {sliderHandle(ui.WhiteBalance->objectName(), ui.WhiteBalance->value()); });
+	//checkbox
+	connect(ui.AutoWhiteBalance, &QCheckBox::clicked, [this] {checkboxHandle(ui.AutoWhiteBalance->objectName(), ui.AutoWhiteBalance->checkState()); });
+	connect(ui.AutoExposure, &QCheckBox::clicked, [this] {checkboxHandle(ui.AutoExposure->objectName(), ui.AutoExposure->checkState()); });
+
 
 	//DEPTH PARAMETER
 	connect(ui.Exposure_, &QSlider::valueChanged, [this] {sliderHandle(ui.Exposure_->objectName(), ui.Exposure_->value()); });
 	connect(ui.Gain_2, &QSlider::valueChanged, [this] {sliderHandle(ui.Gain_2->objectName(), ui.Gain_2->value()); });
 	connect(ui.LaserPower, &QSlider::valueChanged, [this] {sliderHandle(ui.LaserPower->objectName(), ui.LaserPower->value()); });
+
 	connect(ui.MinDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MinDistance->objectName(), ui.MinDistance->value()); });
 	connect(ui.MaxDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MaxDistance->objectName(), ui.MaxDistance->value()); });
 	connect(ui.DecimationFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.DecimationFilterMagnitude->objectName(), ui.DecimationFilterMagnitude->value()); });
@@ -43,6 +48,8 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 	connect(ui.TemporalFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterMagnitude->objectName(), ui.TemporalFilterMagnitude->value()); });
 	connect(ui.TemporalFilterSmoothAlpha, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothAlpha->objectName(), ui.TemporalFilterSmoothAlpha->value()); });
 	connect(ui.TemporalFilterSmoothDelta, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothDelta->objectName(), ui.TemporalFilterSmoothDelta->value()); });
+	//checkbox
+	connect(ui.AutoExposure_2, &QCheckBox::clicked, [this] {checkboxHandle(ui.AutoExposure_2->objectName(), ui.AutoExposure_2->checkState()); });
 
 
 
@@ -145,74 +152,128 @@ void DemoFirstPart::capture() {
 
 }
 
+void DemoFirstPart::checkboxHandle(QString sn, Qt::CheckState cs) {
+	if (cs == 2) { cout << toStdStr(sn) << " is Checked!" << endl; } else if (cs == 0) { cout << toStdStr(sn) << " is Unchecked!" << endl; }
+	
+	if (sn == toQstr("AutoExposure")) {
+		if (cs == 2) { 
+			m_device->setOption(RGB_CAMERA, RS2_OPTION_ENABLE_AUTO_EXPOSURE, 1);
+			cout << toStdStr(sn) << " is Checked!" << endl; }
+		else if (cs == 0) { 
+			m_device->setOption(RGB_CAMERA, RS2_OPTION_ENABLE_AUTO_EXPOSURE, 0);
+			cout << toStdStr(sn) << " is Unchecked!" << endl; }
+	}
+	else if (sn == toQstr("AutoWhiteBalance")) {
+		if (cs == 2) {
+			m_device->setOption(RGB_CAMERA, RS2_OPTION_ENABLE_AUTO_WHITE_BALANCE, 1);
+			cout << toStdStr(sn) << " is Checked!" << endl;
+		}
+		else if (cs == 0) {
+			m_device->setOption(RGB_CAMERA, RS2_OPTION_ENABLE_AUTO_WHITE_BALANCE, 0);
+			cout << toStdStr(sn) << " is Unchecked!" << endl;
+		}
+	}
+	else if (sn == toQstr("AutoExposure_2")) {
+		if (cs == 2) {
+			m_device->setOption(STEREO_MODULE, RS2_OPTION_ENABLE_AUTO_EXPOSURE, 1);
+			cout << toStdStr(sn) << " is Checked!" << endl;
+		}
+		else if (cs == 0) {
+			m_device->setOption(STEREO_MODULE, RS2_OPTION_ENABLE_AUTO_EXPOSURE, 0);
+			cout << toStdStr(sn) << " is Unchecked!" << endl;
+		}
+	}
+}
 void DemoFirstPart::sliderHandle(QString sn, int val) {
 	
 	//Color parameter(9)
 	if (sn == toQstr("Brightness")) {
 		m_device->setOption(RGB_CAMERA, RS2_OPTION_BRIGHTNESS, val);
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Contrast")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_CONTRAST, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Exposure")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_EXPOSURE, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Gain")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_GAIN, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Gamma")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_GAMMA, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Hue")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_HUE, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Saturation")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_SATURATION, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Sharpness")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_SHARPNESS, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("WhiteBalance")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		int tmpval = val / 10;
+		tmpval *= 10;
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_WHITE_BALANCE, tmpval);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	//Depth Parameter(12)
 	else if (sn == toQstr("Exposure_")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, RS2_OPTION_EXPOSURE, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("Gain_2")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, RS2_OPTION_GAIN, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("LaserPower")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, RS2_OPTION_LASER_POWER, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
-	else if (sn == toQstr("MinDistance")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	/*else if (sn == toQstr("MinDistance")) {
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("MaxDistance")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("DecimationFilterMagnitude")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("SpatialFilterMagnitude")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("SpatialFilterSmoothAlpha")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("SpatialFilterSmoothDelta")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("TemporalFilterMagnitude")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("TemporalFilterSmoothAlpha")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
 	}
 	else if (sn == toQstr("TemporalFilterSmoothDelta")) {
-		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
-	}
+		m_device->setOption(STEREO_MODULE, , val);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
+	}*/
 
 
 }
