@@ -34,7 +34,7 @@ void CalibrationModule::startStreaming(streamType st) {
 	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
 
 	m_device->EnableEmitter(0.0f);
-	m_device->selectSensorAndStreamProps();
+	//m_device->selectSensorAndStreamProps();
 
 
 

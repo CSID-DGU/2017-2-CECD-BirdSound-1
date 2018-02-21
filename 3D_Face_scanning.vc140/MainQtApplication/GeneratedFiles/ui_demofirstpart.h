@@ -24,9 +24,9 @@ QT_BEGIN_NAMESPACE
 class Ui_DemoFirstPart
 {
 public:
-    QLabel *label;
+    QLabel *rgbLabel;
     QLabel *label_2;
-    QLabel *label_3;
+    QLabel *depthLabel;
     QLabel *label_4;
     QPushButton *capture;
     QPushButton *startStreaming;
@@ -46,18 +46,18 @@ public:
         if (DemoFirstPart->objectName().isEmpty())
             DemoFirstPart->setObjectName(QStringLiteral("DemoFirstPart"));
         DemoFirstPart->resize(1102, 846);
-        label = new QLabel(DemoFirstPart);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(10, 50, 640, 360));
-        label->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
+        rgbLabel = new QLabel(DemoFirstPart);
+        rgbLabel->setObjectName(QStringLiteral("rgbLabel"));
+        rgbLabel->setGeometry(QRect(10, 50, 640, 360));
+        rgbLabel->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
         label_2 = new QLabel(DemoFirstPart);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setGeometry(QRect(10, 20, 121, 21));
         label_2->setTextFormat(Qt::PlainText);
-        label_3 = new QLabel(DemoFirstPart);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(10, 470, 640, 360));
-        label_3->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
+        depthLabel = new QLabel(DemoFirstPart);
+        depthLabel->setObjectName(QStringLiteral("depthLabel"));
+        depthLabel->setGeometry(QRect(10, 470, 640, 360));
+        depthLabel->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
         label_4 = new QLabel(DemoFirstPart);
         label_4->setObjectName(QStringLiteral("label_4"));
         label_4->setGeometry(QRect(10, 440, 121, 21));
@@ -123,9 +123,9 @@ public:
     void retranslateUi(QWidget *DemoFirstPart)
     {
         DemoFirstPart->setWindowTitle(QApplication::translate("DemoFirstPart", "Form", Q_NULLPTR));
-        label->setText(QString());
+        rgbLabel->setText(QString());
         label_2->setText(QApplication::translate("DemoFirstPart", "Color Image", Q_NULLPTR));
-        label_3->setText(QString());
+        depthLabel->setText(QString());
         label_4->setText(QApplication::translate("DemoFirstPart", "Depth Image", Q_NULLPTR));
         capture->setText(QApplication::translate("DemoFirstPart", "CAPTURE", Q_NULLPTR));
         startStreaming->setText(QApplication::translate("DemoFirstPart", "START", Q_NULLPTR));

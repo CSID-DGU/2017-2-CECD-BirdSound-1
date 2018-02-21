@@ -18,6 +18,7 @@ class DemoFirstPart : public QWidget
 public:
 	QString toQstr(std::string);
 	DemoFirstPart(QWidget *parent = Q_NULLPTR);
+	void DemoFirstPart::startStreaming(RS_400_STREAM_TYPE stream);
 	void startStreaming();
 	//void stopStreaming();
 	void capture();
@@ -26,11 +27,20 @@ public:
 private:
 	Ui::DemoFirstPart ui;
 	bool m_isStreaming = false;
+	std::vector<std::thread> m_thread_pool;
 	//bool m_streamingAll = false;
 	//bool m_streamingColor = false;
 	//bool m_streamingIR1 = false;
 	//bool m_strmingIR2 = false;
 	realsense::Device* m_device;
+	bool m_streamingColor;
+	bool m_streamingDepth;
+	size_t m_color_height = 1080;
+	size_t m_color_width = 1920;
+	size_t m_depth_height = 720;
+	size_t m_depth_width = 1280;
+	rs2::frame m_frame_color;
+	rs2::frame m_frame_depth;
 	//int m_stored = 0;
 	//int m_color_stored = 0;
 	//int m_left_stored = 0;

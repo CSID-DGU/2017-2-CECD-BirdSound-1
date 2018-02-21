@@ -296,7 +296,7 @@ void RealSensePreviewer::streamingColorRGB8()
 
 	device->EnableEmitter(0.0f);
 
-	device->selectSensorAndStreamProps();
+	//device->selectSensorAndStreamProps();
 	while (1)
 	{
 		auto fColor = device->capture(realsense::RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
@@ -338,7 +338,7 @@ void RealSensePreviewer::streamingColorRaw16()
 
 
 	device->EnableEmitter(0.0f);
-	device->selectSensorAndStreamProps();
+	//device->selectSensorAndStreamProps();
 	while (1)
 	{
 		

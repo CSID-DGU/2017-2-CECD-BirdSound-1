@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	//�ʱ�ȭ ����..
 	InitializeModule i;
 	i.show();
-	_sleep(1); //�ʱ�ȭ�� 3�ʸ� ��������.
+	_sleep(300); //�ʱ�ȭ�� 3�ʸ� ��������.
 	//�ʱ�ȭ ��!
 	i.close();
 
