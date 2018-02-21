@@ -117,7 +117,7 @@ namespace realsense {
 		Device(string serialNumber);
 		void printDeviceInfo();
 		void printSensorInfo();
-		void selectSensorAndStreamProps();
+		void Device::selectSensorAndStreamProps(RS_400_STREAM_TYPE s_stream, RS_400_RESOLUTION s_resol, RS_400_FORMAT s_format, RS_400_FPS s_fps);
 		void startStreaming(rs2::stream_profile& stream_profile);
 		void Device::startStreaming(vector<rs2::stream_profile> &stream_profile);
 		void Device::stopStreaming(RS_400_STREAM_TYPE stream);
