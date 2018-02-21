@@ -120,11 +120,30 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>392</width>
-      <height>652</height>
+      <width>409</width>
+      <height>299</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
+     <item row="8" column="0">
+      <widget class="QSlider" name="DepthUnit">
+       <property name="minimum">
+        <number>10</number>
+       </property>
+       <property name="maximum">
+        <number>1000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QSlider" name="Exposure_">
        <property name="minimum">
@@ -135,53 +154,6 @@
        </property>
        <property name="singleStep">
         <number>10</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_14">
-       <property name="text">
-        <string>Laser Power : 0.000 ~ 360.000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QSlider" name="MinDistance">
-       <property name="maximum">
-        <number>16</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QSlider" name="LaserPower">
-       <property name="maximum">
-        <number>360</number>
-       </property>
-       <property name="singleStep">
-        <number>10</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_16">
-       <property name="text">
-        <string>Max Distance : 0.0000 ~ 16.0000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
-      <widget class="QSlider" name="MaxDistance">
-       <property name="maximum">
-        <number>16</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -201,10 +173,37 @@
        </property>
       </widget>
      </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="label_17">
+     <item row="6" column="0">
+      <widget class="QSlider" name="LaserPower">
+       <property name="maximum">
+        <number>360</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="AutoExposure_2">
        <property name="text">
-        <string>Decimation Filter Magnitude : 1.000 ~ 5.000  </string>
+        <string>Auto Exposure</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Gain : 16.000 ~ 248.000  </string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>Laser Power : 0.000 ~ 360.000  </string>
        </property>
       </widget>
      </item>
@@ -218,166 +217,7 @@
      <item row="7" column="0">
       <widget class="QLabel" name="label_15">
        <property name="text">
-        <string>Min Distance : 0.0000 ~ 16.0000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_13">
-       <property name="text">
-        <string>Gain : 16.000 ~ 248.000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="21" column="0">
-      <widget class="QCheckBox" name="TemporalFilter">
-       <property name="text">
-        <string>Temporal Filter</string>
-       </property>
-      </widget>
-     </item>
-     <item row="24" column="0">
-      <widget class="QLabel" name="label_22">
-       <property name="text">
-        <string>Temporal Filter Smooth Alpha : 0.0000 ~ 1.0000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="25" column="0">
-      <widget class="QSlider" name="TemporalFilterSmoothAlpha">
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="0">
-      <widget class="QSlider" name="DecimationFilterMagnitude">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>5</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="0">
-      <widget class="QLabel" name="label_18">
-       <property name="text">
-        <string>Spatial Filter Magnitude : 1.000 ~ 5000</string>
-       </property>
-      </widget>
-     </item>
-     <item row="19" column="0">
-      <widget class="QLabel" name="label_20">
-       <property name="text">
-        <string>Spatial Filter Smooth Delta : 1.000 ~ 50.000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="27" column="0">
-      <widget class="QSlider" name="TemporalFilterSmoothDelta">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="16" column="0">
-      <widget class="QSlider" name="SpatialFilterMagnitude">
-       <property name="maximum">
-        <number>5</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="17" column="0">
-      <widget class="QLabel" name="label_19">
-       <property name="text">
-        <string>Spatial Filter Smooth Alpha : 0.2500 ~ 1.0000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="0">
-      <widget class="QCheckBox" name="DecimationFilter">
-       <property name="text">
-        <string>Decimation Filter</string>
-       </property>
-      </widget>
-     </item>
-     <item row="20" column="0">
-      <widget class="QSlider" name="SpatialFilterSmoothDelta">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>50</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="23" column="0">
-      <widget class="QSlider" name="TemporalFilterMagnitude">
-       <property name="maximum">
-        <number>15</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="22" column="0">
-      <widget class="QLabel" name="label_21">
-       <property name="text">
-        <string>Temporal Filter Magnitude : 0.000 ~ 15.000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="26" column="0">
-      <widget class="QLabel" name="label_23">
-       <property name="text">
-        <string>Temporal Filter Smooth Delta : 1.000 ~ 100.000  </string>
-       </property>
-      </widget>
-     </item>
-     <item row="18" column="0">
-      <widget class="QSlider" name="SpatialFilterSmoothAlpha">
-       <property name="minimum">
-        <number>25</number>
-       </property>
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="0">
-      <widget class="QCheckBox" name="SpatialFilter">
-       <property name="text">
-        <string>Spatial Filter</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="AutoExposure_2">
-       <property name="text">
-        <string>Auto Exposure</string>
+        <string>Depth Unit : 0.0001 ~ 0.01</string>
        </property>
       </widget>
      </item>
@@ -400,7 +240,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>-168</y>
+      <y>0</y>
       <width>392</width>
       <height>470</height>
      </rect>

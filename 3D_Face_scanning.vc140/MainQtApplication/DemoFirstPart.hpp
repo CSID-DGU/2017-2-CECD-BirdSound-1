@@ -22,7 +22,7 @@ public:
 	void startStreaming();
 	//void stopStreaming();
 	void sliderHandle(QString, int);
-	void capture();
+	rs2::frame DemoFirstPart::capture();
 	void checkboxHandle(QString, Qt::CheckState);
 	inline std::string DemoFirstPart::toStdStr(QString str);
 	//void CalibrationModule::capture(RS_400_STREAM_TYPE stream);

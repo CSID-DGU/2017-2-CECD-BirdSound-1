@@ -38,8 +38,8 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 	connect(ui.Exposure_, &QSlider::valueChanged, [this] {sliderHandle(ui.Exposure_->objectName(), ui.Exposure_->value()); });
 	connect(ui.Gain_2, &QSlider::valueChanged, [this] {sliderHandle(ui.Gain_2->objectName(), ui.Gain_2->value()); });
 	connect(ui.LaserPower, &QSlider::valueChanged, [this] {sliderHandle(ui.LaserPower->objectName(), ui.LaserPower->value()); });
-
-	connect(ui.MinDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MinDistance->objectName(), ui.MinDistance->value()); });
+	connect(ui.DepthUnit, &QSlider::valueChanged, [this] {sliderHandle(ui.DepthUnit->objectName(), ui.DepthUnit->value()); });
+	/*connect(ui.MinDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MinDistance->objectName(), ui.MinDistance->value()); });
 	connect(ui.MaxDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MaxDistance->objectName(), ui.MaxDistance->value()); });
 	connect(ui.DecimationFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.DecimationFilterMagnitude->objectName(), ui.DecimationFilterMagnitude->value()); });
 	connect(ui.SpatialFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.SpatialFilterMagnitude->objectName(), ui.SpatialFilterMagnitude->value()); });
@@ -47,7 +47,7 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 	connect(ui.SpatialFilterSmoothDelta, &QSlider::valueChanged, [this] {sliderHandle(ui.SpatialFilterSmoothDelta->objectName(), ui.SpatialFilterSmoothDelta->value()); });
 	connect(ui.TemporalFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterMagnitude->objectName(), ui.TemporalFilterMagnitude->value()); });
 	connect(ui.TemporalFilterSmoothAlpha, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothAlpha->objectName(), ui.TemporalFilterSmoothAlpha->value()); });
-	connect(ui.TemporalFilterSmoothDelta, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothDelta->objectName(), ui.TemporalFilterSmoothDelta->value()); });
+	connect(ui.TemporalFilterSmoothDelta, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothDelta->objectName(), ui.TemporalFilterSmoothDelta->value()); });*/
 	//checkbox
 	connect(ui.AutoExposure_2, &QCheckBox::clicked, [this] {checkboxHandle(ui.AutoExposure_2->objectName(), ui.AutoExposure_2->checkState()); });
 
@@ -146,10 +146,9 @@ void DemoFirstPart::startStreaming(RS_400_STREAM_TYPE stream) {
 }
 
 
-void DemoFirstPart::capture() {
+rs2::frame DemoFirstPart::capture() {
 	m_isStreaming = false;
-
-
+	return m_frame_depth;
 }
 
 void DemoFirstPart::checkboxHandle(QString sn, Qt::CheckState cs) {
@@ -223,7 +222,7 @@ void DemoFirstPart::sliderHandle(QString sn, int val) {
 		int tmpval = val / 10;
 		tmpval *= 10;
 		m_device->setOption(RGB_CAMERA, RS2_OPTION_WHITE_BALANCE, tmpval);
-		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << tmpval << endl;
 	}
 	//Depth Parameter(12)
 	else if (sn == toQstr("Exposure_")) {
@@ -237,6 +236,11 @@ void DemoFirstPart::sliderHandle(QString sn, int val) {
 	else if (sn == toQstr("LaserPower")) {
 		m_device->setOption(STEREO_MODULE, RS2_OPTION_LASER_POWER, val);
 		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << val << endl;
+	}
+	else if (sn == toQstr("DepthUnit")) {
+		float tmpval = val*0.00001;
+		m_device->setOption(STEREO_MODULE, RS2_OPTION_LASER_POWER, tmpval);
+		cout << "slider value changed! : " << toStdStr(sn) << "  value : " << tmpval << endl;
 	}
 	/*else if (sn == toQstr("MinDistance")) {
 		m_device->setOption(STEREO_MODULE, , val);
