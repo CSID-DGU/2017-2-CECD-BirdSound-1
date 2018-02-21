@@ -127,7 +127,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QStringLiteral("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, -353, 392, 652));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 392, 652));
         gridLayout_2 = new QGridLayout(scrollAreaWidgetContents_2);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         Exposure_ = new QSlider(scrollAreaWidgetContents_2);

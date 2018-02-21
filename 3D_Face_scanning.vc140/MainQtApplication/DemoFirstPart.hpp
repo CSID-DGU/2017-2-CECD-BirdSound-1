@@ -21,8 +21,9 @@ public:
 	void DemoFirstPart::startStreaming(RS_400_STREAM_TYPE stream);
 	void startStreaming();
 	//void stopStreaming();
-	void slidertest();
+	void sliderHandle(QString, int);
 	void capture();
+	inline std::string DemoFirstPart::toStdStr(QString str);
 	//void CalibrationModule::capture(RS_400_STREAM_TYPE stream);
 	//void CalibrationModule::calibration();
 private:

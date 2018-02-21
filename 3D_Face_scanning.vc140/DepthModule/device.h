@@ -115,6 +115,7 @@ namespace realsense {
 	class Device {
 	public:
 		Device(string serialNumber);
+		void setOption(RS_400_SENSOR, rs2_option, float value);
 		void printDeviceInfo();
 		void printSensorInfo();
 		void Device::selectSensorAndStreamProps(RS_400_STREAM_TYPE s_stream, RS_400_RESOLUTION s_resol, RS_400_FORMAT s_format, RS_400_FPS s_fps);

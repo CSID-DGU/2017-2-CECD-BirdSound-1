@@ -237,6 +237,16 @@ void Device::printDeviceInfo() {
 	}
 }
 
+
+void Device::setOption(RS_400_SENSOR sensor, rs2_option option, float value) {
+	if (sensor == RS_400_SENSOR::RGB_CAMERA) {
+		m_colorSensor.set_option(option, value);
+	}
+	else if (sensor == RS_400_SENSOR::STEREO_MODULE) {
+		m_stereoSensor.set_option(option, value);
+	}
+}
+
 void Device::printSensorInfo() {
 	cout << "\n\nSensor detail Info" << endl;
 	auto sensors = m_sensors;

@@ -19,7 +19,34 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(); });
 	connect(ui.capture, &QPushButton::clicked, [this] {capture(); });
 	
-	connect(ui.Exposure, &QSlider::valueChanged, [this] {slidertest(); });
+	//COLOR CAMERA PARAMETER
+	connect(ui.Brightness, &QSlider::valueChanged, [this] {sliderHandle(ui.Brightness->objectName(), ui.Brightness->value()); });
+	connect(ui.Contrast, &QSlider::valueChanged, [this] {sliderHandle(ui.Contrast->objectName(), ui.Contrast->value()); });
+	connect(ui.Exposure, &QSlider::valueChanged, [this] {sliderHandle(ui.Exposure->objectName(), ui.Exposure->value()); });
+	connect(ui.Gain, &QSlider::valueChanged, [this] {sliderHandle(ui.Gain->objectName(), ui.Gain->value()); });
+	connect(ui.Gamma, &QSlider::valueChanged, [this] {sliderHandle(ui.Gamma->objectName(), ui.Gamma->value()); });
+	connect(ui.Hue, &QSlider::valueChanged, [this] {sliderHandle(ui.Hue->objectName(), ui.Hue->value()); });
+	connect(ui.Saturation, &QSlider::valueChanged, [this] {sliderHandle(ui.Saturation->objectName(), ui.Saturation->value()); });
+	connect(ui.Sharpness, &QSlider::valueChanged, [this] {sliderHandle(ui.Sharpness->objectName(), ui.Sharpness->value()); });
+	connect(ui.WhiteBalance, &QSlider::valueChanged, [this] {sliderHandle(ui.WhiteBalance->objectName(), ui.WhiteBalance->value()); });
+
+	//DEPTH PARAMETER
+	connect(ui.Exposure_, &QSlider::valueChanged, [this] {sliderHandle(ui.Exposure_->objectName(), ui.Exposure_->value()); });
+	connect(ui.Gain_2, &QSlider::valueChanged, [this] {sliderHandle(ui.Gain_2->objectName(), ui.Gain_2->value()); });
+	connect(ui.LaserPower, &QSlider::valueChanged, [this] {sliderHandle(ui.LaserPower->objectName(), ui.LaserPower->value()); });
+	connect(ui.MinDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MinDistance->objectName(), ui.MinDistance->value()); });
+	connect(ui.MaxDistance, &QSlider::valueChanged, [this] {sliderHandle(ui.MaxDistance->objectName(), ui.MaxDistance->value()); });
+	connect(ui.DecimationFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.DecimationFilterMagnitude->objectName(), ui.DecimationFilterMagnitude->value()); });
+	connect(ui.SpatialFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.SpatialFilterMagnitude->objectName(), ui.SpatialFilterMagnitude->value()); });
+	connect(ui.SpatialFilterSmoothAlpha, &QSlider::valueChanged, [this] {sliderHandle(ui.SpatialFilterSmoothAlpha->objectName(), ui.SpatialFilterSmoothAlpha->value()); });
+	connect(ui.SpatialFilterSmoothDelta, &QSlider::valueChanged, [this] {sliderHandle(ui.SpatialFilterSmoothDelta->objectName(), ui.SpatialFilterSmoothDelta->value()); });
+	connect(ui.TemporalFilterMagnitude, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterMagnitude->objectName(), ui.TemporalFilterMagnitude->value()); });
+	connect(ui.TemporalFilterSmoothAlpha, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothAlpha->objectName(), ui.TemporalFilterSmoothAlpha->value()); });
+	connect(ui.TemporalFilterSmoothDelta, &QSlider::valueChanged, [this] {sliderHandle(ui.TemporalFilterSmoothDelta->objectName(), ui.TemporalFilterSmoothDelta->value()); });
+
+
+
+
 }
 
 void DemoFirstPart::startStreaming() {
@@ -117,9 +144,83 @@ void DemoFirstPart::capture() {
 
 
 }
-void DemoFirstPart::slidertest() {
-	cout << "slider value changed!" << endl;
+
+void DemoFirstPart::sliderHandle(QString sn, int val) {
+	
+	//Color parameter(9)
+	if (sn == toQstr("Brightness")) {
+		m_device->setOption(RGB_CAMERA, RS2_OPTION_BRIGHTNESS, val);
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Contrast")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Exposure")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Gain")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Gamma")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Hue")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Saturation")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Sharpness")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("WhiteBalance")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	//Depth Parameter(12)
+	else if (sn == toQstr("Exposure_")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("Gain_2")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("LaserPower")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("MinDistance")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("MaxDistance")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("DecimationFilterMagnitude")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("SpatialFilterMagnitude")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("SpatialFilterSmoothAlpha")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("SpatialFilterSmoothDelta")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("TemporalFilterMagnitude")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("TemporalFilterSmoothAlpha")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+	else if (sn == toQstr("TemporalFilterSmoothDelta")) {
+		cout << "slider value changed! : " << toStdStr(sn) << "value : " << val << endl;
+	}
+
+
 }
+
 inline QString DemoFirstPart::toQstr(std::string str) {
-	return QString::fromUtf8(str.c_str());
+	return QString::fromStdString(str);
+}
+
+inline std::string DemoFirstPart::toStdStr(QString str) {
+	return str.toUtf8().constData();
 }

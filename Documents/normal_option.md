@@ -162,3 +162,135 @@ DepthModule 솔루션에 정의된(device.cpp, device.h) printSensorInfo를 통�
 ```
 
 대략적인 파라미터들 값에 대한 대략적인 설명은 [Intel-RealSense-D40-Series-Datasheet.pdf](file://./assets/Intel-RealSense-D40-Series-Datasheet.pdf) 의 67페이지 4.7 Depth Camera Functions 에 나와있다.
+
+
+
+# Color sensor
+
+
+마찬가지로 컬러센서에 대한 옵션목록은 아래와 같다. librealsense SDK 에 있는 sensor control 에제 프로그램을 사용하엿다.
+
+```
+0: Backlight Compensation
+     Description   : Enable / disable backlight compensation
+     Current Value : 0
+1: Brightness
+     Description   : UVC image brightness
+     Current Value : 0
+2: Contrast
+     Description   : UVC image contrast
+     Current Value : 70
+3: Exposure
+     Description   : Controls exposure time of color camera. Setting any value will disable auto exposure
+     Current Value : -6
+4: Gain
+     Description   : UVC image gain
+     Current Value : 65
+5: Gamma
+     Description   : UVC image gamma setting
+     Current Value : 300
+6: Hue
+     Description   : UVC image hue
+     Current Value : 22
+7: Saturation
+     Description   : UVC image saturation setting
+     Current Value : 65
+8: Sharpness
+     Description   : UVC image sharpness setting
+     Current Value : 54
+9: White Balance
+     Description   : Controls white balance of color image. Setting any value will disable auto white balance
+     Current Value : 5070
+10: Enable Auto Exposure
+     Description   : Enable / disable auto-exposure
+     Current Value : 1
+11: Enable Auto White Balance
+     Description   : Enable / disable auto-white-balance
+     Current Value : 0
+12: Visual Preset is not supported
+13: Laser Power is not supported
+14: Accuracy is not supported
+15: Motion Range is not supported
+16: Filter Option is not supported
+17: Confidence Threshold is not supported
+18: Emitter Enabled is not supported
+19: Frames Queue Size
+     Description   : Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa
+     Current Value : 16
+20: Total Frame Drops is not supported
+21: Auto Exposure Mode is not supported
+22: Power Line Frequency
+     Description   : Power Line Frequency
+     Current Value : 3
+23: Asic Temperature is not supported
+24: Error Polling Enabled is not supported
+25: Projector Temperature is not supported
+26: Output Trigger Enabled is not supported
+27: Motion Module Temperature is not supported
+28: Depth Units is not supported
+29: Enable Motion Correction is not supported
+30: Auto Exposure Priority
+     Description   : Limit exposure time when auto-exposure is ON to preserve constant fps rate
+     Current Value : 1
+31: Color Scheme is not supported
+32: Histogram Equalization Enabled is not supported
+33: Min Distance is not supported
+34: Max Distance is not supported
+35: Texture Source is not supported
+36: Filter Magnitude is not supported
+37: Filter Smooth Alpha is not supported
+38: Filter Smooth Delta is not supported
+39: Stereo Baseline is not supported
+```
+정리해보면 적용가능한 옵션들은 아래와 같음..
+
+```
+0: Backlight Compensation
+     Description   : Enable / disable backlight compensation
+     Current Value : 0
+1: Brightness
+     Description   : UVC image brightness
+     Current Value : 0
+2: Contrast
+     Description   : UVC image contrast
+     Current Value : 70
+3: Exposure
+     Description   : Controls exposure time of color camera. Setting any value will disable auto exposure
+     Current Value : -6
+4: Gain
+     Description   : UVC image gain
+     Current Value : 65
+5: Gamma
+     Description   : UVC image gamma setting
+     Current Value : 300
+6: Hue
+     Description   : UVC image hue
+     Current Value : 22
+7: Saturation
+     Description   : UVC image saturation setting
+     Current Value : 65
+8: Sharpness
+     Description   : UVC image sharpness setting
+     Current Value : 54
+9: White Balance
+     Description   : Controls white balance of color image. Setting any value will disable auto white balance
+     Current Value : 5070
+10: Enable Auto Exposure
+     Description   : Enable / disable auto-exposure
+     Current Value : 1
+11: Enable Auto White Balance
+     Description   : Enable / disable auto-white-balance
+     Current Value : 0
+19: Frames Queue Size
+     Description   : Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa
+     Current Value : 16
+22: Power Line Frequency
+     Description   : Power Line Frequency
+     Current Value : 3
+30: Auto Exposure Priority
+     Description   : Limit exposure time when auto-exposure is ON to preserve constant fps rate
+     Current Value : 1
+```
+
+
+그렇다면 센서별로 옵션을 어떻게 설정하는지 알아야 겠지??
