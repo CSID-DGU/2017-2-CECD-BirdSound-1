@@ -7,19 +7,19 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 
-	//string devSerialNumber = getFirstSerial();
-	//m_device = new Device(devSerialNumber);
-	//ui.camName->setText(toQstr(m_device->info.name));
-	//ui.serialNum->setText(toQstr(m_device->info.serial));
-	//ui.firmwareVer->setText(toQstr(m_device->info.fw_ver));
+	string devSerialNumber = getFirstSerial();
+	m_device = new Device(devSerialNumber);
+	ui.camName->setText(toQstr(m_device->info.name));
+	ui.serialNum->setText(toQstr(m_device->info.serial));
+	ui.firmwareVer->setText(toQstr(m_device->info.fw_ver));
 
-	//connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(streamType::color); });
+	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(); });
 	//connect(ui.rgbStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_COLOR); });
 	//connect(ui.leftStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED1); });
 	//connect(ui.rightStart, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED2); });
 
 	//connect(ui.captrueImage, &QPushButton::clicked, [this] {capture(); });
-	//connect(ui.rgbCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_COLOR); });
+	connect(ui.capture, &QPushButton::clicked, [this] {capture(); });
 	//connect(ui.leftCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED1); });
 	//connect(ui.rightCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED2); });
 
@@ -27,4 +27,16 @@ DemoFirstPart::DemoFirstPart(QWidget *parent) : QWidget(parent)
 
 
 	//connect(ui.startCalibration, &QPushButton::clicked, [this] {calibration(); });
+}
+
+void DemoFirstPart::startStreaming() {
+	m_device->EnableEmitter(1.0f);
+	m_device->selectSensorAndStreamProps();
+	
+	
+}
+
+
+void DemoFirstPart::capture() {
+
 }

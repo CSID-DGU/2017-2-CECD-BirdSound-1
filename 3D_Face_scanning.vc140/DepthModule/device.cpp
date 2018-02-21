@@ -276,72 +276,40 @@ void Device::printSensorInfo() {
 
 //help function...
 //하나의 센서에 여러 스트림이 접근할때, 임계영역문제?
-void Device::selectSensorAndStreamProps() 
-{
+void Device::selectSensorAndStreamProps(RS_400_STREAM_TYPE s_stream, RS_400_RESOLUTION s_resol, RS_400_FORMAT s_format, RS_400_FPS s_fps) {
+	MUTEX_LOCK(&m_mutex);
+	if (s_stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR) {
+		m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
+	}
+	if (s_stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1 || s_stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2 || s_stream == RS_400_STREAM_TYPE::RS400_STREAM_DEPTH || s_stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED) {
+		m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
+	}
 
-	
-	size_t command_sensor;
-	size_t command_stream;
-	size_t command_code;
-	/*cout << "\n카메라 센서와, 스트림을 입력하세요" << endl;
-	cout << "depth면 00 193 & color이면 14 3";
-	cout << "1. 카메라 센서 \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
-	cout << "2. 스트림 타입 : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
-	cout << "3. 스트림 코드를 입력하세요 >> "; cin >> command_code;*/
-
-	/**mode depth*/
-//	command_sensor = 0;
-//	command_stream = 0;
-//	command_code=193;
-//	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
-		
-
-	/**mode depth2
-	Depth #0 (1280x720 / Z16 / 30Hz)
-	*/
-//	command_sensor = 0;
-//	command_stream = 0;
-//	command_code = 193;
-//	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
-
-
-	/**mode color*/
-	command_sensor = 1;
-	command_stream = 4;
-	command_code=063;
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
-
-
-	cout << "스트리밍을 시작합니다..";
+	uint8_t command_code = s_resol * 100 + s_format * 10 + s_fps;
 	try {
 		if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
-			startStreaming(m_streoUniqueStreams[command_stream][command_code].second);
-			
+			startStreaming(m_streoUniqueStreams[s_stream][command_code].second);
+
 		}
 		else if (m_selectedSensor == RS_400_SENSOR::RGB_CAMERA) {
-			startStreaming(m_colorUniqueStreams[command_stream][command_code].second);
+			startStreaming(m_colorUniqueStreams[s_stream][command_code].second);
 		}
 	}
-	catch(...) {
+	catch (...) {
 		cout << "잘못된 접근입니다. 코드표를 참조해주세요" << endl;
 	}
-	
-
+	MUTEX_UNLOCK(&m_mutex);
 	/*m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
-
 	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
-	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);*/
-	//startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED3][423].second);
-	
+	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
 
-	//m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
-	//startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
+	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
+	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);*/
 
 	//Depth #0 (640x480 / Z16 / 30Hz)
 	//startStreaming(m_streoUniqueStreams[RS400_STREAM_DEPTH][493].second);
 
 }
-
 void Device::startStreaming(rs2::stream_profile& stream_profile) {
 	RS_400_STREAM_TYPE streamType = m_stream2Enum(stream_profile.stream_name());
 	if ((streamType > 4)||(streamType<0)) {

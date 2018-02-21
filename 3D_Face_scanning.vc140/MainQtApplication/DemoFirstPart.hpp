@@ -18,18 +18,19 @@ class DemoFirstPart : public QWidget
 public:
 	QString toQstr(std::string);
 	DemoFirstPart(QWidget *parent = Q_NULLPTR);
-	//void startStreaming(streamType);
+	void startStreaming();
 	//void stopStreaming();
-	//void capture();
+	void capture();
 	//void CalibrationModule::capture(RS_400_STREAM_TYPE stream);
 	//void CalibrationModule::calibration();
 private:
 	Ui::DemoFirstPart ui;
+	bool m_isStreaming = false;
 	//bool m_streamingAll = false;
 	//bool m_streamingColor = false;
 	//bool m_streamingIR1 = false;
 	//bool m_strmingIR2 = false;
-	//realsense::Device* m_device;
+	realsense::Device* m_device;
 	//int m_stored = 0;
 	//int m_color_stored = 0;
 	//int m_left_stored = 0;
