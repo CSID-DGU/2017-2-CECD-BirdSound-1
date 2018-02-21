@@ -35,10 +35,10 @@ private:
 	realsense::Device* m_device;
 	bool m_streamingColor;
 	bool m_streamingDepth;
-	size_t m_color_height = 1080;
-	size_t m_color_width = 1920;
-	size_t m_depth_height = 720;
-	size_t m_depth_width = 1280;
+	int m_color_height = 1080;
+	int m_color_width = 1920;
+	int m_depth_height = 720;
+	int m_depth_width = 1280;
 	rs2::frame m_frame_color;
 	rs2::frame m_frame_depth;
 	//int m_stored = 0;

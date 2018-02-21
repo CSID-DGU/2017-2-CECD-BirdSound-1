@@ -1,5 +1,6 @@
 ﻿#include "DemoFirstPart.hpp"
 #include "../DepthModule/device.h"
+#include "opencv2\opencv.hpp"
 #include <thread>
 
 using namespace realsense;
@@ -36,10 +37,10 @@ void DemoFirstPart::startStreaming() {
 	m_isStreaming = true;
 	m_device->EnableEmitter(1.0f);
 	std::thread t1([this] {this->startStreaming(RS400_STREAM_COLOR); });
-	std::thread t2([this] {this->startStreaming(RS400_STREAM_DEPTH); });
+	//std::thread t2([this] {this->startStreaming(RS400_STREAM_DEPTH); });
 
 	t1.detach();
-	t2.detach();
+	//t2.detach();
 	/*m_device->selectSensorAndStreamProps(RS400_STREAM_COLOR,R1920_1080,RGB8,HZ30);
 	m_device->selectSensorAndStreamProps(RS400_STREAM_DEPTH, R1280_720, Z16, HZ30);
 
@@ -65,15 +66,21 @@ void DemoFirstPart::startStreaming(RS_400_STREAM_TYPE stream) {
 
 		m_device->selectSensorAndStreamProps(RS400_STREAM_COLOR, R1920_1080, RGB8, HZ30);
 		m_streamingColor = true;
-		
+		cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
 		while (m_streamingColor) {
 			m_frame_color = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 
-			QImage color_img((uchar*)m_frame_color.get_data(), m_color_width, m_color_height, QImage::Format_RGB888);
+			cv::Mat colorImage(cv::Size(m_color_width, m_color_height), CV_8UC3, (void*)m_frame_color.get_data(), cv::Mat::AUTO_STEP);
+			cv::waitKey(1);
+			//QImage color_img((uchar*)m_frame_color.get_data(), m_color_width, m_color_height, QImage::Format_RGB888);
+			QImage color_img(colorImage.data, m_color_width, m_color_height, QImage::Format_RGB888);
+			//QImage color_image(colorImage.data, m_color_width, m_color_width, QImage::Format_RGB888);
 			QPixmap cbuf = QPixmap::fromImage(color_img);
 			ui.rgbLabel->setPixmap(cbuf);
 			ui.rgbLabel->setScaledContents(true);
 			ui.rgbLabel->show();
+			//imshow("original", colorImage);
+			
 		}
 	}
 	else if (stream == RS400_STREAM_DEPTH && m_streamingDepth == false) {
