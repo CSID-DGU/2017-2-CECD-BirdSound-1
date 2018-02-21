@@ -19,6 +19,57 @@ void  Scan::cellInsert(vtkCellArray *cell, int number, long long index1, long lo
 	cell->InsertCellPoint(index1 + disp); cell->InsertCellPoint(index2 + disp); cell->InsertCellPoint(index3 + disp);
 
 }
+
+void Scan::printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type)
+{
+	
+	//1280x720
+	//realsense::Device* device = new realsense::Device(devSerialNumber);
+	double dimensions[3] = { 1280, 720, 1 };
+	const int nComponents = viewer->m_ImageData->GetNumberOfScalarComponents();
+	int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
+
+	viewer->m_ImageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
+	viewer->m_ImageData->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
+	viewer->m_ImageData->Modified();
+
+
+	auto fColor = device->capture(type);
+	const unsigned short* data = static_cast<const unsigned short*>(fColor.get_data());
+	/*getstream ****************************/
+
+	unsigned short* scalarPointer = static_cast<unsigned short*>(viewer->m_ImageData->GetScalarPointer(0, 0, 0));
+
+	for (int i = 0; i < nScalar; i++)
+	{
+		scalarPointer[i] = data[i];
+		//std::cout << i << " ";
+	}
+
+	viewer->m_ImageActor->GetMapper()->SetInputData(viewer->m_ImageData);
+	//viewer->m_ImageActor->SetMapper(viewer->m_ImageMapper);
+	//m_Renderer여기서 랜더러에 있는 actor을 지우고 해야하나.?
+
+	vtkActor2DCollection *colActor = viewer->m_Renderer->GetActors2D();
+
+	if (colActor->GetNumberOfItems()>0)
+	{
+		vtkActor2D *act = colActor->GetNextActor2D();
+		viewer->m_Renderer->RemoveActor(act);
+	}
+
+	viewer->m_Renderer->AddActor2D(viewer->m_ImageActor);
+
+	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_ImageData->GetCenter());
+	//m_Renderer->GetActiveCamera()->SetPosition(m_ImageData->GetCenter()[0], m_ImageData->GetCenter()[1], 100000.0);
+	viewer->m_Renderer->ResetCamera();
+	viewer->m_Renderer->Modified();
+
+
+	viewer->m_RenWin->Render();
+}
+
+
 void Scan::frames2PointsCutOutlier()
 {
 	if (points == nullptr)
@@ -129,7 +180,7 @@ void Scan::frames2Points()
 	frames.clear();
 
 }
-void  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
+void  Scan::MeshConstructWithOMP(MeshPreview *viewer,vtkPoints *point, int saveType, int ThreadSize)
 {
 	std::cout <<" "<< point->GetNumberOfPoints() << "\n";
 
@@ -139,8 +190,6 @@ void  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
 		vtkPoints *threadPoint = vtkPoints::New();
 		vtkCellArray *threadCell = vtkCellArray::New();
 	
-
-
 		threadPoint->SetNumberOfPoints(width*height / ThreadSize);
 
 		#pragma omp for
@@ -191,11 +240,11 @@ void  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
 
 		}
 
-		Viewer->m_PolyData[omp_get_thread_num()]->SetPoints(threadPoint);
-		Viewer->m_PolyData[omp_get_thread_num()]->SetPolys(threadCell);
+		viewer->m_PolyData[omp_get_thread_num()]->SetPoints(threadPoint);
+		viewer->m_PolyData[omp_get_thread_num()]->SetPolys(threadCell);
 
-		Viewer->m_Mapper[omp_get_thread_num()]->SetInputData(Viewer->m_PolyData[omp_get_thread_num()]);
-		Viewer->m_Actor[omp_get_thread_num()]->SetMapper(Viewer->m_Mapper[omp_get_thread_num()]);
+		viewer->m_Mapper[omp_get_thread_num()]->SetInputData(viewer->m_PolyData[omp_get_thread_num()]);
+		viewer->m_Actor[omp_get_thread_num()]->SetMapper(viewer->m_Mapper[omp_get_thread_num()]);
 
 
 		
@@ -256,16 +305,16 @@ void  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
 		}
 	}
 
-	Viewer->m_PolyData[4]->SetPoints(boundary);
-	polyBoundary->SetPolys(cellBoundary);
-	mapperBoundary->SetInputData(polyBoundary);
-	actorBoundary->SetMapper(mapperBoundary);
+	viewer->m_PolyData[ThreadSize]->SetPoints(boundary);
+	viewer->m_PolyData[ThreadSize]->SetPolys(cellBoundary);
+	//viewer->m_Mapper[ThreadSize]->SetInputData(viewer->m_PolyData[4]);
+	//viewer->m_Actor[ThreadSize]->SetMapper(viewer->m_Mapper[ThreadSize]);
 
 	
-	Viewer->m_PolyData[ThreadSize] = polyBoundary;
-	Viewer->m_Mapper[ThreadSize] = mapperBoundary;
-	Viewer->m_Actor[ThreadSize] = actorBoundary;
-
+	//viewer->m_PolyData[ThreadSize] = polyBoundary;
+	//viewer->m_Mapper[ThreadSize] = mapperBoundary;
+	//viewer->m_Actor[ThreadSize] = actorBoundary;
+	//viewer->GetRenderer()->AddActor(viewer->m_Actor[ThreadSize]);
 	//act[4] = actorBoundary;
 	/*vtkOBJExporter *objWriter = vtkOBJExporter::New();
 	objWriter->SetFilePrefix("my");
@@ -275,13 +324,13 @@ void  Scan::MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize)
 	boundary->Delete();
 	cellBoundary->Delete();
 	
-	Viewer->GetRenderWindow()->Modified();
-	Viewer->GetRenderWindow()->Render();
+	viewer->GetRenderWindow()->Modified();
+	viewer->GetRenderWindow()->Render();
 
 }
 
 /*보완 필요*/
-vtkRenderer*  Scan::MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType, int ThreadSize)
+vtkRenderer*  Scan::MeshConstructWithOMPnSIMD(MeshPreview *viewer,vtkPoints *point, int saveType, int ThreadSize)
 {
 	vtkRenderer *threadRenderer = vtkRenderer::New();
 	vtkRenderWindow *win = vtkRenderWindow::New();
@@ -478,7 +527,7 @@ vtkRenderer*  Scan::MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType, in
 	//printf("%lf\n\n", omp_get_wtime() - _start);
 }
 
-vtkRenderer* Scan::MeshConstruct(vtkPoints *point, int saveType)
+vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveType)
 {
 	vtkCellArray *cell = vtkCellArray::New();
 
@@ -522,43 +571,38 @@ vtkRenderer* Scan::MeshConstruct(vtkPoints *point, int saveType)
 	}
 
 
-	Viewer->GetPolyDataAt(0)->SetPoints(point);
-	Viewer->GetPolyDataAt(0)->SetPolys(cell);
-	Viewer->GetMapperAt(0)->SetInputData(Viewer->GetPolyDataAt(0));
-
-	Viewer->GetActorAt(0)->SetMapper(Viewer->GetMapperAt(0));
-	
-	Viewer->GetRenderer()->AddActor(Viewer->GetActorAt(0));
-
-	Viewer->GetRenderer()->GetActiveCamera()->ParallelProjectionOff();
-
-
-	//std::cout << Viewer->GetPolyDataAt(0)->GetNumberOfPolys() << "@!#!@#!@#";
-	if (saveType == 1)
+	viewer->GetPolyDataAt(0)->SetPoints(point);
+	viewer->GetPolyDataAt(0)->SetPolys(cell);
+	/*viewer->GetMapperAt(0)->Modified();
+	viewer->GetActorAt(0)->Modified();
+	viewer->GetRenderer()->Modified();*/
+	/*if (saveType == 1)
 	{
 		vtkSTLWriter* stlWriter = vtkSTLWriter::New();
 		stlWriter->SetFileName("my.stl");
-		stlWriter->SetInputData(Viewer->GetPolyDataAt(0));
+		stlWriter->SetInputData(viewer->GetPolyDataAt(0));
 		stlWriter->Write();
 		stlWriter->Delete();
 	}
 
 	else if (saveType == 2) {
 		vtkOBJExporter *obj = vtkOBJExporter::New();
-		obj->SetInput(Viewer->GetRenderWindow());
+		obj->SetInput(viewer->GetRenderWindow());
 		obj->SetFilePrefix("mine");
 		obj->Write();
 		obj->Delete();
-	}
+	}*/
+
+	
+
+	viewer->GetRenderWindow()->Modified();
+	viewer->GetRenderWindow()->Render();
 
 	cell->Delete();
-
-	Viewer->GetRenderWindow()->Modified();
-	Viewer->GetRenderWindow()->Render();
-	return Viewer->GetRenderer();
+	return viewer->GetRenderer();
 }
 
-void Scan::MeshConstruction(int mode, int saveType, int ThreadSize)
+void Scan::MeshConstruction(MeshPreview *viewer, int mode, int saveType, int ThreadSize)
 {
 	if (this->points == nullptr)
 	{
@@ -568,23 +612,17 @@ void Scan::MeshConstruction(int mode, int saveType, int ThreadSize)
 	switch (mode)
 	{
 	case 0:
-		MeshConstructWithOMP(this->points, saveType, ThreadSize);
+		MeshConstructWithOMP(viewer,this->points, saveType, ThreadSize);
 		break;
 	case 1:
-		MeshConstructWithOMPnSIMD(this->points, saveType, ThreadSize);
+		MeshConstructWithOMPnSIMD(viewer,this->points, saveType, ThreadSize);
 		break;
 	default:
-		MeshConstruct(this->points, saveType);
+		MeshConstruct(viewer,this->points, saveType);
 		break;
 	}
 }
 
-void Scan::ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCtrlSize)
-{
-
-	Viewer->GetRenderWindow()->SetParentId(uiCtrl);
-	Viewer->GetRenderWindow()->SetSize(xCtrlSize, yCtrlSize);
-}
 
 /*
 이 부분 omp적용하는거 고려해볼 것.
@@ -611,7 +649,7 @@ void Scan::frame2Points(const rs2::frame& frame)
 			points->InsertNextPoint(0, 0, 0);
 		
 		else
-			points->InsertNextPoint(v[i]);
+			points->InsertNextPoint(v[i].x,v[i].y,v[i].z);
 		
 	}
 

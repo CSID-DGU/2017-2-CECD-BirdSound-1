@@ -15,12 +15,11 @@ int ScanModuleQT::DestroyVariables()
 	delete m_MeshPreviewer;
 	delete m_ImagePreviewer;*/
 
-	for(int i=0;i<3;i++)
-		m_MiniMeshPreviewer[i]->DestroyVariables();
-
-	delete m_ImagePreviewer;
 	delete RealSenseD415;
 	delete Scanner;
+
+	delete m_DepthPreviewer;
+	delete m_MeshPreviewer;
 	return 1;
 }
 ScanModuleQT::~ScanModuleQT()
@@ -30,42 +29,67 @@ ScanModuleQT::~ScanModuleQT()
 
 void ScanModuleQT::InitializeVariables()
 {
-
-	for (int i = 0; i < 3; i++)
-	{
-		m_MiniMeshPreviewer[i] = NULL;
-		m_MiniMeshPreviewer[i] = 0;
-	}
-
-	m_IsImageViewer = 0;
-	m_ImagePreviewer = NULL;
-
-	m_ScannedMeshViewer = 0;
+	m_IsMeshPreviewer = 0;
+	m_IsDepthPreviewer = 0;
 //	Scanner->Viewer = NULL;
 
 	std::string serial = realsense::getFirstSerial();
 	RealSenseD415=new realsense::Device(serial);
 	Scanner=new Scan();
+
+	m_MeshPreviewer = new MeshPreview();
+	m_DepthPreviewer = new DepthMapPreviewer();
 }
 
 void ScanModuleQT::InitializeScene()
 {
-	for (int i = 0; i < 3; i++)
-	{
-		m_MiniMeshPreviewer[i] = new MeshPreview;
-		m_MiniMeshPreviewer[i]->Create3DScene();
-		m_IsMiniMeshViewer[i] = 1;
-	}
 
+	m_IsDepthPreviewer = 1;
+	m_DepthPreviewer->Create2DScene();
+	//m_PointCloudPreviewer->CreateModel();
 
-	m_ScannedMeshViewer = 1;
-
-	m_ImagePreviewer = new RealSensePreviewer;
-	m_ImagePreviewer->Create2DScene();
-	m_IsImageViewer = 1;
+	m_IsMeshPreviewer = 1;
+	m_MeshPreviewer->Create3DScene();
+	//m_MeshPreviewer->CreateModel();
 }
 
+void ScanModuleQT::HybridMedian2D(int val)
+{
+	if (val == 1)
+		Scanner->hybridMedian2D(m_DepthPreviewer,val);
+	
+}
 
+void ScanModuleQT::imageMedian3D(int val)
+{
+
+	Scanner->imageMedian3D(m_DepthPreviewer, val);
+	
+}
+
+void ScanModuleQT::gausianFilterStd(int std)
+{
+	//Scanner->imageMedian3D(m_DepthPreviewer, val);
+	Scanner->gaussianStd(m_DepthPreviewer, (double)(std / 3.0));
+}
+
+void ScanModuleQT::gausianFilterRad(int rad)
+{
+	//Scanner->imageMedian3D(m_DepthPreviewer, val);
+	Scanner->gaussianRad(m_DepthPreviewer, (double)(rad/3.0));
+}
+
+void ScanModuleQT::MeshSmoothing(int relax)
+{
+	//Scanner->imageMedian3D(m_DepthPreviewer, val);
+	std::cout << relax / 100.0 << "@@@@";
+	static bool test = false;
+	if (test == false)
+	{
+		test = true;
+		Scanner->meshSmooth(m_MeshPreviewer, (double)(relax / 100.0));
+	}
+}
 void ScanModuleQT::InitializeUi()
 {
 	ui.setupUi(this);
@@ -73,29 +97,23 @@ void ScanModuleQT::InitializeUi()
 	//ADD-HHS
 	connect(ui.CapBtn, SIGNAL(clicked()), this, SLOT(slotCapBtn()));
 	connect(ui.NextBtn, SIGNAL(clicked()), this, SLOT(slotNextBtn()));
-	connect(ui.LeftSaveBtn, SIGNAL(clicked()), this, SLOT(slotLeftSaveBtn()));
-	connect(ui.RightSaveBtn, SIGNAL(clicked()), this, SLOT(slotRightSaveBtn()));
-	connect(ui.FrontSaveBtn, SIGNAL(clicked()), this, SLOT(slotFrontSaveBtn()));
-	connect(ui.StreamingBtn, SIGNAL(clicked()), this, SLOT(slotStreamingBtn()));
 
-	
+
+	connect(ui.Hybrid2D_slid, SIGNAL(valueChanged(int)), this, SLOT(HybridMedian2D(int)));
+	connect(ui.Median3D_slid, SIGNAL(valueChanged(int)), this, SLOT(imageMedian3D(int)));
+	connect(ui.GausianStd_slid, SIGNAL(valueChanged(int)), this, SLOT(gausianFilterRad(int)));
+	connect(ui.GausianRad_slid, SIGNAL(valueChanged(int)), this, SLOT(gausianFilterStd(int)));
+
+	connect(ui.MeshSmooth_slid, SIGNAL(valueChanged(int)), this, SLOT(MeshSmoothing(int)));
+
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_2D->width();	sizeY = this->ui.Viewer_cad_2D->height();
-	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_2D->winId()), sizeX, sizeY);
+	
+	m_DepthPreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_2D->winId()), sizeX, sizeY);
 
 	sizeX = this->ui.Viewer_cad_3D->width();	sizeY = this->ui.Viewer_cad_3D->height();
-	Scanner->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3D->winId()), sizeX, sizeY);
+	m_MeshPreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3D->winId()), sizeX, sizeY);
 
-
-	
-	sizeX = this->ui.Viewer_cad_FRONT->width();	sizeY = this->ui.Viewer_cad_FRONT->height();
-	m_MiniMeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_FRONT->winId()), sizeX, sizeY);
-
-	sizeX = this->ui.Viewer_cad_LEFT->width();	sizeY = this->ui.Viewer_cad_LEFT->height();
-	m_MiniMeshPreviewer[1]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_LEFT->winId()), sizeX, sizeY);
-
-	sizeX = this->ui.Viewer_cad_RIGHT->width();	sizeY = this->ui.Viewer_cad_RIGHT->height();
-	m_MiniMeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RIGHT->winId()), sizeX, sizeY);
 }
 
 
@@ -103,48 +121,50 @@ void ScanModuleQT::InitializeUi()
 
 void ScanModuleQT::slotCapBtn() 
 {
+	if(m_IsDepthPreviewer)
+		m_DepthPreviewer->ReleaseModel();
+	m_DepthPreviewer->CreateModel("",0);
+	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
+
+	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+	std::cout << "!";
+	Scanner->frame2Points(fra);
+	Scanner->printDepthMap(m_DepthPreviewer,RealSenseD415, realsense::RS400_STREAM_DEPTH);
+	//Scanner->printPointCloud(m_DepthPreviewer);
+	//RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH,realsense::R1280_720,realsense::RS_400_FORMAT::Z16,realsense::RS_400_FPS::HZ30);
+
+	//RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
+	//m_DepthMapPreviewer->ReleaseModel();
+	//Scanner->printDepthMap(m_DepthMapPreviewer, RealSenseD415, realsense::RS400_STREAM_DEPTH);
+	
+	
+}
+void ScanModuleQT::slotNextBtn() 
+{
+	if (m_IsMeshPreviewer)
+		m_MeshPreviewer->ReleaseModel();
+	m_MeshPreviewer->CreateModel("", 0);
+
+	Scanner->upDataPoint(m_DepthPreviewer);
 
 	
-	RealSenseD415->selectSensorAndStreamProps();
+	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
 
-	
-	//Scanner->eraseFrame();
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
-	//	Scanner->InsertFrame(fra);
-	//}
-
-
-	//clock_t begin;
-	//begin = clock();
-	////sc->frame2Points(fra);
-	//Scanner->frames2Points();
-	//printf("%lf", (double(clock()) - double(begin)) / 1000.0);
-	//Scanner->MeshConstruction(0, 0);
-	for (int i = 0; i < 1; i++) 
+	for (int i = 0; i < 1; i++)
 	{
-		Scanner->ReleaseModel();
+		
 		clock_t begin;
 		begin = clock();
-		rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+		//rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
 		std::cout << "!";
-		Scanner->frame2Points(fra);
+		//Scanner->frame2Points(fra);
 		std::cout << "!";
-		Scanner->MeshConstruction(0, 0);
-		printf("%d %lf", sizeof(fra), (double(clock()) - double(begin)) / 1000.0);
+		Scanner->MeshConstruction(m_MeshPreviewer, 4, 0, 4);
+		//printf("%d %lf", sizeof(fra), (double(clock()) - double(begin)) / 1000.0);
 	}
-	
-}
-void ScanModuleQT::slotNextBtn() {}
-void ScanModuleQT::slotLeftSaveBtn() {}
-void ScanModuleQT::slotRightSaveBtn() {}
-void ScanModuleQT::slotFrontSaveBtn() {}
 
 
-void ScanModuleQT::slotStreamingBtn() 
-{
-	RealSenseD415->selectSensorAndStreamPropsForPreviewer();
-	m_ImagePreviewer->ReleaseModel();
-	m_ImagePreviewer->streamingColorRaw16(RealSenseD415);
 }
+
+
+

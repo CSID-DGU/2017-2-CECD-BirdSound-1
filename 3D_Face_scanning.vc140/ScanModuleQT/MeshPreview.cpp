@@ -22,7 +22,6 @@ void MeshPreview::setSize(int size)
 	m_Actor.resize(size);
 	m_Mapper.resize(size);
 
-	std::cout << m_Actor.size() << "!!!!!!!!!!!!!!!!!!!\n";
 	InitializeVariables();
 }
 MeshPreview::~MeshPreview()
@@ -54,7 +53,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 		if (!m_PolyData[i])
 		return 0;
 
-		m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
+	//	m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
 		m_PolyData[i]->Modified();
 
 		//int n = m_PolyData[0]->GetNumberOfPoints();
@@ -79,7 +78,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 		m_Renderer->AddActor(m_Actor[i]);
 
 	}
-
+	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")개 \n";
 	m_Renderer->ResetCamera();
 	m_Renderer->Modified();
 
@@ -101,12 +100,17 @@ int MeshPreview::CreateTexture(std::string imgPath, int extType)
 
 int MeshPreview::ReleaseModel()
 {
+	std::cout << " ("<<m_Renderer->GetActors()->GetNumberOfItems() << ")개 \n";
+	
 	for (int i = 0; i < m_Actor.size(); i++)
 	{
+		std::cout << "i 째 : "<<i<<"\n";
+	
 		m_Renderer->RemoveActor(m_Actor[i]);
-
+		
 		if (m_Actor[i])
 		{
+			std::cout << "DFHSDFH";
 			m_Actor[i]->Delete();
 			m_Actor[i] = NULL;
 			m_Actor[i] = vtkActor::New();
@@ -125,9 +129,6 @@ int MeshPreview::ReleaseModel()
 			m_PolyData[i] = vtkPolyData::New();
 		}
 
-		m_Mapper[i]->SetInputData(m_PolyData[i]);
-		m_Actor[i]->SetMapper(m_Mapper[i]);
-		m_Renderer->AddActor(m_Actor[i]);
 	}
 
 	if (m_Texture)
@@ -146,7 +147,11 @@ int MeshPreview::ReleaseModel()
 	}
 	
 	//Create3DScene();
-	
+
+	//Create3DScene();
+	//Rendering();
+
+	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")개 \n";
 	return 1;
 }
 
@@ -155,6 +160,8 @@ int MeshPreview::Create3DScene()
 	m_Renderer->GetActiveCamera()->ParallelProjectionOff();
 	//m_Renderer->GetActiveCamera()->SetPosition(m_Actor[0]->GetCenter());
 	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_Actor[0]->GetCenter());
+
+	std::cout << m_Renderer->GetActors()->GetNumberOfItems() << "@#!@#";
 	m_RenWin->AddRenderer(m_Renderer);
 	m_IRen->SetInteractorStyle(m_3DStyle);
 	m_RenWin->SetInteractor(m_IRen);
@@ -187,9 +194,6 @@ int MeshPreview::InitializeVariables()
 	m_3DStyle		= NULL;
 
 	for (int i = 0; i < m_Actor.size(); i++) {
-		m_PolyData[i] = NULL;
-		m_Mapper[i] = NULL;
-		m_Actor[i] = NULL;
 
 		m_PolyData[i] = vtkPolyData::New();
 		m_Mapper[i] = vtkPolyDataMapper::New();
