@@ -60,7 +60,7 @@ private:
 
 public:
 
-	void InsertFrame(rs2::frame &frame)
+	void InsertFrame( rs2::frame &frame)
 	{
 		frames.push_back(frame);
 	}

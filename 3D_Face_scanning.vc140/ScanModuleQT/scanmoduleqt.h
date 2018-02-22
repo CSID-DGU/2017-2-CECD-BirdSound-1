@@ -9,7 +9,16 @@
 
 #include"vtkPointData.h"
 #include"vtkDoubleArray.h"
+#include"vtkFloatArray.h"
 #include"Scan.h"
+#include"vtkSTLWriter.h"
+#include"vtkPNGWriter.h"
+
+#include"vtkPNGReader.h"
+#include"vtkSTLReader.h"
+#include"vtkPLYWriter.h"
+#include"vtkPLYReader.h"
+#include"vtkTexture.h"
 class ScanModuleQT : public QMainWindow
 {
 	Q_OBJECT

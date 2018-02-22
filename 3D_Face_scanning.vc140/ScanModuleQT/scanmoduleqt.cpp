@@ -242,82 +242,208 @@ void ScanModuleQT::slotTextureMapping()
 // texture coordinates arrary 만들기
 	//1/x축픽셀개수
 	//1/y축픽셀개수
-	
-	vtkSmartPointer<vtkPoints> tmpPt = vtkSmartPointer<vtkPoints>::New();
-	tmpPt->DeepCopy(m_MeshPreviewer->GetPolyDataAt(0)->GetPoints());
-	tmpPt->Modified();
-
-	vtkSmartPointer<vtkCellArray> tmpPoly = vtkSmartPointer<vtkCellArray>::New();
-	tmpPoly->DeepCopy(m_MeshPreviewer->GetPolyDataAt(0)->GetPolys());
-	tmpPoly->Modified();
-
-	m_MeshPreviewer->GetPolyDataAt(0)->ReleaseData();
-	m_MeshPreviewer->GetPolyDataAt(0)->Delete();
-
-	m_MeshPreviewer->m_PolyData[0] = vtkPolyData::New();
-	m_MeshPreviewer->m_PolyData[0]->SetPoints(tmpPt);
-	m_MeshPreviewer->m_PolyData[0]->SetPolys(tmpPoly);
-	m_MeshPreviewer->m_PolyData[0]->Modified();
-
-
-	vtkSmartPointer<vtkDoubleArray> textureCoords = vtkSmartPointer<vtkDoubleArray>::New();
-	textureCoords->SetNumberOfComponents(3);
-	double tcoords[3] = { 0.0, 0.0, 0.0 };
-	double rowSpacing = 1.0  / 1280.0;
-	double columnSpacing = 1.0 / 720.0;
-	double xCoord = 0.0;
-	double yCoord = 0.0;
-
-	//vtkPoints *pts = Scanner->GetPoints();
-	for (int i = 0; i<1280; i++)
-	{
-		xCoord = rowSpacing*i;
-		for (int j = 0; j<720; j++)
-		{
-			yCoord = columnSpacing*j;
-			tcoords[0] = xCoord;
-			tcoords[1] = yCoord;
-			tcoords[2] = 0.0;
-			textureCoords->InsertNextTuple(tcoords);
-		}
-	}
-
-	m_MeshPreviewer->GetPolyDataAt(0)->GetPointData()->SetTCoords(textureCoords);
-	m_MeshPreviewer->GetTexture()->SetInputData(m_MeshPreviewer->GetImageData());
-	m_MeshPreviewer->GetTexture()->Update();
-
-
-	m_MeshPreviewer->m_Renderer->RemoveActor(m_MeshPreviewer->GetActorAt(0));
-	m_MeshPreviewer->m_Actor[0]->Delete();
-	m_MeshPreviewer->GetMapperAt(0)->Delete();
-
-
-	m_MeshPreviewer->m_Mapper[0]= vtkPolyDataMapper::New();	
-	m_MeshPreviewer->m_Mapper[0]->SetInputData(m_MeshPreviewer->GetPolyDataAt(0));
-	m_MeshPreviewer->m_Mapper[0]->Update();
-
-	m_MeshPreviewer->m_Actor[0] = vtkActor::New();
-	m_MeshPreviewer->GetActorAt(0)->SetMapper(m_MeshPreviewer->m_Mapper[0]);
-	m_MeshPreviewer->GetActorAt(0)->SetTexture(m_MeshPreviewer->m_Texture);
-	m_MeshPreviewer->GetActorAt(0)->Modified();
-	
-	m_MeshPreviewer->m_Renderer->AddActor(m_MeshPreviewer->m_Actor[0]);
-	m_MeshPreviewer->m_RenWin->AddRenderer(m_MeshPreviewer->m_Renderer);
-	m_MeshPreviewer->m_IRen->SetRenderWindow(m_MeshPreviewer->GetRenderWindow());
-	//std::cout << m_MeshPreviewer->GetTexture()->GetImageDataInput();
-	
-	
-	m_MeshPreviewer->m_IRen->Modified();
-	m_MeshPreviewer->m_IRen->Render();
-	/*
-	1. render 에서 actor remove 
-	2. actor delete
-	3. mapper delete
-	4. mapper 생성, 데이터 입력
-	5. actor setMapper / settexture
-	6. add actor
-	7. render. 
-	*/
+//	
+//	vtkSmartPointer<vtkPoints> tmpPt = vtkSmartPointer<vtkPoints>::New();
+//	tmpPt->DeepCopy(m_MeshPreviewer->GetPolyDataAt(0)->GetPoints());
+//	tmpPt->Modified();
+//
+//	vtkSmartPointer<vtkCellArray> tmpPoly = vtkSmartPointer<vtkCellArray>::New();
+//	tmpPoly->DeepCopy(m_MeshPreviewer->GetPolyDataAt(0)->GetPolys());
+//	tmpPoly->Modified();
+//
+//	m_MeshPreviewer->GetPolyDataAt(0)->ReleaseData();
+//	m_MeshPreviewer->GetPolyDataAt(0)->Delete();
+//
+//	m_MeshPreviewer->m_PolyData[0] = vtkPolyData::New();
+//	m_MeshPreviewer->m_PolyData[0]->SetPoints(tmpPt);
+//	m_MeshPreviewer->m_PolyData[0]->SetPolys(tmpPoly);
+//	m_MeshPreviewer->m_PolyData[0]->Modified();
+//
+///*
+//	vtkSmartPointer<vtkDoubleArray> textureCoords = vtkSmartPointer<vtkDoubleArray>::New();
+//	textureCoords->SetNumberOfComponents(3);
+//	double tcoords[3] = { 0.0, 0.0, 0.0 };
+//	double rowSpacing = 1.0  / 1280.0;
+//	double columnSpacing = 1.0 / 720.0;
+//	double xCoord = 0.0;
+//	double yCoord = 0.0;
+//
+//	//vtkPoints *pts = Scanner->GetPoints();
+//	for (int i = 0; i<1280; i++)
+//	{
+//		xCoord = rowSpacing*i;
+//		for (int j = 0; j<720; j++)
+//		{
+//			yCoord = columnSpacing*j;
+//			tcoords[0] = xCoord;
+//			tcoords[1] = yCoord;
+//			tcoords[2] = 0.0;
+//			textureCoords->InsertNextTuple(tcoords);
+//
+//			//std::cout << tcoords[0] << " " << tcoords[1] << " " << tcoords[2] << "\n";
+//		}
+//	}
+//	textureCoords->Modified();
+//
+//	m_MeshPreviewer->GetPolyDataAt(0)->GetPointData()->SetTCoords(textureCoords);
+//
+//*/
+//	vtkNew<vtkFloatArray> textureCoords;
+//	textureCoords->SetNumberOfComponents(3);
+//	float tcoords[3] = { 0.0, 0.0, 0.0 };
+//	double rowSpacing = 1.0 / 1280.0;
+//	double columnSpacing = 1.0 / 720.0;
+//	double xCoord = 0.0;
+//	double yCoord = 0.0;
+//
+//	vtkPoints *pts = Scanner->GetPoints();
+//	vtkPLYWriter *wri = vtkPLYWriter::New();
+//	wri->SetFileName("my.ply");
+//	wri->SetInputData(m_MeshPreviewer->GetPolyDataAt(0));
+//	//wri->SetFileTypeToBinary();
+//	wri->SetFileTypeToASCII();
+//	wri->Write();
+//
+//	vtkPNGWriter *ima = vtkPNGWriter::New();
+//	ima->SetFileName("ima.jpg");
+//	ima->SetInputData(m_MeshPreviewer->GetImageData());
+//	ima->Write();
+//
+//	vtkPLYReader *stRead = vtkPLYReader::New();
+//	stRead->SetFileName("my.ply");
+//	stRead->Update();
+//
+//	vtkPolyData* pol = vtkPolyData::New();
+//	pol->DeepCopy(stRead->GetOutput());
+//	pol->Modified();
+//
+//
+//	int n = pol->GetNumberOfPoints();
+//
+//	for (int i = 0; i<n; i++)
+//	{
+//		double temp[3];
+//
+//		pol->GetPoint(i, temp);
+//
+//		float abc[3];
+//		abc[0] = temp[0];
+//		abc[1] = temp[1];
+//		abc[2] = 0.0;
+//		textureCoords->InsertNextTuple(abc);
+//	}
+//	pol->GetPointData()->SetTCoords(textureCoords);
+//	pol->Modified();
+//
+//	vtkPolyDataMapper *mp = vtkPolyDataMapper::New();
+//	mp->SetInputData(pol);
+//	mp->Update();
+//	
+//	vtkPNGReader *prd = vtkPNGReader::New();
+//	prd->SetFileName("ima.jpg");
+//	prd->Update();
+//
+//
+//	vtkTexture *text = vtkTexture::New();
+//	text->SetInputData(prd->GetOutput());
+//	text->Modified();
+//
+//	vtkActor *act = vtkActor::New();
+//	act->SetMapper(mp);
+//	act->SetTexture(text);
+//
+//	vtkRenderer *ren = vtkRenderer::New();
+//	ren->AddActor(act);
+//	vtkRenderWindow *win = vtkRenderWindow::New();
+//	win->AddRenderer(ren);
+//	ren->ResetCamera();
+//	win->Render();
+//
+//	int a = 0;
+//	a++;
+//
+//	for (int i = 0; i<1280*720; i++)
+//	{
+//		double temp[3];
+//
+//		m_MeshPreviewer->GetPolyDataAt(0)->GetPoint(i, temp);
+//		
+//		float abc[3];
+//		abc[0] = temp[0];
+//		abc[1] = temp[1];
+//		abc[2] = 0;
+//		textureCoords->InsertNextTuple(abc);
+//		int  a = 0;
+//		//for (int j = 0; j<720; j++)
+//		//{
+//		//	yCoord = columnSpacing*j;
+//		//	tcoords[0] = xCoord;
+//		//	tcoords[1] = yCoord;
+//		//	tcoords[2] = 0.0;
+//		//	textureCoords->InsertNextTuple(tcoords);
+//
+//		//	//std::cout << tcoords[0] << " " << tcoords[1] << " " << tcoords[2] << "\n";
+//		//}
+//	}
+//
+//	//for (int i = 0; i<1280; i++)
+//	//{
+//	//	xCoord = rowSpacing*i;
+//	//	for (int j = 0; j<720; j++)
+//	//	{
+//	//		yCoord = columnSpacing*j;
+//	//		tcoords[0] = xCoord;
+//	//		tcoords[1] = yCoord;
+//	//		tcoords[2] = 0.0;
+//	//		textureCoords->InsertNextTuple(tcoords);
+//
+//	//		//std::cout << tcoords[0] << " " << tcoords[1] << " " << tcoords[2] << "\n";
+//	//	}
+//	//}
+//	textureCoords->Modified();
+//
+//	m_MeshPreviewer->GetPolyDataAt(0)->GetPointData()->SetTCoords(textureCoords.GetPointer());
+//
+//
+//
+//	m_MeshPreviewer->GetTexture()->SetInputData(m_MeshPreviewer->m_ImageData);
+//	m_MeshPreviewer->GetTexture()->Update();
+//
+//	m_MeshPreviewer->m_Renderer->RemoveActor(m_MeshPreviewer->GetActorAt(0));
+//	m_MeshPreviewer->m_Actor[0]->Delete();
+//	m_MeshPreviewer->m_Actor[0] = NULL;
+//	m_MeshPreviewer->GetMapperAt(0)->Delete();
+//	m_MeshPreviewer->m_Mapper[0] = NULL;
+//
+//
+//	m_MeshPreviewer->m_Mapper[0]= vtkPolyDataMapper::New();	
+//	m_MeshPreviewer->m_Mapper[0]->SetInputData(m_MeshPreviewer->GetPolyDataAt(0));
+//	m_MeshPreviewer->m_Mapper[0]->Update();
+//
+//	m_MeshPreviewer->m_Actor[0] = vtkActor::New();
+//	m_MeshPreviewer->GetActorAt(0)->SetMapper(m_MeshPreviewer->m_Mapper[0]);
+//	m_MeshPreviewer->GetActorAt(0)->SetTexture(m_MeshPreviewer->m_Texture);
+//	m_MeshPreviewer->m_Actor[0]->GetProperty()->SetRepresentationToSurface();
+//
+//	
+//	m_MeshPreviewer->m_Renderer->AddActor(m_MeshPreviewer->m_Actor[0]);
+//	m_MeshPreviewer->m_Renderer->ResetCamera();
+//	m_MeshPreviewer->m_RenWin->AddRenderer(m_MeshPreviewer->m_Renderer);
+//	m_MeshPreviewer->m_IRen->SetRenderWindow(m_MeshPreviewer->GetRenderWindow());
+//	//std::cout << m_MeshPreviewer->GetTexture()->GetImageDataInput();
+//	
+//	
+//	m_MeshPreviewer->m_IRen->Modified();
+//	m_MeshPreviewer->m_IRen->Render();
+//	/*1. render 에서 actor remove 
+//	2. actor delete
+//	3. mapper delete
+//	4. mapper 생성, 데이터 입력
+//	5. actor setMapper / settexture
+//	6. add actor
+//	7. render. */
+//
+//	std::cout << "Done";
 }
 void ScanModuleQT::slotMultiCapBtn()
 {
