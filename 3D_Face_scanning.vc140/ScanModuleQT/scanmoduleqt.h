@@ -5,7 +5,8 @@
 #include "ui_scanmoduleqt.h"
 #include"MeshPreview.h"
 #include"ImagePreview.h"
-#include"RealSensePreviewer.h"
+#include"DepthMapPreviewer.h"
+
 #include"Scan.h"
 class ScanModuleQT : public QMainWindow
 {
@@ -15,30 +16,35 @@ public:
 	ScanModuleQT(QWidget *parent = 0);
 	~ScanModuleQT();
 
-
-	MeshPreview*							m_MiniMeshPreviewer[3];//left, front, right¼ø¼­
-	int										m_IsMiniMeshViewer[3];
 	
-	
-	int										m_ScannedMeshViewer;
+	int										m_IsMeshPreviewer;
+	MeshPreview*							m_MeshPreviewer;
 
-	RealSensePreviewer*						m_ImagePreviewer;
-	int										m_IsImageViewer;
+	int										m_IsDepthPreviewer;
+	DepthMapPreviewer						*m_DepthPreviewer;
 
 	void InitializeUi();
 public slots:
 	void slotCapBtn();
 	void slotNextBtn();
-	void slotLeftSaveBtn();
-	void slotRightSaveBtn();
-	void slotFrontSaveBtn();
-	void slotStreamingBtn();
 
 
 
 	void InitializeVariables();
 	void InitializeScene();
 	int DestroyVariables();
+	void imageMedian3D(int val);
+	void gausianFilterStd(int std);
+	void gausianFilterRad(int rad);
+	void MeshSmoothing();
+
+	void GausStdBtn();
+	void GausRadBtn();
+	void MedianBtn();
+	void slotMultiCapBtn();
+	void slotApplyFilter();
+	void slotNextBtn2();
+	void slotResetBtn();
 private:
 	Ui::ScanModuleQTClass ui;
 

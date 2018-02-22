@@ -62,9 +62,6 @@
     <ClCompile Include="MeshPreview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RealSensePreviewer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ImageIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -107,6 +104,9 @@
     <ClCompile Include="BMPImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DepthMapPreviewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="scanmoduleqt.h">
@@ -133,9 +133,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshPreview.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RealSensePreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageIO.h">
@@ -178,6 +175,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BMPImport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthMapPreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
