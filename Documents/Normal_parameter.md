@@ -1,6 +1,5 @@
 # Depth
 
-
 ## FIX
 Resolution 1280x720
 FPS : 30
@@ -11,7 +10,6 @@ Enable Auto Exposure : On
 Depth Visual Preset : Dynamic
 Color Scheme : Jet
 Histogram Equalization Enable : On
-
 
 ## CheckBox
 Enable Auto White Balance
@@ -33,10 +31,6 @@ Spatial Filter Smooth Delta : 1.000 ~ 50.000
 Temporal Filter Magnitude : 0.000 ~ 15.000  
 Temporal Filter Smooth Alpha : 0.0000 ~ 1.0000  
 Temporal Filter Smooth Delta : 1.000 ~ 100.000  
-
-
-
-
 
  # Color
 
