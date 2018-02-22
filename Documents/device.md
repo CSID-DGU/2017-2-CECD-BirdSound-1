@@ -12,7 +12,8 @@ D415는 2개의 **"센서"** (**RGB_CAMERA**, **STEREO_MODULE**) 로 구성되�
 
 여기서 Infrared1 은 왼쪽 IR카메라 스트림 , Infrared2는 오른쪽 IR카메라 스트림 이다. Infrared0은 해상도가 1280x720 인것으로 보아 IR1&2 를 합친 스트림으로 보인다.
 
-<br>
+<br>  
+
 ### 센서접근
 
 장치의 센서에 접근하는 방법은 다음과 같다. ~~(realsense 기초 사용법을 먼저 보고오자)~~
@@ -38,13 +39,15 @@ auto data = frame.get_data(); //frame data get
 stream_profile 은 `rs2::stream_profile` 클래스 이며, 각 스트림마다 이용가능한 stream_profile이 사전에 정해져있다. (Definition 링크는 [hot_link.md](./hotlink.md) 를 참조)  
 이를 벗어난 스트림 프로파일을 사용하려고 하면 예외가 발생한다. 각 스트림마다 이용가능한 stream_profile 은 [stream_profile.md](./stream_profile) 에 정리해 두었으니 참고바란다.  
 
-<br>
+<br>  
+
 ### Frame lifetime & sync
 프레임의 관리와 생명주기, 메타데이터는 librealsense 에 잘 설명되어있어 링크로 대체한다.  
 [Frame Management](https://github.com/IntelRealSense/librealsense/blob/v2.9.0/doc/frame_lifetime.md) - Frame Memory Management, Threading Model and Synchronization  
 [Frame Metadata](https://github.com/IntelRealSense/librealsense/blob/v2.9.0/doc/frame_metadata.md) - Support for frame-metadata attributes  
 
-<br>
+<br>  
+
 ### RaW 스트림?
 RAW 스트림을 얻을 수 있느냐? 라고 문의를 했지만, 제공해주지 않는다는 답변을 받았다. [링크](https://communities.intel.com/thread/122385?q=RAW)
 
