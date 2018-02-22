@@ -55,7 +55,6 @@ void Scan::printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, r
 	viewer->m_RenWin->Render();
 }
 
-
 void Scan::frames2PointsCutOutlier()
 {
 	if (points == nullptr)
@@ -72,33 +71,26 @@ void Scan::frames2PointsCutOutlier()
 		rsPoints = pc.calculate(frames[i]);
 		ver.push_back(rsPoints.get_vertices());
 	}
-
+	
 	for (int j = 0; j < 1280 * 720; j++)
 	{
-
-		std::vector<double> X, Y, Z;
+		std::vector<double>Z;
 		for (int i = 0; i < frames.size(); i++)
 		{
 			if (ver[i][j].z != 0 && ver[i][j].z < 1 && ver[i][j].z > -1)
 			{
-				X.push_back(ver[i][j].x);
-				Y.push_back(ver[i][j].y);
 				Z.push_back(ver[i][j].z);
 			}
 		}
 
-		double _X, _Y, _Z;
-		_X = _Y = _Z = 0;
+		double _Z;
+		_Z = 0;
 
-		std::sort(X.begin(), X.end());
-		std::sort(Y.begin(), Y.end());
 		std::sort(Z.begin(), Z.end());
 
 		int cnt = 0;
-		for (int i = X.size()*0.3; i < X.size()*0.7; i++)
+		for (int i = Z.size()*0.3; i < Z.size()*0.7; i++)
 		{
-			_X += X[i];
-			_Y += Y[i];
 			_Z += Z[i];
 			cnt++;
 		}
@@ -106,13 +98,11 @@ void Scan::frames2PointsCutOutlier()
 			points->InsertNextPoint(0, 0, 0);
 		else
 		{
-			_X /= cnt; _Y /= cnt; _Z /= cnt;
-			points->InsertNextPoint(_X, _Y, _Z);
+			_Z /= cnt;
+			points->InsertNextPoint(ver[0][j].x, ver[0][j].y, _Z);
 		}
 
-		X.clear(); Y.clear(); Z.clear();
-
-		//std::cout << j << " ";
+		Z.clear();
 	}
 
 	ver.clear();
@@ -517,7 +507,7 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveT
 {
 	vtkCellArray *cell = vtkCellArray::New();
 
-	double alpha = 0.003;
+	double alpha = 0.005;
 	for (vtkIdType i = 0; i < point->GetNumberOfPoints() - width; i++)
 	{
 		double orign[3], right[3], down[3], diga[3];

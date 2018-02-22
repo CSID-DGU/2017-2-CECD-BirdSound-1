@@ -140,12 +140,11 @@ public:
 
 
 		viewer->GetActor()->GetMapper()->SetInputConnection(gaus->GetOutputPort());
-		//viewer->GetActor()->Modified();
 
 		viewer->GetRenderWindow()->Modified();
 		viewer->GetRenderWindow()->Render();
 	}
-
+	
 
 	void imageMedian3D(DepthMapPreviewer *viewer, int value)
 	{
@@ -159,12 +158,8 @@ public:
 		Median2D->Update();
 
 		viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
-		//viewer->m_ImageData = Median2D->GetOutput();
-		//viewer->m_ImageData->ShallowCopy(Median2D->GetOutput());
 		viewer->m_ImageData->Modified();
 
-
-		//vtkImageActor* hybridMedianActor =vtkImageActor::New();
 		viewer->GetActor()->GetMapper()->SetInputConnection(Median2D->GetOutputPort());
 		viewer->GetActor()->Modified();
 
@@ -210,11 +205,8 @@ public:
 
 		for (int i = 0; i < 1280*720; i++)
 		{
-			
 			double orig[3];
-
 			points->GetPoint(i, orig);
-
 			double val = double(value[i]) / (8*1024.0);
 			//std::cout << val << " ";			
 			if (val == 0|| val<-1.0 || val>1.0)
@@ -222,7 +214,6 @@ public:
 
 			else
 				points->SetPoint(i, orig[0], orig[1], val);
-
 		}
 		
 	}
@@ -234,6 +225,4 @@ private:
 	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp=0);
 	void MeshConstructWithOMP(MeshPreview *viewer,vtkPoints *point, int saveType, int ThreadSize);
 	vtkRenderer* MeshConstructWithOMPnSIMD(MeshPreview *viewer,vtkPoints *point, int saveType, int ThreadSize);
-
-
 };

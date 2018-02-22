@@ -44,6 +44,7 @@ public slots:
 	void slotMultiCapBtn();
 	void slotApplyFilter();
 	void slotNextBtn2();
+	void slotResetBtn();
 private:
 	Ui::ScanModuleQTClass ui;
 
