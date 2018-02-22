@@ -14,7 +14,10 @@
    </rect>
   </property>
   <property name="cursor">
-   <cursorShape>WaitCursor</cursorShape>
+   <cursorShape>ArrowCursor</cursorShape>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
   </property>
   <property name="windowTitle">
    <string>BirdSound - 3D Face Scanning</string>
@@ -32,7 +35,7 @@
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>TextLabel</string>
+       <string>ㅋㄷㅋㄷ</string>
       </property>
      </widget>
     </item>
@@ -41,9 +44,25 @@
       <property name="value">
        <number>24</number>
       </property>
+      <property name="textVisible">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>40</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PushButton</string>
+   </property>
   </widget>
  </widget>
  <resources/>

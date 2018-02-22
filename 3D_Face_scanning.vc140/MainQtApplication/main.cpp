@@ -11,16 +11,17 @@ int main(int argc, char *argv[])
 	//초기화 진행..
 	InitializeModule i;
 	i.show();
-	_sleep(3000); //초기화는 3초면 충분하지.
-	//초기화 끝!
+	MainModule m;
+	//m.setSetting(i.init());
+	i.Init();
 	i.close();
+	//초기화 끝!
+	m.show();
 	
 	
 	//메인윈도우 진행
 	//IOModule w;
 	//w.show();
-	MainModule m;
-	m.show();
 	//메인윈도우 끝
 	return a.exec();
 }

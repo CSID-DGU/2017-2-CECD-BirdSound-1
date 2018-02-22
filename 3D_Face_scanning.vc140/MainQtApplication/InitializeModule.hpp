@@ -6,6 +6,8 @@ class InitializeModule : public QWidget { //QWidget »ó¼Ó..
 
 public :
 	InitializeModule(QWidget* parent = Q_NULLPTR);
+	void Init();
 private : 
+
 	Ui::InitializeModule ui;
 };

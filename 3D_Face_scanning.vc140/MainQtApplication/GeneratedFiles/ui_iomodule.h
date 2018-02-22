@@ -488,7 +488,7 @@ public:
 
         retranslateUi(IOModuleClass);
 
-        rsWidget->setCurrentIndex(2);
+        rsWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(IOModuleClass);
