@@ -58,7 +58,7 @@ void Scan::printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, r
 
 	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_ImageData->GetCenter());
 	//m_Renderer->GetActiveCamera()->SetPosition(m_ImageData->GetCenter()[0], m_ImageData->GetCenter()[1], 100000.0);
-	//viewer->m_Renderer->ResetCamera();
+	viewer->m_Renderer->ResetCamera();
 	viewer->m_Renderer->Modified();
 
 

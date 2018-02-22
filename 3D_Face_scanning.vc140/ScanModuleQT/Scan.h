@@ -118,7 +118,10 @@ public:
 		gaus->Update();
 
 		//viewer->m_ImageData->DeepCopy(gaus->GetOutput());
-		viewer->m_ImageData->DeepCopy(gaus->GetOutput());
+		viewer->m_ImageData->ShallowCopy(gaus->GetOutput());
+		viewer->m_ImageData->Modified();
+
+
 		viewer->GetActor()->GetMapper()->SetInputConnection(gaus->GetOutputPort());
 		//viewer->GetActor()->Modified();
 
@@ -135,7 +138,9 @@ public:
 
 		//viewer->m_ImageData->DeepCopy(gaus->GetOutput());
 
-		viewer->m_ImageData->DeepCopy(gaus->GetOutput());
+		viewer->m_ImageData->ShallowCopy(gaus->GetOutput());
+		viewer->m_ImageData->Modified();
+
 
 		viewer->GetActor()->GetMapper()->SetInputConnection(gaus->GetOutputPort());
 		//viewer->GetActor()->Modified();
@@ -148,20 +153,19 @@ public:
 	void imageMedian3D(DepthMapPreviewer *viewer, int value)
 	{
 		auto temp = viewer->GetImageData()->GetScalarPointer();
-
 		unsigned short * _value = static_cast<unsigned short*>(temp);
-
 		vtkImageMedian3D *Median2D = vtkImageMedian3D::New();
 
 
-		viewer->m_OriginImage->DeepCopy(viewer->m_ImageData);
 		Median2D->SetInputData(viewer->GetOriginImage());//얘는 원본 이미지로 할 것.
 		Median2D->SetKernelSize(value, value, value);
 		Median2D->Update();
 
 		//viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
-		viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
-		
+		viewer->m_ImageData->ShallowCopy(Median2D->GetOutput());
+		viewer->m_ImageData->Modified();
+
+
 		//vtkImageActor* hybridMedianActor =vtkImageActor::New();
 		viewer->GetActor()->GetMapper()->SetInputConnection(Median2D->GetOutputPort());
 		viewer->GetActor()->Modified();
@@ -176,18 +180,11 @@ public:
 	{
 		vtkSmoothPolyDataFilter* smoothFilter =vtkSmoothPolyDataFilter::New();
 		smoothFilter->SetInputData(viewer->GetPolyDataAt(0));
-		smoothFilter->SetNumberOfIterations(10);
-		smoothFilter->SetRelaxationFactor(1);
+		smoothFilter->SetNumberOfIterations(100);
+		smoothFilter->SetRelaxationFactor(Relaxation);
 		smoothFilter->FeatureEdgeSmoothingOff();
 		smoothFilter->BoundarySmoothingOn();
 		smoothFilter->Update();
-
-
-		//vtkSmartPointer<vtkPolyDataNormals> normalGenerator = vtkSmartPointer<vtkPolyDataNormals>::New();
-		//normalGenerator->SetInputConnection(smoothFilter->GetOutputPort());
-		//normalGenerator->ComputePointNormalsOn();
-		//normalGenerator->ComputeCellNormalsOn();
-		//normalGenerator->Update();
 
 		//viewer->GetRenderer()->RemoveActor(viewer->GetActorAt(0));
 		//viewer->GetActorAt(0)->Delete();

@@ -78,12 +78,14 @@ void ScanModuleQT::gausianFilterRad(int rad)
 /*버튼으로 번경*/
 void ScanModuleQT::MeshSmoothing()
 {
-	Scanner->meshSmooth(m_MeshPreviewer, 0.02);
+	Scanner->meshSmooth(m_MeshPreviewer, 0.023);
+	std::cout << "done";
 }
 
 void ScanModuleQT::GausStdBtn()
 {
 	ui.GausianStd_slid->setDisabled(true);
+	ui.GausianRad_slid->setDisabled(false);
 }
 void ScanModuleQT::GausRadBtn()
 {
@@ -92,6 +94,7 @@ void ScanModuleQT::GausRadBtn()
 void  ScanModuleQT::MedianBtn()
 {
 	ui.Median3D_slid->setDisabled(true);
+	ui.GausianStd_slid->setDisabled(false);
 }
 void ScanModuleQT::InitializeUi()
 {
@@ -104,12 +107,15 @@ void ScanModuleQT::InitializeUi()
 	connect(ui.Median3D_slid, SIGNAL(valueChanged(int)), this, SLOT(imageMedian3D(int)));
 	connect(ui.GausianStd_slid, SIGNAL(valueChanged(int)), this, SLOT(gausianFilterRad(int)));
 	connect(ui.GausianRad_slid, SIGNAL(valueChanged(int)), this, SLOT(gausianFilterStd(int)));
-	connect(ui.MeshSmoothBtn, SIGNAL(Clicked()), this, SLOT(MeshSmoothing()));
+	connect(ui.MeshSmoothBtn, SIGNAL(clicked()), this, SLOT(MeshSmoothing()));
 
-	connect(ui.GausianStdBtn, SIGNAL(Clicked()), this, SLOT(GausStdBtn()));
-	connect(ui.GausianRadBtn, SIGNAL(Clicked()), this, SLOT(GausRadBtn()));
-	connect(ui.MedianBtn, SIGNAL(Clicked()), this, SLOT(MedianBtn()));
+	connect(ui.GausianStdBtn, SIGNAL(clicked()), this, SLOT(GausStdBtn()));
+	connect(ui.GausianRadBtn, SIGNAL(clicked()), this, SLOT(GausRadBtn()));
+	connect(ui.MedianBtn, SIGNAL(clicked()), this, SLOT(MedianBtn()));
 
+
+	ui.GausianStd_slid->setDisabled(true);
+	ui.GausianRad_slid->setDisabled(true);
 	/*
 	버튼 3개 더 달기
 	
