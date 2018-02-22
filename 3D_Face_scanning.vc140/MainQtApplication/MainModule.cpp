@@ -1,6 +1,7 @@
 #include "MainModule.hpp"
 #include "../../CalibrationModule/CalibrationModule.hpp"
 #include "ScanModule.hpp"
+#include "RegistrationModule.hpp"
 #include "iomodule.h"
 #include <QDesktopWidget>
 
@@ -39,7 +40,15 @@ void MainModule::cellSelected(int nRow, int nCol)
 	runViewerModule();
 }
 void MainModule::runScanModule() {
+	Data * a = new Data();
+	a->X = 1;
+	a->Y = 1;
+	a->Z = 1;
+
 	ScanModule *scanner = new ScanModule();
+	RegistrationModule *c = new RegistrationModule();
+	scanner->setData(data);
+	scanner->setRegistrationModule(c);
 	scanner->show();
 }
 void MainModule::runCalibrationModule() {

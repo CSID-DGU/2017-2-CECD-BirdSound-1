@@ -42,14 +42,14 @@ public:
 "QPushButton {\n"
 "font: 12pt \"\353\247\221\354\235\200\352\263\240\353\224\225\";\n"
 "background: \"#2896DC\";\n"
+"border-width: 1px;\n"
+"border-style: solid;\n"
+"border-color:\"black\";\n"
 "border-radius: 5;\n"
 "}\n"
 "QPushButton:hover{\n"
 "font: bold;\n"
-"background: #2896DC;\n"
 "border-width: 2px;\n"
-"border-style: solid;\n"
-"border-color:\"black\";\n"
 "}"));
         frame = new QFrame(ScanModule);
         frame->setObjectName(QStringLiteral("frame"));

@@ -23,14 +23,14 @@ background:black;
 QPushButton {
 font: 12pt &quot;맑은고딕&quot;;
 background: &quot;#2896DC&quot;;
+border-width: 1px;
+border-style: solid;
+border-color:&quot;black&quot;;
 border-radius: 5;
 }
 QPushButton:hover{
 font: bold;
-background: #2896DC;
 border-width: 2px;
-border-style: solid;
-border-color:&quot;black&quot;;
 }</string>
   </property>
   <widget class="QFrame" name="frame">
