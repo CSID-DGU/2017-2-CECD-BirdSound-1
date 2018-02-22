@@ -7,6 +7,8 @@
 #include"ImagePreview.h"
 #include"DepthMapPreviewer.h"
 
+#include"vtkPointData.h"
+#include"vtkDoubleArray.h"
 #include"Scan.h"
 class ScanModuleQT : public QMainWindow
 {
@@ -45,6 +47,7 @@ public slots:
 	void slotApplyFilter();
 	void slotNextBtn2();
 	void slotResetBtn();
+	void slotTextureMapping();
 private:
 	Ui::ScanModuleQTClass ui;
 

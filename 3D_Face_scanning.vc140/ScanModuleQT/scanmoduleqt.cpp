@@ -1,5 +1,7 @@
 #include "scanmoduleqt.h"
 
+
+#include"vtkImageViewer2.h"//이거 나주에 지워
 ScanModuleQT::ScanModuleQT(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -15,7 +17,7 @@ int ScanModuleQT::DestroyVariables()
 	delete m_MeshPreviewer;
 	delete m_ImagePreviewer;*/
 
-	delete RealSenseD415;
+	//delete RealSenseD415;
 	delete Scanner;
 
 	delete m_DepthPreviewer;
@@ -142,6 +144,8 @@ void ScanModuleQT::InitializeUi()
 	
 	connect(ui.ResetBtn, SIGNAL(clicked()), this, SLOT(slotResetBtn()));
 
+	connect(ui.TextureMappingBtn, SIGNAL(clicked()), this, SLOT(slotTextureMapping()));
+
 
 	ui.GausianStd_slid->setDisabled(true);
 	ui.GausianRad_slid->setDisabled(true);
@@ -199,6 +203,8 @@ void ScanModuleQT::slotNextBtn2()
 	if (m_IsMeshPreviewer)
 		m_MeshPreviewer->ReleaseModel();
 	m_MeshPreviewer->CreateModel("", 0);
+	m_MeshPreviewer->CreateTexture("", 0);
+
 	m_MeshPreviewer->Rendering();
 
 	Scanner->MeshConstruction(m_MeshPreviewer, 4, 0, 4);
@@ -213,6 +219,106 @@ void ScanModuleQT::slotApplyFilter()
 	Scanner->printDepthMap(m_DepthPreviewer, RealSenseD415, realsense::RS400_STREAM_DEPTH);
 	ui.MultiCatpBtn->setDisabled(false);
 };
+
+
+/*
+Scanner->InsertFrame(fra);
+이부분에 fra에 frame만 넣어주면 됨.
+*/
+void ScanModuleQT::slotTextureMapping()
+{
+
+	//vtkImageViewer2 *test = vtkImageViewer2::New();
+	//if(!m_MeshPreviewer->IsTexture())
+	//m_MeshPreviewer->CreateTexture("", 0);
+//	test->SetInputData(m_MeshPreviewer->m_ImageData);
+	//test->Render();
+
+	//vtkSmartPointer<vtkActor> texturedPlane =
+		//vtkSmartPointer<vtkActor>::New();
+	//texturedPlane->SetMapper(m_Mesh);
+	//texturedPlane->SetTexture(texture);
+
+// texture coordinates arrary 만들기
+	//1/x축픽셀개수
+	//1/y축픽셀개수
+	
+	vtkSmartPointer<vtkPoints> tmpPt = vtkSmartPointer<vtkPoints>::New();
+	tmpPt->DeepCopy(m_MeshPreviewer->GetPolyDataAt(0)->GetPoints());
+	tmpPt->Modified();
+
+	vtkSmartPointer<vtkCellArray> tmpPoly = vtkSmartPointer<vtkCellArray>::New();
+	tmpPoly->DeepCopy(m_MeshPreviewer->GetPolyDataAt(0)->GetPolys());
+	tmpPoly->Modified();
+
+	m_MeshPreviewer->GetPolyDataAt(0)->ReleaseData();
+	m_MeshPreviewer->GetPolyDataAt(0)->Delete();
+
+	m_MeshPreviewer->m_PolyData[0] = vtkPolyData::New();
+	m_MeshPreviewer->m_PolyData[0]->SetPoints(tmpPt);
+	m_MeshPreviewer->m_PolyData[0]->SetPolys(tmpPoly);
+	m_MeshPreviewer->m_PolyData[0]->Modified();
+
+
+	vtkSmartPointer<vtkDoubleArray> textureCoords = vtkSmartPointer<vtkDoubleArray>::New();
+	textureCoords->SetNumberOfComponents(3);
+	double tcoords[3] = { 0.0, 0.0, 0.0 };
+	double rowSpacing = 1.0  / 1280.0;
+	double columnSpacing = 1.0 / 720.0;
+	double xCoord = 0.0;
+	double yCoord = 0.0;
+
+	//vtkPoints *pts = Scanner->GetPoints();
+	for (int i = 0; i<1280; i++)
+	{
+		xCoord = rowSpacing*i;
+		for (int j = 0; j<720; j++)
+		{
+			yCoord = columnSpacing*j;
+			tcoords[0] = xCoord;
+			tcoords[1] = yCoord;
+			tcoords[2] = 0.0;
+			textureCoords->InsertNextTuple(tcoords);
+		}
+	}
+
+	m_MeshPreviewer->GetPolyDataAt(0)->GetPointData()->SetTCoords(textureCoords);
+	m_MeshPreviewer->GetTexture()->SetInputData(m_MeshPreviewer->GetImageData());
+	m_MeshPreviewer->GetTexture()->Update();
+
+
+	m_MeshPreviewer->m_Renderer->RemoveActor(m_MeshPreviewer->GetActorAt(0));
+	m_MeshPreviewer->m_Actor[0]->Delete();
+	m_MeshPreviewer->GetMapperAt(0)->Delete();
+
+
+	m_MeshPreviewer->m_Mapper[0]= vtkPolyDataMapper::New();	
+	m_MeshPreviewer->m_Mapper[0]->SetInputData(m_MeshPreviewer->GetPolyDataAt(0));
+	m_MeshPreviewer->m_Mapper[0]->Update();
+
+	m_MeshPreviewer->m_Actor[0] = vtkActor::New();
+	m_MeshPreviewer->GetActorAt(0)->SetMapper(m_MeshPreviewer->m_Mapper[0]);
+	m_MeshPreviewer->GetActorAt(0)->SetTexture(m_MeshPreviewer->m_Texture);
+	m_MeshPreviewer->GetActorAt(0)->Modified();
+	
+	m_MeshPreviewer->m_Renderer->AddActor(m_MeshPreviewer->m_Actor[0]);
+	m_MeshPreviewer->m_RenWin->AddRenderer(m_MeshPreviewer->m_Renderer);
+	m_MeshPreviewer->m_IRen->SetRenderWindow(m_MeshPreviewer->GetRenderWindow());
+	//std::cout << m_MeshPreviewer->GetTexture()->GetImageDataInput();
+	
+	
+	m_MeshPreviewer->m_IRen->Modified();
+	m_MeshPreviewer->m_IRen->Render();
+	/*
+	1. render 에서 actor remove 
+	2. actor delete
+	3. mapper delete
+	4. mapper 생성, 데이터 입력
+	5. actor setMapper / settexture
+	6. add actor
+	7. render. 
+	*/
+}
 void ScanModuleQT::slotMultiCapBtn()
 {
 	if (m_IsDepthPreviewer)
@@ -232,9 +338,18 @@ void ScanModuleQT::slotMultiCapBtn()
 		Scanner->InsertFrame(fra);
 	}
 
+
+	/*이부분은 texture부분임. 여기는 fra에 rgb8 영상 넣으면됨. 귀찮으면 써놓은 select sensor복붙 ㄱㄱ 아래와 동일함. */
+	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_COLOR, realsense::R1280_720, realsense::RS_400_FORMAT::RGB8, realsense::RS_400_FPS::HZ30);
+	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_COLOR);
+	Scanner->ScanTexture(m_MeshPreviewer,fra);
 }
 
-
+/*
+rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+Scanner->frame2Points(fra);
+이부분에 fra에 frame만 넣어주면 됨.
+*/
 void ScanModuleQT::slotCapBtn() 
 {
 	if (m_IsDepthPreviewer)
@@ -243,13 +358,20 @@ void ScanModuleQT::slotCapBtn()
 		Scanner->ReleaseModel();
 	}
 	m_DepthPreviewer->CreateModel("",0);
+	
+
 	m_DepthPreviewer->Rendering();
 	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
 
 	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
-	std::cout << "!";
 	Scanner->frame2Points(fra);
 	Scanner->printDepthMap(m_DepthPreviewer,RealSenseD415, realsense::RS400_STREAM_DEPTH);
+
+
+	/*이부분은 texture부분임. 여기는 fra에 rgb8 영상 넣으면됨. 귀찮으면 써놓은 select sensor복붙 ㄱㄱ*/
+	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_COLOR, realsense::R1280_720, realsense::RS_400_FORMAT::RGB8, realsense::RS_400_FPS::HZ30);
+	rs2::frame fra2 = RealSenseD415->capture(realsense::RS400_STREAM_COLOR);
+	Scanner->ScanTexture(m_MeshPreviewer, fra2);
 }
 
 void ScanModuleQT::slotNextBtn() 
@@ -257,7 +379,9 @@ void ScanModuleQT::slotNextBtn()
 	if (m_IsMeshPreviewer)
 		m_MeshPreviewer->ReleaseModel();
 	m_MeshPreviewer->CreateModel("", 0);
+	m_MeshPreviewer->CreateTexture("", 0);
 	m_MeshPreviewer->Rendering();
+
 	Scanner->upDataPoint(m_DepthPreviewer);
 
 	Scanner->MeshConstruction(m_MeshPreviewer, 4, 0, 4);

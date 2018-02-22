@@ -36,15 +36,16 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 
 #include"vtkImageMapper3D.h"
-#include"vtkImageHybridMedian2D.h"
+
 #include"vtkImageMedian3D.h"
 #include"vtkImageActor.h"
 #include"vtkImageGaussianSmooth.h"
 #include"vtkSmoothPolyDataFilter.h"
-#include"vtkDelaunay2D.h"
-#include"vtkPolyDataNormals.h"
+
+
 #include<vector>
 #include<omp.h>
+
 enum { color, depth };
 enum { omp, ompNsimd, serial };
 
@@ -59,7 +60,7 @@ private:
 
 public:
 
-	void InsertFrame(const rs2::frame &frame)
+	void InsertFrame(rs2::frame &frame)
 	{
 		frames.push_back(frame);
 	}
@@ -85,7 +86,34 @@ public:
 	/*mode0 : omp  mode1 : omp with simd   else serial*/
 	void MeshConstruction(MeshPreview *viewer,int mode, int saveType, int ThreadSize = 4);
 
-	
+	/*
+	texture를 MeshPreview에 저장하는 부분. fra에 파라미터로 rgb frame을 넣으면 된다. 
+	*/
+	void ScanTexture(MeshPreview *viewer, rs2::frame &fra)
+	{
+		
+
+
+		double dimensions[3] = { 1280, 720, 1 };
+		const int nComponents = viewer->m_ImageData->GetNumberOfScalarComponents();
+		int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
+
+		viewer->m_ImageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
+		viewer->m_ImageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
+		viewer->m_IsTexture = 1;
+		viewer->m_ImageData->Modified();
+
+
+		const unsigned char* data = static_cast<const unsigned char*>(fra.get_data());
+		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData->GetScalarPointer(0, 0, 0));
+
+		for (int i = 0; i < nScalar; i++)
+		{
+			scalarPointer[i] = data[i];
+		}
+
+		//viewer->m_Renderer->ResetCamera();
+	}
 	void printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type);
 	void ReleaseModel()
 	{
@@ -217,7 +245,7 @@ public:
 		}
 		
 	}
-
+	vtkPoints* GetPoints()		 { return points; }
 private:
 	vtkPoints *points;
 	vtkRenderer* MeshConstruct(MeshPreview *viewer, vtkPoints *point, int saveType);

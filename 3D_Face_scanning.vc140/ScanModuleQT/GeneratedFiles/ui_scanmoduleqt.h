@@ -48,6 +48,7 @@ public:
     QLabel *MedianVal;
     QLabel *StdVal;
     QLabel *RadVal;
+    QPushButton *TextureMappingBtn;
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QPushButton *CapBtn;
@@ -129,7 +130,7 @@ public:
         GausianRadBtn->setGeometry(QRect(170, 230, 75, 23));
         ResetBtn = new QPushButton(scrollAreaWidgetContents_2);
         ResetBtn->setObjectName(QStringLiteral("ResetBtn"));
-        ResetBtn->setGeometry(QRect(20, 620, 75, 23));
+        ResetBtn->setGeometry(QRect(10, 620, 131, 41));
         MedianVal = new QLabel(scrollAreaWidgetContents_2);
         MedianVal->setObjectName(QStringLiteral("MedianVal"));
         MedianVal->setGeometry(QRect(265, 71, 71, 21));
@@ -139,6 +140,9 @@ public:
         RadVal = new QLabel(scrollAreaWidgetContents_2);
         RadVal->setObjectName(QStringLiteral("RadVal"));
         RadVal->setGeometry(QRect(265, 232, 41, 21));
+        TextureMappingBtn = new QPushButton(scrollAreaWidgetContents_2);
+        TextureMappingBtn->setObjectName(QStringLiteral("TextureMappingBtn"));
+        TextureMappingBtn->setGeometry(QRect(170, 620, 121, 41));
         scrollArea_2->setWidget(scrollAreaWidgetContents_2);
         scrollArea = new QScrollArea(centralWidget);
         scrollArea->setObjectName(QStringLiteral("scrollArea"));
@@ -204,6 +208,7 @@ public:
         MedianVal->setText(QApplication::translate("ScanModuleQTClass", "0", Q_NULLPTR));
         StdVal->setText(QApplication::translate("ScanModuleQTClass", "0", Q_NULLPTR));
         RadVal->setText(QApplication::translate("ScanModuleQTClass", "0", Q_NULLPTR));
+        TextureMappingBtn->setText(QApplication::translate("ScanModuleQTClass", "Texture Mapping", Q_NULLPTR));
         CapBtn->setText(QApplication::translate("ScanModuleQTClass", "CAPTURE", Q_NULLPTR));
         NextBtn->setText(QApplication::translate("ScanModuleQTClass", "NEXT", Q_NULLPTR));
         MultiCatpBtn->setText(QApplication::translate("ScanModuleQTClass", "MultiCAPTURE", Q_NULLPTR));

@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
 	//w.show();o
 	DemoFirstPart df;
 	df.show();
+	
 	//MainModule m;
 	//m.show();
 	//���������� ��

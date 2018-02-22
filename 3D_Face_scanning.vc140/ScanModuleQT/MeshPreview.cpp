@@ -87,7 +87,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 
 int MeshPreview::CreateTexture(std::string imgPath, int extType)
 {
-	m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
+	//m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
 	m_ImageData->Modified();
 
 	m_Texture->SetInputData(m_ImageData);
@@ -138,13 +138,13 @@ int MeshPreview::ReleaseModel()
 		m_Texture = vtkTexture::New();
 		m_IsTexture = 0;
 	}
-	if (m_ImageData)
+	/*if (m_ImageData)
 	{
 		m_ImageData->ReleaseData();
 		m_ImageData->Delete();
 		m_ImageData = NULL;
 		m_ImageData = vtkImageData::New();
-	}
+	}*/
 	
 	return 1;
 }

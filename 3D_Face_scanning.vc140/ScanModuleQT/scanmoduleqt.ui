@@ -230,10 +230,10 @@
      <widget class="QPushButton" name="ResetBtn">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>620</y>
-        <width>75</width>
-        <height>23</height>
+        <width>131</width>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
@@ -277,6 +277,19 @@
       </property>
       <property name="text">
        <string>0</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="TextureMappingBtn">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>620</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Texture Mapping</string>
       </property>
      </widget>
     </widget>

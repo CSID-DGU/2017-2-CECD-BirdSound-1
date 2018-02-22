@@ -175,9 +175,6 @@
     <CustomBuild Include="calibrationmodule.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="scanmodule.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\CalibrationModule\CalibrationModule.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -262,9 +259,6 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_mainmodule.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_scanmodule.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
