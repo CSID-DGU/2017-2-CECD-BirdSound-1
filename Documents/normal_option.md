@@ -1,6 +1,7 @@
-## 리얼센스 v2.9.0에 명시되어있는 [헤더파일](https://github.com/IntelRealSense/librealsense/blob/v2.9.0/include/librealsense2/h/rs_option.h) 을 기준으로 설명합니다.
+## 리얼센스 v2.9.0 [헤더파일](https://github.com/IntelRealSense/librealsense/blob/ba01147d65db16fdf4da36a3e718fe81c8421034/include/librealsense2/h/rs_option.h#L22)에 명시되어있는 기준으로 설명합니다.
 
-Normal Mode 에는 다음과 같은 rs2_option 들이 있고, 사용자는 이를 조정할 수 있다.
+Normal Mode 에는 다음과 같은 rs2_option 들이 있고, 사용자는 이를 조정할 수 있다.  
+각 옵션은 한번 설정시 리얼센스 내부 메모리에 저장되기 때문에, 장비를 분리하거나 컴퓨터를 종료시켜도 그대로 유지된다.
 ```
 typedef enum rs2_option
 {
@@ -46,204 +47,14 @@ typedef enum rs2_option
     RS2_OPTION_STEREO_BASELINE                            , /**< The distance in mm between the first and the second imagers in stereo-based depth cameras*/
     RS2_OPTION_COUNT                                      , /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
 } rs2_option;
-const char* rs2_option_to_string(rs2_option option);
 ```
+하지만 이 모든 옵션들을 다 사용할 수 있는 것은 아니다. 각 센서별 (D415의 경우 RGB_CAMERA 와 STEREO_MODULE)로 사용할수 있는 옵션은 한정되어있다.
 
-DepthModule 솔루션에 정의된(device.cpp, device.h) printSensorInfo를 통해 본 Sensor : StereoModule 을 보면 아래와 같다.
+각 센서별로 사용할 수 있는 옵션과 설명은 librealsense 예제 중 rs-sensor-control 프로그램을 통해 확인 가능하다.  
+(Solution:librealsense2->Examples -> rs-sensor-control)  
+아래는 센서별 사용가능한 옵션들을 정리해놓은 것이다.
 
-```
-[Stereo Module]
-   0 : Backlight Compensation is not supported
-   1 : Brightness is not supported
-   2 : Contrast is not supported
-   3 : Exposure
-      Description   : Depth Exposure
-      Current Value : 33000
-   4 : Gain
-      Description   : UVC image gain
-      Current Value : 16
-   5 : Gamma is not supported
-   6 : Hue is not supported
-   7 : Saturation is not supported
-   8 : Sharpness is not supported
-   9 : White Balance is not supported
-   10 : Enable Auto Exposure
-      Description   : Enable Auto Exposure
-      Current Value : 1
-   11 : Enable Auto White Balance
-      Description   : Enable Auto White Balance
-      Current Value : 0
-   12 : Visual Preset
-      Description   : Advanced-Mode Preset
-      Current Value : 0
-   13 : Laser Power
-      Description   : Manual laser power in mw. applicable only when laser power mode is set to Manual
-      Current Value : 150
-   14 : Accuracy is not supported
-   15 : Motion Range is not supported
-   16 : Filter Option is not supported
-   17 : Confidence Threshold is not supported
-   18 : Emitter Enabled
-      Description   : Power of the DS5 projector, 0 meaning projector off, 1 meaning projector on, 2 meaning projector in auto mode
-      Current Value : 0
-   19 : Frames Queue Size
-      Description   : Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa
-      Current Value : 16
-   20 : Total Frame Drops is not supported
-   21 : Auto Exposure Mode is not supported
-   22 : Power Line Frequency is not supported
-   23 : Asic Temperature is not supported
-   24 : Error Polling Enabled
-      Description   : Enable / disable polling of camera internal errors
-      Current Value : 1
-   25 : Projector Temperature is not supported
-   26 : Output Trigger Enabled
-      Description   : Generate trigger from the camera to external device once per frame
-      Current Value : 0
-   27 : Motion Module Temperature is not supported
-   28 : Depth Units
-      Description   : Number of meters represented by a single depth unit
-      Current Value : 0.0001
-   29 : Enable Motion Correction is not supported
-   30 : Auto Exposure Priority is not supported
-   31 : Color Scheme is not supported
-   32 : Histogram Equalization Enabled is not supported
-   33 : Min Distance is not supported
-   34 : Max Distance is not supported
-   35 : Texture Source is not supported
-   36 : Filter Magnitude is not supported
-   37 : Filter Smooth Alpha is not supported
-   38 : Filter Smooth Delta is not supported
-   39 : Stereo Baseline
-      Description   : Distance in mm between the stereo imagers
-      Current Value : 55.0319
-```
-
-따라서 아래와 같은 옵션을 조정할 수 있다는뜻..
-
-```
-[Stereo Module]
-   3 : Exposure
-      Description   : Depth Exposure
-      Current Value : 33000
-   4 : Gain
-      Description   : UVC image gain
-      Current Value : 16
-   10 : Enable Auto Exposure
-      Description   : Enable Auto Exposure
-      Current Value : 1
-   11 : Enable Auto White Balance
-      Description   : Enable Auto White Balance
-      Current Value : 0
-   12 : Visual Preset
-      Description   : Advanced-Mode Preset
-      Current Value : 0
-   13 : Laser Power
-      Description   : Manual laser power in mw. applicable only when laser power mode is set to Manual
-      Current Value : 150
-   18 : Emitter Enabled
-      Description   : Power of the DS5 projector, 0 meaning projector off, 1 meaning projector on, 2 meaning projector in auto mode
-      Current Value : 0
-   19 : Frames Queue Size
-      Description   : Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa
-      Current Value : 16
-   24 : Error Polling Enabled
-      Description   : Enable / disable polling of camera internal errors
-      Current Value : 1
-   26 : Output Trigger Enabled
-      Description   : Generate trigger from the camera to external device once per frame
-      Current Value : 0
-   28 : Depth Units
-      Description   : Number of meters represented by a single depth unit
-      Current Value : 0.0001
-   39 : Stereo Baseline
-      Description   : Distance in mm between the stereo imagers
-      Current Value : 55.0319
-```
-
-대략적인 파라미터들 값에 대한 대략적인 설명은 [Intel-RealSense-D40-Series-Datasheet.pdf](file://./assets/Intel-RealSense-D40-Series-Datasheet.pdf) 의 67페이지 4.7 Depth Camera Functions 에 나와있다.
-
-
-
-# Color sensor
-
-
-마찬가지로 컬러센서에 대한 옵션목록은 아래와 같다. librealsense SDK 에 있는 sensor control 에제 프로그램을 사용하엿다.
-
-```
-0: Backlight Compensation
-     Description   : Enable / disable backlight compensation
-     Current Value : 0
-1: Brightness
-     Description   : UVC image brightness
-     Current Value : 0
-2: Contrast
-     Description   : UVC image contrast
-     Current Value : 70
-3: Exposure
-     Description   : Controls exposure time of color camera. Setting any value will disable auto exposure
-     Current Value : -6
-4: Gain
-     Description   : UVC image gain
-     Current Value : 65
-5: Gamma
-     Description   : UVC image gamma setting
-     Current Value : 300
-6: Hue
-     Description   : UVC image hue
-     Current Value : 22
-7: Saturation
-     Description   : UVC image saturation setting
-     Current Value : 65
-8: Sharpness
-     Description   : UVC image sharpness setting
-     Current Value : 54
-9: White Balance
-     Description   : Controls white balance of color image. Setting any value will disable auto white balance
-     Current Value : 5070
-10: Enable Auto Exposure
-     Description   : Enable / disable auto-exposure
-     Current Value : 1
-11: Enable Auto White Balance
-     Description   : Enable / disable auto-white-balance
-     Current Value : 0
-12: Visual Preset is not supported
-13: Laser Power is not supported
-14: Accuracy is not supported
-15: Motion Range is not supported
-16: Filter Option is not supported
-17: Confidence Threshold is not supported
-18: Emitter Enabled is not supported
-19: Frames Queue Size
-     Description   : Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa
-     Current Value : 16
-20: Total Frame Drops is not supported
-21: Auto Exposure Mode is not supported
-22: Power Line Frequency
-     Description   : Power Line Frequency
-     Current Value : 3
-23: Asic Temperature is not supported
-24: Error Polling Enabled is not supported
-25: Projector Temperature is not supported
-26: Output Trigger Enabled is not supported
-27: Motion Module Temperature is not supported
-28: Depth Units is not supported
-29: Enable Motion Correction is not supported
-30: Auto Exposure Priority
-     Description   : Limit exposure time when auto-exposure is ON to preserve constant fps rate
-     Current Value : 1
-31: Color Scheme is not supported
-32: Histogram Equalization Enabled is not supported
-33: Min Distance is not supported
-34: Max Distance is not supported
-35: Texture Source is not supported
-36: Filter Magnitude is not supported
-37: Filter Smooth Alpha is not supported
-38: Filter Smooth Delta is not supported
-39: Stereo Baseline is not supported
-```
-정리해보면 적용가능한 옵션들은 아래와 같음..
-
+## 센서 : RGB_CAMERA
 ```
 0: Backlight Compensation
      Description   : Enable / disable backlight compensation
@@ -292,5 +103,69 @@ DepthModule 솔루션에 정의된(device.cpp, device.h) printSensorInfo를 통�
      Current Value : 1
 ```
 
+### 센서 : STEREO_MODULE
+```
+3 : Exposure
+  Description   : Depth Exposure
+  Current Value : 33000
+4 : Gain
+  Description   : UVC image gain
+  Current Value : 16
+10 : Enable Auto Exposure
+  Description   : Enable Auto Exposure
+  Current Value : 1
+11 : Enable Auto White Balance
+  Description   : Enable Auto White Balance
+  Current Value : 0
+12 : Visual Preset
+  Description   : Advanced-Mode Preset
+  Current Value : 0
+13 : Laser Power
+  Description   : Manual laser power in mw. applicable only when laser power mode is set to Manual
+  Current Value : 150
+18 : Emitter Enabled
+  Description   : Power of the DS5 projector, 0 meaning projector off, 1 meaning projector on, 2 meaning projector in auto mode
+  Current Value : 0
+19 : Frames Queue Size
+  Description   : Max number of frames you can hold at a given time. Increasing this number will reduce frame drops but increase latency, and vice versa
+  Current Value : 16
+24 : Error Polling Enabled
+  Description   : Enable / disable polling of camera internal errors
+  Current Value : 1
+26 : Output Trigger Enabled
+  Description   : Generate trigger from the camera to external device once per frame
+  Current Value : 0
+28 : Depth Units
+  Description   : Number of meters represented by a single depth unit
+  Current Value : 0.0001
+39 : Stereo Baseline
+  Description   : Distance in mm between the stereo imagers
+  Current Value : 55.0319
+```
+STEREO MODULE 센서의 파라미터들 값에 대한 대략적인 설명은 [Intel-RealSense-D40-Series-Datasheet.pdf](file://./assets/Intel-RealSense-D40-Series-Datasheet.pdf) 의 67페이지 4.7 Depth Camera Functions 에 나와있다.
 
-그렇다면 센서별로 옵션을 어떻게 설정하는지 알아야 겠지??
+
+## 옵션 적용방법
+
+아래와 같은 코드로 매우 간단히 적용시킬 수 있다. 해당 센서가 스트리밍 중이라도, 적용이 가능하다.
+```
+void setOption(RS_400_SENSOR sensor, rs2_option option, float value) {
+	if (sensor == RS_400_SENSOR::RGB_CAMERA) {
+		m_colorSensor.set_option(option, value);
+	}
+	else if (sensor == RS_400_SENSOR::STEREO_MODULE) {
+		m_stereoSensor.set_option(option, value);
+	}
+}
+```
+```
+rs2::context ctx;
+rs2::device_list list = ctx.query_devices();
+rs2::device dev = list[0];
+vector<rs2::sensor> = device.query_sensors();
+rs2::sensor stereo_sensor = sensor[0];
+rs2::sensor color_sensor = sensor[1];
+
+// 파라미터 형식은 (rs2_option option, float value)
+color_sensor.set_option(RS2_OPTION_BRIGHTNESS, 32);
+```

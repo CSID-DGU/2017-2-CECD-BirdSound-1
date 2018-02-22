@@ -1,70 +1,12 @@
-* 장치 시작  
+인터넷에서 찾을 수 있는 Documents 들은 `./assets/` 하위에 모아두었다.
 
-```
-using namespace std;
-
-rs2::context ctx;
-rs2::device_list list = ctx.query_devices();
-rs2::device dev = list[0];
-string serialNumber = dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)
+#### [리엘센스 장비 구성](./device.md)
 
 
+#### [리얼센스 기초사용법](./basic_use.md)
 
 
-rs2::config cfg;
-cfg.enable_device(serialNumber);
-cfg.enable_stream(RS2_STREAM_DEPTH, RS2_FORMAT_Z16);
-
-rs2::pipeline pipe;
-rs2::pipeline profile = pipe.start(cfg);
-rs2::frameset frames = pipe.wait_for_frames();
-rs2::frame frame = frames.get_depth_frame();
-frame.get_data(); //Pointer to depth pixels
-
-
-rs2::stream_profile ir1_stream = profile.get_stream(RS2_STREAM_INFRARED,1);
-rs2::stream_profile ir2_stream = profile.get_stream(RS2_STREAM_INFRARED,2);
-
-rs2_extrinsics e = ir1_stream.get_extrinsic_to(ir2_stream);  
-
-```
-> ```
-typedef struct rs2_extrinsics
-{
-    float rotation[9];    /**< Column-major 3x3 rotation matrix */
-    float translation[3]; /**< Three-element translation vector, in meters */
-} rs2_extrinsics;
-```
-
-* 센서 제어  
-
-```  
-using namsepace rs2;
-
-context* ctx = new context();
-device_list dev_list = ctx.query_devices();
-device dev = dev_list[0];
-
-if(device.is<rs400::advanced_mode>) {
-  rs400::advanced_mode advanced = device.as<rs400::advanced_mode>();
-  if(advanced.is_enabled()) {
-    advanced.toggle_advanced_mode(true);
-    delete ctx;
-    ctx = new(context);
-    device_list = ctx.query_devices();
-    dev = dev_list[0];
-  }
-}
-
-vector<sensors> = device.query_sensors();
-
-sensor sens1 = sensors[0];
-sensor sens2 = sensors[1];
-
-
-
-
-
-```
-
-* [rs_camera_info](https://github.com/IntelRealSense/librealsense/blob/ba01147d65db16fdf4da36a3e718fe81c8421034/include/librealsense2/h/rs_sensor.h#L22)
+-----
+사용자는 리얼센스 내부의 다양한 파라미터를 조정할 수 있다. 리얼센스 작동방식은 크게 Normal 모드와 Advanced 모드로 나뉘는데, 각 모드마다 사용할 수 있는 옵션의 갯수에 차이가 존재한다.  color stream 에 적용할 수 있는 옵션의 갯수는 Normal 과 Advanced 둘다 동일한 것으로 보이지만, Depth Stream 의 경우 약 5개에서 60여가지로 늘어나니 주목할만 하다.
+#### [리얼센스 Normal 옵션](./normal_option.md)
+#### [리얼센스 Advanced 옵션](./advanced_option.md)
