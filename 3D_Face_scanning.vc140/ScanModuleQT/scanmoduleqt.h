@@ -41,6 +41,9 @@ public slots:
 	void GausStdBtn();
 	void GausRadBtn();
 	void MedianBtn();
+	void slotMultiCapBtn();
+	void slotApplyFilter();
+	void slotNextBtn2();
 private:
 	Ui::ScanModuleQTClass ui;
 

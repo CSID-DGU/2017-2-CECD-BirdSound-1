@@ -66,13 +66,13 @@ void ScanModuleQT::imageMedian3D(int val)
 /*2번*/
 void ScanModuleQT::gausianFilterStd(int std)
 {
-	Scanner->gaussianStd(m_DepthPreviewer, (double)(std / 3.0));
+	Scanner->gaussianStd(m_DepthPreviewer, (double)(std / 10.0));
 }
 
 /*3번*/
 void ScanModuleQT::gausianFilterRad(int rad)
 {
-	Scanner->gaussianRad(m_DepthPreviewer, (double)(rad/10.0));
+	Scanner->gaussianRad(m_DepthPreviewer, (double)(rad/40.0));
 }
 
 /*버튼으로 번경*/
@@ -103,6 +103,8 @@ void ScanModuleQT::InitializeUi()
 	//ADD-HHS
 	connect(ui.CapBtn, SIGNAL(clicked()), this, SLOT(slotCapBtn()));
 	connect(ui.NextBtn, SIGNAL(clicked()), this, SLOT(slotNextBtn()));
+	connect(ui.MultiCatpBtn, SIGNAL(clicked()), this, SLOT(slotMultiCapBtn()));
+	connect(ui.FilterApplyBtn, SIGNAL(clicked()), this, SLOT(slotApplyFilter()));
 
 	connect(ui.Median3D_slid, SIGNAL(valueChanged(int)), this, SLOT(imageMedian3D(int)));
 	connect(ui.GausianStd_slid, SIGNAL(valueChanged(int)), this, SLOT(gausianFilterRad(int)));
@@ -112,6 +114,7 @@ void ScanModuleQT::InitializeUi()
 	connect(ui.GausianStdBtn, SIGNAL(clicked()), this, SLOT(GausStdBtn()));
 	connect(ui.GausianRadBtn, SIGNAL(clicked()), this, SLOT(GausRadBtn()));
 	connect(ui.MedianBtn, SIGNAL(clicked()), this, SLOT(MedianBtn()));
+	connect(ui.NextBtn2, SIGNAL(clicked()), this, SLOT(slotNextBtn2()));
 
 
 	ui.GausianStd_slid->setDisabled(true);
@@ -131,7 +134,47 @@ void ScanModuleQT::InitializeUi()
 
 }
 
+void ScanModuleQT::slotNextBtn2()
+{
+	if (m_IsMeshPreviewer)
+		m_MeshPreviewer->ReleaseModel();
+	m_MeshPreviewer->CreateModel("", 0);
+	m_MeshPreviewer->Rendering();
 
+	Scanner->MeshConstruction(m_MeshPreviewer, 4, 0, 4);
+	m_MeshPreviewer->GetRenderer()->ResetCamera();
+}
+void ScanModuleQT::slotApplyFilter()
+{
+	m_DepthPreviewer->CreateModel("", 0);
+	m_DepthPreviewer->Rendering();
+
+	Scanner->frames2PointsCutOutlier();
+	Scanner->printDepthMap(m_DepthPreviewer, RealSenseD415, realsense::RS400_STREAM_DEPTH);
+	ui.MultiCatpBtn->setDisabled(false);
+};
+void ScanModuleQT::slotMultiCapBtn()
+{
+	if (m_IsDepthPreviewer)
+	{
+		m_DepthPreviewer->ReleaseModel();
+		Scanner->ReleaseModel();
+	}
+
+	ui.MultiCatpBtn->setDisabled(true);
+	//RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
+
+	for (int i = 0; i < 60; i++)
+	{
+		if(i%10==0)
+		RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
+		rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
+		Scanner->InsertFrame(fra);
+	}
+	
+	//Scanner->frame2Points(fra);
+
+}
 
 
 void ScanModuleQT::slotCapBtn() 
@@ -157,12 +200,12 @@ void ScanModuleQT::slotNextBtn()
 		m_MeshPreviewer->ReleaseModel();
 	m_MeshPreviewer->CreateModel("", 0);
 	m_MeshPreviewer->Rendering();
-	//Scanner->upDataPoint(m_DepthPreviewer);
+	Scanner->upDataPoint(m_DepthPreviewer);
 
 	Scanner->MeshConstruction(m_MeshPreviewer, 4, 0, 4);
 
 
-
+	m_MeshPreviewer->GetRenderer()->ResetCamera();
 }
 
 

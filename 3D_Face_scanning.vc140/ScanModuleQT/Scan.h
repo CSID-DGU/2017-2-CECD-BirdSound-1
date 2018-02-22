@@ -59,7 +59,7 @@ private:
 
 public:
 
-	void InsertFrame(rs2::frame &frame)
+	void InsertFrame(const rs2::frame &frame)
 	{
 		frames.push_back(frame);
 	}
@@ -117,8 +117,7 @@ public:
 		gaus->SetRadiusFactor(rad);
 		gaus->Update();
 
-		//viewer->m_ImageData->DeepCopy(gaus->GetOutput());
-		viewer->m_ImageData->ShallowCopy(gaus->GetOutput());
+		viewer->m_ImageData->DeepCopy(gaus->GetOutput());
 		viewer->m_ImageData->Modified();
 
 
@@ -136,9 +135,7 @@ public:
 		gaus->SetStandardDeviation(std);
 		gaus->Update();
 
-		//viewer->m_ImageData->DeepCopy(gaus->GetOutput());
-
-		viewer->m_ImageData->ShallowCopy(gaus->GetOutput());
+		viewer->m_ImageData->DeepCopy(gaus->GetOutput());
 		viewer->m_ImageData->Modified();
 
 
@@ -161,8 +158,9 @@ public:
 		Median2D->SetKernelSize(value, value, value);
 		Median2D->Update();
 
-		//viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
-		viewer->m_ImageData->ShallowCopy(Median2D->GetOutput());
+		viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
+		//viewer->m_ImageData = Median2D->GetOutput();
+		//viewer->m_ImageData->ShallowCopy(Median2D->GetOutput());
 		viewer->m_ImageData->Modified();
 
 
@@ -205,24 +203,28 @@ public:
 	}
 	void upDataPoint(DepthMapPreviewer *viewer)
 	{
-		//viewer->GetActor()->GetInput()->GetScalarPointer();
 		//auto temp= viewer->GetActor()->GetInput()->GetScalarPointer();
-		for (int i = 0; i < 1280 * 720; i++)
+		auto pointer= viewer->GetImageData()->GetScalarPointer();
+
+		unsigned short* value = static_cast<unsigned short*>(pointer);
+
+		for (int i = 0; i < 1280*720; i++)
 		{
-			double *temp;
-			temp = viewer->GetImageData()->GetPoint(i);
+			
 			double orig[3];
 
 			points->GetPoint(i, orig);
 
-			double val = temp[2] / 1024.0;
-
-			if (val<1 && val>-1 && val != 0)
-				points->SetPoint(i, orig[0], orig[1], val);
+			double val = double(value[i]) / (8*1024.0);
+			//std::cout << val << " ";			
+			if (val == 0|| val<-1.0 || val>1.0)
+				points->SetPoint(i, 0, 0, 0);
 
 			else
-				points->SetPoint(i, 0, 0, 0);
+				points->SetPoint(i, orig[0], orig[1], val);
+
 		}
+		
 	}
 
 private:

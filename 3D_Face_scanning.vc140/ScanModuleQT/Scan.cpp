@@ -9,7 +9,7 @@ double Scan::getDistane(double *src, double *tar)
 	//if (tar[0] == 0)return INF;
 	//retv += (src[0] - tar[0])*(src[0] - tar[0]);
 	//retv += (src[1] - tar[1])*(src[1] - tar[1]);
-	retv += (src[2] - tar[2])*(src[2] - tar[2]);
+	retv += abs((src[2] - tar[2]));
 	return retv;
 }
 
@@ -42,19 +42,7 @@ void Scan::printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, r
 		scalarPointer[i] = data[i];
 	}
 
-	//viewer->m_ImageActor->GetMapper()->SetInputData(viewer->m_ImageData);
-	//viewer->m_ImageActor->SetMapper(viewer->m_ImageMapper);
-	//m_Renderer여기서 랜더러에 있는 actor을 지우고 해야하나.?
-
-	/*vtkActor2DCollection *colActor = viewer->m_Renderer->GetActors2D();
-
-	if (colActor->GetNumberOfItems()>0)
-	{
-		vtkActor2D *act = colActor->GetNextActor2D();
-		viewer->m_Renderer->RemoveActor(act);
-	}*/
-
-	//viewer->m_Renderer->AddActor2D(viewer->m_ImageActor);
+	
 
 	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_ImageData->GetCenter());
 	//m_Renderer->GetActiveCamera()->SetPosition(m_ImageData->GetCenter()[0], m_ImageData->GetCenter()[1], 100000.0);
@@ -529,7 +517,7 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveT
 {
 	vtkCellArray *cell = vtkCellArray::New();
 
-
+	double alpha = 0.003;
 	for (vtkIdType i = 0; i < point->GetNumberOfPoints() - width; i++)
 	{
 		double orign[3], right[3], down[3], diga[3];
@@ -545,25 +533,28 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveT
 
 		double _dia = getDistane(orign, diga);
 		double _down = getDistane(orign, down);
-
-		if (_down < _dia && _down < 0.05)
+		double _right = getDistane(orign, right);
+		
+		if (_right > alpha)continue;
+		
+		if (_down < _dia)
 		{
 			if (right[0] != 0 && down[0] != 0)
 			{
-				cellInsert(cell, 3, i, i + 1, i + width);
-				if (diga[0] != 0)
+				if (_down < alpha)
+					cellInsert(cell, 3, i, i + 1, i + width);//down에 연결
+				if (diga[0] != 0 && _dia <alpha)
 					cellInsert(cell, 3, i + 1, i + width + 1, i + width);
 			}
 		}
 
 		else
 		{
-			if (_dia > 0.05)continue;
-			if (diga[0] != 0)
+			if (diga[0] != 0 && _dia<alpha)
 			{
 				if (right[0] != 0)
 					cellInsert(cell, 3, i, i + 1, i + width + 1);
-				if (down[0] != 0)
+				if (down[0] != 0 && _down<alpha)
 					cellInsert(cell, 3, i, i + width + 1, i + width);
 			}
 		}
@@ -591,8 +582,11 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveT
 		obj->Write();
 		obj->Delete();
 	}*/
-
-	
+	/*vtkOBJExporter *obj = vtkOBJExporter::New();
+	obj->SetInput(viewer->GetRenderWindow());
+	obj->SetFilePrefix("mine");
+	obj->Write();
+	obj->Delete();*/
 
 	viewer->GetRenderWindow()->Modified();
 	viewer->GetRenderWindow()->Render();
