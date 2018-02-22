@@ -22,9 +22,6 @@ void  Scan::cellInsert(vtkCellArray *cell, int number, long long index1, long lo
 
 void Scan::printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type)
 {
-	
-	//1280x720
-	//realsense::Device* device = new realsense::Device(devSerialNumber);
 	double dimensions[3] = { 1280, 720, 1 };
 	const int nComponents = viewer->m_ImageData->GetNumberOfScalarComponents();
 	int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
@@ -43,29 +40,30 @@ void Scan::printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, r
 	for (int i = 0; i < nScalar; i++)
 	{
 		scalarPointer[i] = data[i];
-		//std::cout << i << " ";
 	}
 
-	viewer->m_ImageActor->GetMapper()->SetInputData(viewer->m_ImageData);
+	//viewer->m_ImageActor->GetMapper()->SetInputData(viewer->m_ImageData);
 	//viewer->m_ImageActor->SetMapper(viewer->m_ImageMapper);
 	//m_Renderer여기서 랜더러에 있는 actor을 지우고 해야하나.?
 
-	vtkActor2DCollection *colActor = viewer->m_Renderer->GetActors2D();
+	/*vtkActor2DCollection *colActor = viewer->m_Renderer->GetActors2D();
 
 	if (colActor->GetNumberOfItems()>0)
 	{
 		vtkActor2D *act = colActor->GetNextActor2D();
 		viewer->m_Renderer->RemoveActor(act);
-	}
+	}*/
 
-	viewer->m_Renderer->AddActor2D(viewer->m_ImageActor);
+	//viewer->m_Renderer->AddActor2D(viewer->m_ImageActor);
 
 	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_ImageData->GetCenter());
 	//m_Renderer->GetActiveCamera()->SetPosition(m_ImageData->GetCenter()[0], m_ImageData->GetCenter()[1], 100000.0);
-	viewer->m_Renderer->ResetCamera();
+	//viewer->m_Renderer->ResetCamera();
 	viewer->m_Renderer->Modified();
 
 
+	viewer->m_ImageData->Modified();
+	viewer->m_OriginImage->ShallowCopy(viewer->m_ImageData);
 	viewer->m_RenWin->Render();
 }
 
@@ -206,7 +204,7 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer,vtkPoints *point, int saveT
 			if ((i + 1) % width == 0)continue;
 
 			double orign[3], right[3], down[3], diga[3];
-			//printf("%d %d\n", i,omp_get_thread_num());	
+
 			threadPoint->GetPoint(i, orign);
 			if (orign[0] == 0)continue;
 
@@ -548,7 +546,7 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveT
 		double _dia = getDistane(orign, diga);
 		double _down = getDistane(orign, down);
 
-		if (_down < _dia)
+		if (_down < _dia && _down < 0.05)
 		{
 			if (right[0] != 0 && down[0] != 0)
 			{
@@ -560,6 +558,7 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer,vtkPoints *point, int saveT
 
 		else
 		{
+			if (_dia > 0.05)continue;
 			if (diga[0] != 0)
 			{
 				if (right[0] != 0)

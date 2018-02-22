@@ -6,23 +6,25 @@
 MeshPreview::MeshPreview(int size)
 {
 	setSize(size);
+	InitializeVariables();
 }
 
 MeshPreview::MeshPreview()
 {
 	setSize(1);
+	InitializeVariables();
 }
 void MeshPreview::setSize(int size)
 {
-	m_PolyData.clear();
+	/*m_PolyData.clear();
 	m_Actor.clear();
-	m_Mapper.clear();
+	m_Mapper.clear();*/
 
 	m_PolyData.resize(size);
 	m_Actor.resize(size);
 	m_Mapper.resize(size);
 
-	InitializeVariables();
+	
 }
 MeshPreview::~MeshPreview()
 {
@@ -49,7 +51,6 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 {
 	for (int i = 0; i < m_Actor.size(); i++)
 	{
-	
 		if (!m_PolyData[i])
 		return 0;
 
@@ -60,7 +61,6 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 
 		m_Mapper[i]->SetInputData(m_PolyData[i]);
 		m_Mapper[i]->Update();
-
 		m_Actor[i]->SetMapper(m_Mapper[i]);//actor에 mapper을 set함.  
 
 
@@ -73,12 +73,12 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 			m_Actor[i]->Modified();
 		}
 	}
+
 	for (int i = 0; i < m_Actor.size(); i++)
-	{
 		m_Renderer->AddActor(m_Actor[i]);
 
-	}
-	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")개 \n";
+	
+	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")!개 \n";
 	m_Renderer->ResetCamera();
 	m_Renderer->Modified();
 
@@ -146,12 +146,6 @@ int MeshPreview::ReleaseModel()
 		m_ImageData = vtkImageData::New();
 	}
 	
-	//Create3DScene();
-
-	//Create3DScene();
-	//Rendering();
-
-	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")개 \n";
 	return 1;
 }
 
@@ -161,19 +155,11 @@ int MeshPreview::Create3DScene()
 	//m_Renderer->GetActiveCamera()->SetPosition(m_Actor[0]->GetCenter());
 	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_Actor[0]->GetCenter());
 
-	std::cout << m_Renderer->GetActors()->GetNumberOfItems() << "@#!@#";
 	m_RenWin->AddRenderer(m_Renderer);
 	m_IRen->SetInteractorStyle(m_3DStyle);
 	m_RenWin->SetInteractor(m_IRen);
 	m_RenWin->Modified();
 
-
-	//m_RenWin->SetParentId(uiCtr);
-	//m_RenWin->SetSize(uiX, uiY);
-
-	//uiCtr = uiCtrl;
-	//uiX = xCtrlSize;
-	//uiY = yCtrlSize;
 	return 1;
 }
 

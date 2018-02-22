@@ -56,6 +56,13 @@ int DepthMapPreviewer::ReleaseModel()
 {
 	m_Renderer->RemoveActor(m_ImageActor);
 
+	if (m_OriginImage)
+	{
+		m_OriginImage->ReleaseData();
+		m_OriginImage->Delete();
+		m_OriginImage = NULL;
+		m_OriginImage = vtkImageData::New();
+	}
 	if (m_ImageActor)
 	{
 		m_ImageActor->Delete();
@@ -107,6 +114,7 @@ int DepthMapPreviewer::InitializeVariables()
 
 	//m_ImageIO = new ImageIO;
 
+	m_OriginImage = vtkImageData::New();
 	m_ImageData = vtkImageData::New();
 	//m_ImageMapper = vtkImageMapper3D::New();
 	m_ImageActor = vtkImageActor::New();
@@ -130,6 +138,13 @@ int DepthMapPreviewer::DestroyVariables()
 		m_ImageData->ReleaseData();
 		m_ImageData->Delete();
 		m_ImageData = NULL;
+	}
+
+	if (m_OriginImage)
+	{
+		m_OriginImage->ReleaseData();
+		m_OriginImage->Delete();
+		m_OriginImage = NULL;
 	}
 	/*if (m_ImageMapper)
 	{
@@ -165,20 +180,6 @@ int DepthMapPreviewer::DestroyVariables()
 	return 1;
 }
 
-//int DepthMapPreviewer::CaptureSave(std::string imagePath, int extType, int sizeRatio)
-//{
-//	m_ImageIO->CaptureSaveImageFile(m_RenWin, extType, sizeRatio, imagePath);
-//	m_RenWin->Render();
-//
-//	return 1;
-//}
-//
-//int DepthMapPreviewer::ImageSave(std::string imagePath, int extType)
-//{
-//	m_ImageIO->ExportImageFile(extType, m_ImageData, imagePath);
-//
-//	return 1;
-//}
 
 void DepthMapPreviewer::Rendering()
 {

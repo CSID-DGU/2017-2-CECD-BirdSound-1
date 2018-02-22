@@ -24,6 +24,10 @@ public:
 	//vtkPolyData*									m_PolyData;
 	//vtkPolyData*									GetPolyData() { return m_PolyData; }
 
+	vtkImageData*									m_OriginImage;
+	vtkImageData*									GetOriginImage() { return m_OriginImage; }
+
+
 	vtkImageData*									m_ImageData;
 	vtkImageData*									GetImageData() { return m_ImageData; }
 

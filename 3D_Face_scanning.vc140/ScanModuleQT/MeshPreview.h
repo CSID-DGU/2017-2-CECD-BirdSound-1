@@ -35,8 +35,8 @@ public:
 	vtkImageData*									m_ImageData;
 	vtkImageData* GetImageData()					{ return m_ImageData; }
 
-	std::vector<vtkPolyDataMapper*>							m_Mapper;
-	vtkPolyDataMapper* GetMapperAt(int index) { return m_Mapper[index]; }
+	std::vector<vtkPolyDataMapper*>					m_Mapper;
+	vtkPolyDataMapper* GetMapperAt(int index)		 { return m_Mapper[index]; }
 
 	vtkTexture*										m_Texture;
 	vtkTexture* GetTexture()						{ return m_Texture; }
@@ -79,8 +79,4 @@ public:
 	void ChangeViewMode(int mode); //0 point 1 wire 2 face 3 edgeface
 
 	void Rendering();
-
-//private:
-//	void* uiCtr;
-//	int uiX, uiY;
 };

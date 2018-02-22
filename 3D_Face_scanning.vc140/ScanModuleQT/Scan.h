@@ -97,8 +97,6 @@ public:
 		}
 
 		points = vtkPoints::New();
-	
-
 		frames.clear();
 
 	}
@@ -106,13 +104,11 @@ public:
 	{
 		points->Delete();
 		points = NULL;
-
-
 		frames.clear();
 	}
 
 	/*
-	사실 Filter class를 따로 구성하는것도 좋을 거같은데 나중에 시간나면 해보도록 하자.
+	사실 Filter class를 따로 구성하는것도 좋을 것 같음.
 	*/
 	void gaussianRad(DepthMapPreviewer *viewer, double rad)
 	{
@@ -122,7 +118,7 @@ public:
 		gaus->Update();
 
 		//viewer->m_ImageData->DeepCopy(gaus->GetOutput());
-
+		viewer->m_ImageData->DeepCopy(gaus->GetOutput());
 		viewer->GetActor()->GetMapper()->SetInputConnection(gaus->GetOutputPort());
 		//viewer->GetActor()->Modified();
 
@@ -139,6 +135,8 @@ public:
 
 		//viewer->m_ImageData->DeepCopy(gaus->GetOutput());
 
+		viewer->m_ImageData->DeepCopy(gaus->GetOutput());
+
 		viewer->GetActor()->GetMapper()->SetInputConnection(gaus->GetOutputPort());
 		//viewer->GetActor()->Modified();
 
@@ -146,21 +144,7 @@ public:
 		viewer->GetRenderWindow()->Render();
 	}
 
-	void hybridMedian2D(DepthMapPreviewer *viewer,int value)
-	{
-		vtkImageHybridMedian2D *Median2D = vtkImageHybridMedian2D::New();
 
-		Median2D->SetInputData(viewer->GetImageData());
-		//vtkImageActor* hybridMedianActor =vtkImageActor::New();
-		Median2D->Update();
-		viewer->GetActor()->GetMapper()->SetInputConnection(Median2D->GetOutputPort());
-		viewer->GetActor()->Modified();
-
-		viewer->GetRenderWindow()->Modified();
-		viewer->GetRenderWindow()->Render();
-		Median2D->Delete();
-
-	}
 	void imageMedian3D(DepthMapPreviewer *viewer, int value)
 	{
 		auto temp = viewer->GetImageData()->GetScalarPointer();
@@ -169,9 +153,15 @@ public:
 
 		vtkImageMedian3D *Median2D = vtkImageMedian3D::New();
 
-		Median2D->SetInputData(viewer->GetImageData());
+
+		viewer->m_OriginImage->DeepCopy(viewer->m_ImageData);
+		Median2D->SetInputData(viewer->GetOriginImage());//얘는 원본 이미지로 할 것.
 		Median2D->SetKernelSize(value, value, value);
 		Median2D->Update();
+
+		//viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
+		viewer->m_ImageData->DeepCopy(Median2D->GetOutput());
+		
 		//vtkImageActor* hybridMedianActor =vtkImageActor::New();
 		viewer->GetActor()->GetMapper()->SetInputConnection(Median2D->GetOutputPort());
 		viewer->GetActor()->Modified();
@@ -184,16 +174,7 @@ public:
 
 	void meshSmooth(MeshPreview *viewer, double Relaxation)
 	{
-		std::cout << "asdasd";
-
-		//vtkSmartPointer<vtkDelaunay2D> delaunay =
-		//	vtkSmartPointer<vtkDelaunay2D>::New();
-
-		//delaunay->SetInputData(viewer->GetPolyDataAt(0));
-		//delaunay->Update();
-
-		vtkSmartPointer<vtkSmoothPolyDataFilter> smoothFilter =
-			vtkSmartPointer<vtkSmoothPolyDataFilter>::New();
+		vtkSmoothPolyDataFilter* smoothFilter =vtkSmoothPolyDataFilter::New();
 		smoothFilter->SetInputData(viewer->GetPolyDataAt(0));
 		smoothFilter->SetNumberOfIterations(10);
 		smoothFilter->SetRelaxationFactor(1);
@@ -227,78 +208,26 @@ public:
 	}
 	void upDataPoint(DepthMapPreviewer *viewer)
 	{
-		viewer->GetActor()->GetInput()->GetScalarPointer();
-
-		auto temp= viewer->GetActor()->GetInput()->GetScalarPointer();
-
-		unsigned short * _value = static_cast<unsigned short*>(temp);
-		
-		for (int i = 0; i < 1280*720; i++)
+		//viewer->GetActor()->GetInput()->GetScalarPointer();
+		//auto temp= viewer->GetActor()->GetInput()->GetScalarPointer();
+		for (int i = 0; i < 1280 * 720; i++)
 		{
-			//std::cout << unsigned short(_value[i])<<" ";
-			double temp[3];
-			points->GetPoint(i, temp);
-			double val = _value[i] / 1024.0;
+			double *temp;
+			temp = viewer->GetImageData()->GetPoint(i);
+			double orig[3];
 
-			if(val<1 && val>-1 && val!=0)
-				points->SetPoint(i, temp[0], temp[1], val);
-			else 
-				points->SetPoint(i, 0,0,0);
+			points->GetPoint(i, orig);
+
+			double val = temp[2] / 1024.0;
+
+			if (val<1 && val>-1 && val != 0)
+				points->SetPoint(i, orig[0], orig[1], val);
+
+			else
+				points->SetPoint(i, 0, 0, 0);
 		}
-		//65536
-
 	}
 
-	
-	//void printPointCloud(MeshPreview *viewer)
-	//{
-	//	if (points == nullptr)
-	//	{
-	//		std::cout << "Point is not setted";
-	//		return;
-	//	}
-	//	viewer->GetPolyDataAt(0)->SetPoints(points);
-
-	//	vtkVertexGlyphFilter* vertexFilter =vtkVertexGlyphFilter::New();
-
-	//	vertexFilter->SetInputData(viewer->GetPolyDataAt(0));
-	//	vertexFilter->Update();
-
-	//	//vtkPolyData* polydata =vtkPolyData::New();
-	//	viewer->GetPolyDataAt(0)->ShallowCopy(vertexFilter->GetOutput());
-	//	
-	//	viewer->GetActorAt(0)->GetProperty()->SetPointSize(0.5f);
-	//	// Setup colors
-	//
-
-	//	/*vtkUnsignedCharArray* colors =vtkUnsignedCharArray::New();
-	//	colors->SetNumberOfComponents(3);
-	//	colors->SetName("Colors");
-	//	colors->InsertNextTuple(red);
-	//	colors->InsertNextTupleValue(red);
-	//	colors->InsertNextTupleValue(green);
-	//	colors->InsertNextTupleValue(blue);*/
-	//	//vtkUnsignedCharArray* colors = vtkUnsignedCharArray::New();
-
-	//	
-	//	
-	//	//colors->InsertNextTuple(1.0, 0.0, 1.0);
-	//	//viewer->GetPolyDataAt(0)->GetPointData()->SetScalars(colors);
-	//	viewer->GetMapperAt(0)->SetInputData(viewer->GetPolyDataAt(0));
-
-
-	//	viewer->GetActorAt(0)->SetMapper(viewer->GetMapperAt(0));
-	//	viewer->GetActorAt(0)->GetProperty()->SetPointSize(5);
-
-	//	
-
-	//	viewer->GetRenderWindow()->AddRenderer(viewer->GetRenderer());
-	//	viewer->GetInteractor()->SetRenderWindow(viewer->GetRenderWindow());
-
-	//	viewer->GetRenderer()->AddActor(viewer->GetActorAt(0));
-
-	//	viewer->GetRenderWindow()->Render();
-	//}
 private:
 	vtkPoints *points;
 	vtkRenderer* MeshConstruct(MeshPreview *viewer, vtkPoints *point, int saveType);

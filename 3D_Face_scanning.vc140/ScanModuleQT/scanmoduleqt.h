@@ -33,11 +33,14 @@ public slots:
 	void InitializeVariables();
 	void InitializeScene();
 	int DestroyVariables();
-	void HybridMedian2D(int val);
 	void imageMedian3D(int val);
 	void gausianFilterStd(int std);
 	void gausianFilterRad(int rad);
-	void MeshSmoothing(int relax);
+	void MeshSmoothing();
+
+	void GausStdBtn();
+	void GausRadBtn();
+	void MedianBtn();
 private:
 	Ui::ScanModuleQTClass ui;
 
