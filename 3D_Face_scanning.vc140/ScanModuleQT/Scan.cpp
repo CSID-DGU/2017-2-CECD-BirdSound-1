@@ -628,12 +628,10 @@ void Scan::frame2Points(const rs2::frame& frame)
 	////std::ofstream str("test.txt");
 	for (auto i = 0; i < width*height; i++)
 	{
-		std::cout << v[i].x << " " << v[i].y << "\n";
-		//if (v[i].z > 1 || v[i].z < -1)
-		//	points->InsertNextPoint(v[i].x, v[i].y, 0);
-		//else
-		//points->InsertNextPoint(1,1,1);
-		points->InsertNextPoint(v[i].x,v[i].y,v[i].z);
+		if (v[i].z > 1 || v[i].z < -1)
+			points->InsertNextPoint(v[i].x, v[i].y, 0);
+		else
+			points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
 		
 	}
 

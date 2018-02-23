@@ -1,6 +1,7 @@
 ﻿#include "DemoFirstPart.hpp"
 #include "../DepthModule/device.h"
 #include "opencv2\opencv.hpp"
+#include "../ScanModuleQT/scanmoduleqt.h"
 #include <thread>
 
 using namespace realsense;
@@ -148,6 +149,8 @@ void DemoFirstPart::startStreaming(RS_400_STREAM_TYPE stream) {
 
 rs2::frame DemoFirstPart::capture() {
 	m_isStreaming = false;
+	ScanModuleQT *sc = new ScanModuleQT();
+	sc->show();
 	return m_frame_depth;
 }
 
