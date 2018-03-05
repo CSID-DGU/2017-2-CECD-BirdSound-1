@@ -187,7 +187,6 @@
     <ClCompile Include="PLYImport.cpp" />
     <ClCompile Include="PNGExport.cpp" />
     <ClCompile Include="PNGImport.cpp" />
-    <ClCompile Include="RealSensePreviewer.cpp" />
     <ClCompile Include="STLExport.cpp" />
     <ClCompile Include="STLImport.cpp" />
   </ItemGroup>
@@ -251,7 +250,6 @@
     <ClInclude Include="PLYImport.h" />
     <ClInclude Include="PNGExport.h" />
     <ClInclude Include="PNGImport.h" />
-    <ClInclude Include="RealSensePreviewer.h" />
     <ClInclude Include="STLExport.h" />
     <ClInclude Include="STLImport.h" />
   </ItemGroup>

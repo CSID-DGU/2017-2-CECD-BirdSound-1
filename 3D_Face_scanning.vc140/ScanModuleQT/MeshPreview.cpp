@@ -1,4 +1,4 @@
-#include "MeshPreview.h"
+ï»¿#include "MeshPreview.h"
 
 #include "MeshIO.h"
 #include "ImageIO.h"
@@ -6,24 +6,25 @@
 MeshPreview::MeshPreview(int size)
 {
 	setSize(size);
+	InitializeVariables();
 }
 
 MeshPreview::MeshPreview()
 {
 	setSize(1);
+	InitializeVariables();
 }
 void MeshPreview::setSize(int size)
 {
-	m_PolyData.clear();
+	/*m_PolyData.clear();
 	m_Actor.clear();
-	m_Mapper.clear();
+	m_Mapper.clear();*/
 
 	m_PolyData.resize(size);
 	m_Actor.resize(size);
 	m_Mapper.resize(size);
 
-	std::cout << m_Actor.size() << "!!!!!!!!!!!!!!!!!!!\n";
-	InitializeVariables();
+
 }
 MeshPreview::~MeshPreview()
 {
@@ -50,20 +51,21 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 {
 	for (int i = 0; i < m_Actor.size(); i++)
 	{
-	
 		if (!m_PolyData[i])
-		return 0;
+		{
+			std::cout << "@@";
+			return 0;
+		}
 
-		m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
+		//	m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
 		m_PolyData[i]->Modified();
 
 		//int n = m_PolyData[0]->GetNumberOfPoints();
 
 		m_Mapper[i]->SetInputData(m_PolyData[i]);
 		m_Mapper[i]->Update();
-
-		m_Actor[i]->SetMapper(m_Mapper[i]);//actor¿¡ mapperÀ» setÇÔ.  
-
+		m_Actor[i]->SetMapper(m_Mapper[i]);  
+		m_Renderer->AddActor(m_Actor[i]);
 
 		if (m_IsTexture)
 		{
@@ -74,12 +76,9 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 			m_Actor[i]->Modified();
 		}
 	}
-	for (int i = 0; i < m_Actor.size(); i++)
-	{
-		m_Renderer->AddActor(m_Actor[i]);
 
-	}
 
+	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")!ï¿½ï¿½ \n";
 	m_Renderer->ResetCamera();
 	m_Renderer->Modified();
 
@@ -88,21 +87,25 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 
 int MeshPreview::CreateTexture(std::string imgPath, int extType)
 {
-	m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
+	//m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
 	m_ImageData->Modified();
 
 	m_Texture->SetInputData(m_ImageData);
 	m_Texture->Update();
 
 	m_IsTexture = 1;
-		
+
 	return 1;
 }
 
 int MeshPreview::ReleaseModel()
 {
+	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")ï¿½ï¿½ \n";
+
 	for (int i = 0; i < m_Actor.size(); i++)
 	{
+		std::cout << "i ì§¸ : " << i << "\n";
+
 		m_Renderer->RemoveActor(m_Actor[i]);
 
 		if (m_Actor[i])
@@ -125,9 +128,6 @@ int MeshPreview::ReleaseModel()
 			m_PolyData[i] = vtkPolyData::New();
 		}
 
-		m_Mapper[i]->SetInputData(m_PolyData[i]);
-		m_Actor[i]->SetMapper(m_Mapper[i]);
-		m_Renderer->AddActor(m_Actor[i]);
 	}
 
 	if (m_Texture)
@@ -137,16 +137,14 @@ int MeshPreview::ReleaseModel()
 		m_Texture = vtkTexture::New();
 		m_IsTexture = 0;
 	}
-	if (m_ImageData)
+	/*if (m_ImageData)
 	{
-		m_ImageData->ReleaseData();
-		m_ImageData->Delete();
-		m_ImageData = NULL;
-		m_ImageData = vtkImageData::New();
-	}
-	
-	//Create3DScene();
-	
+	m_ImageData->ReleaseData();
+	m_ImageData->Delete();
+	m_ImageData = NULL;
+	m_ImageData = vtkImageData::New();
+	}*/
+
 	return 1;
 }
 
@@ -155,18 +153,12 @@ int MeshPreview::Create3DScene()
 	m_Renderer->GetActiveCamera()->ParallelProjectionOff();
 	//m_Renderer->GetActiveCamera()->SetPosition(m_Actor[0]->GetCenter());
 	//m_Renderer->GetActiveCamera()->SetFocalPoint(m_Actor[0]->GetCenter());
+
 	m_RenWin->AddRenderer(m_Renderer);
 	m_IRen->SetInteractorStyle(m_3DStyle);
 	m_RenWin->SetInteractor(m_IRen);
 	m_RenWin->Modified();
 
-
-	//m_RenWin->SetParentId(uiCtr);
-	//m_RenWin->SetSize(uiX, uiY);
-
-	//uiCtr = uiCtrl;
-	//uiX = xCtrlSize;
-	//uiY = yCtrlSize;
 	return 1;
 }
 
@@ -174,22 +166,19 @@ int MeshPreview::Create3DScene()
 
 int MeshPreview::InitializeVariables()
 {
-	m_MeshIO		= NULL;
-	m_ImageIO		= NULL;
-	
-	m_ImageData		= NULL;
+	m_MeshIO = NULL;
+	m_ImageIO = NULL;
 
-	m_Texture		= NULL;
+	m_ImageData = NULL;
 
-	m_Renderer		= NULL;
-	m_RenWin		= NULL;
-	m_IRen			= NULL;
-	m_3DStyle		= NULL;
+	m_Texture = NULL;
+
+	m_Renderer = NULL;
+	m_RenWin = NULL;
+	m_IRen = NULL;
+	m_3DStyle = NULL;
 
 	for (int i = 0; i < m_Actor.size(); i++) {
-		m_PolyData[i] = NULL;
-		m_Mapper[i] = NULL;
-		m_Actor[i] = NULL;
 
 		m_PolyData[i] = vtkPolyData::New();
 		m_Mapper[i] = vtkPolyDataMapper::New();
@@ -199,13 +188,13 @@ int MeshPreview::InitializeVariables()
 	m_MeshIO = new MeshIO;
 	m_ImageIO = new ImageIO;
 
-	m_ImageData		= vtkImageData::New();
-	m_Texture		= vtkTexture::New();
+	m_ImageData = vtkImageData::New();
+	m_Texture = vtkTexture::New();
 	m_IsTexture = 0;
-	m_Renderer		= vtkRenderer::New();
-	m_RenWin		= vtkRenderWindow::New();
-	m_IRen			= vtkRenderWindowInteractor::New();
-	m_3DStyle		= vtkInteractorStyleTrackballCamera::New();
+	m_Renderer = vtkRenderer::New();
+	m_RenWin = vtkRenderWindow::New();
+	m_IRen = vtkRenderWindowInteractor::New();
+	m_3DStyle = vtkInteractorStyleTrackballCamera::New();
 
 	//m_RenWin->SetParentId(uiCtr);
 	//m_RenWin->SetSize(uiX, uiY);
@@ -224,7 +213,7 @@ int MeshPreview::DestroyVariables()
 		delete m_ImageIO;
 		m_ImageIO = NULL;
 	}
-	for (int i = 0; i < m_Actor.size(); i++) 
+	for (int i = 0; i < m_Actor.size(); i++)
 	{
 		if (m_PolyData[i])
 		{
@@ -250,13 +239,13 @@ int MeshPreview::DestroyVariables()
 		m_ImageData->Delete();
 		m_ImageData = NULL;
 	}
-	
+
 	if (m_Texture)
 	{
 		m_Texture->Delete();
 		m_Texture = NULL;
 	}
-	
+
 	if (m_Renderer)
 	{
 		m_Renderer->Delete();
@@ -291,8 +280,8 @@ int MeshPreview::CaptureSave(std::string imagePath, int extType, int sizeRatio)
 
 int MeshPreview::MeshSave(std::string meshPath, int extType)
 {
-//	m_MeshIO->ExportMesh(extType, meshPath, m_PolyData);
-	std::cout << "ÇÑ¹ø¿¡ ¿©·¯ polyData¸¦ ExportÇÏ´Â ¹æ¹ýÀ» È®ÀÎÇÏ¼¼¿ä";
+	//	m_MeshIO->ExportMesh(extType, meshPath, m_PolyData);
+	std::cout << "ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ polyDataï¿½ï¿½ Exportï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½";
 	return 1;
 }
 
@@ -314,7 +303,7 @@ int MeshPreview::NonTextureMeshSave(std::string meshPath, int meshExtType)
 
 void MeshPreview::ChangeViewMode(int mode) //0 point 1 wire 2 face 3 edgeface
 {
-	for (int i = 0; i < m_Actor.size(); i++) 
+	for (int i = 0; i < m_Actor.size(); i++)
 	{
 		if (mode == 0)
 		{
@@ -360,5 +349,4 @@ void MeshPreview::Rendering()
 //m_Actor->GetProperty()->SetVertexColor();
 //m_Actor->GetProperty()->EdgeVisibilityOn();
 //m_Actor->GetProperty()->SetEdgeColor();
-
 

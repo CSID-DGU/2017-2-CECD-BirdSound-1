@@ -77,9 +77,9 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>1150</x>
-      <y>720</y>
-      <width>101</width>
-      <height>51</height>
+      <y>690</y>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -214,9 +214,9 @@ border-color: rgb(255, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>1260</x>
-      <y>720</y>
-      <width>101</width>
-      <height>51</height>
+      <y>690</y>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -571,6 +571,19 @@ border-color: rgb(255, 0, 0);</string>
      <string>Streaming</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="MultiCapBtn">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>730</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -578,7 +591,7 @@ border-color: rgb(255, 0, 0);</string>
      <x>0</x>
      <y>0</y>
      <width>1372</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
   </widget>

@@ -107,9 +107,6 @@
     <ClCompile Include="..\DepthModule\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RealSensePreviewer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">
@@ -184,9 +181,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RealSensePreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #include "ui_scanmoduleqt.h"
 #include"MeshPreview.h"
 #include"ImagePreview.h"
-#include"RealSensePreviewer.h"
+//#include"RealSensePreviewer.h"
 #include"Scan.h"
 class ScanModuleQT : public QMainWindow
 {
@@ -19,11 +19,11 @@ public:
 	MeshPreview*							m_MiniMeshPreviewer[3];//left, front, right¼ø¼­
 	int										m_IsMiniMeshViewer[3];
 	
-	
-	int										m_ScannedMeshViewer;
+	MeshPreview*							m_ScannedMeshViewer;
+	int										m_IsScannedMeshViewer;
 
-	RealSensePreviewer*						m_ImagePreviewer;
-	int										m_IsImageViewer;
+	//RealSensePreviewer*						m_ImagePreviewer;
+	//int										m_IsImageViewer;
 
 	void InitializeUi();
 public slots:

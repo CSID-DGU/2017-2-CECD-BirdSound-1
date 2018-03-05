@@ -71,6 +71,7 @@ public:
     QLabel *label_36;
     QPushButton *RightSaveBtn;
     QPushButton *StreamingBtn;
+    QPushButton *MultiCapBtn;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
 
@@ -98,7 +99,7 @@ public:
         Viewer_cad_FRONT->setFrameShadow(QFrame::Raised);
         CapBtn = new QPushButton(centralWidget);
         CapBtn->setObjectName(QStringLiteral("CapBtn"));
-        CapBtn->setGeometry(QRect(1150, 720, 101, 51));
+        CapBtn->setGeometry(QRect(1150, 690, 91, 31));
         FrontSaveBtn = new QPushButton(centralWidget);
         FrontSaveBtn->setObjectName(QStringLiteral("FrontSaveBtn"));
         FrontSaveBtn->setGeometry(QRect(1030, 450, 71, 20));
@@ -136,7 +137,7 @@ public:
         Viewer_cad_2D->setFrameShadow(QFrame::Raised);
         NextBtn = new QPushButton(centralWidget);
         NextBtn->setObjectName(QStringLiteral("NextBtn"));
-        NextBtn->setGeometry(QRect(1260, 720, 101, 51));
+        NextBtn->setGeometry(QRect(1260, 690, 91, 31));
         TitleRight = new QLabel(centralWidget);
         TitleRight->setObjectName(QStringLiteral("TitleRight"));
         TitleRight->setGeometry(QRect(960, 690, 61, 16));
@@ -230,10 +231,13 @@ public:
         StreamingBtn = new QPushButton(centralWidget);
         StreamingBtn->setObjectName(QStringLiteral("StreamingBtn"));
         StreamingBtn->setGeometry(QRect(1040, 720, 101, 51));
+        MultiCapBtn = new QPushButton(centralWidget);
+        MultiCapBtn->setObjectName(QStringLiteral("MultiCapBtn"));
+        MultiCapBtn->setGeometry(QRect(1150, 730, 91, 31));
         ScanModuleQTClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ScanModuleQTClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1372, 21));
+        menuBar->setGeometry(QRect(0, 0, 1372, 31));
         ScanModuleQTClass->setMenuBar(menuBar);
         statusBar = new QStatusBar(ScanModuleQTClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -279,6 +283,7 @@ public:
         label_36->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
         RightSaveBtn->setText(QApplication::translate("ScanModuleQTClass", "SAVE", Q_NULLPTR));
         StreamingBtn->setText(QApplication::translate("ScanModuleQTClass", "Streaming", Q_NULLPTR));
+        MultiCapBtn->setText(QApplication::translate("ScanModuleQTClass", "PushButton", Q_NULLPTR));
     } // retranslateUi
 
 };

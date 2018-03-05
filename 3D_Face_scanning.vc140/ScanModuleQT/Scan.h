@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #undef foreach
 #undef Q_FOREACH
 
@@ -32,9 +32,20 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 #include"../DepthModule/device.h"
 #include"MeshPreview.h"
+//#include"DepthMapPreviewer.h"
+
+
+#include"vtkImageMapper3D.h"
+
+#include"vtkImageMedian3D.h"
+#include"vtkImageActor.h"
+#include"vtkImageGaussianSmooth.h"
+#include"vtkSmoothPolyDataFilter.h"
+
 
 #include<vector>
 #include<omp.h>
+
 enum { color, depth };
 enum { omp, ompNsimd, serial };
 
@@ -56,10 +67,7 @@ public:
 
 	~Scan()
 	{
-		Viewer->DestroyVariables();
-
-		delete Viewer;
-		if(points !=NULL && points!=nullptr)	
+		if (points != NULL && points != nullptr)
 			points->Delete();
 		points = NULL;
 		frames.clear();
@@ -67,35 +75,56 @@ public:
 	Scan()
 	{
 		points = nullptr;
-		Viewer = new MeshPreview();
-		Viewer->setSize(5);//if omp type parameter is 5, else parameter to nothing or 1
-		Viewer->Create3DScene();
 	}
 
 	void frames2Points();
 	void frames2PointsCutOutlier();
-	std::string saveImage(rs2::frame &frame, std::string filepath, int filetype){}
-	void ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCtrlSize);
+	std::string saveImage(rs2::frame &frame, std::string filepath, int filetype) {}
+
 	void frame2Points(const rs2::frame& frame);
 
 	/*mode0 : omp  mode1 : omp with simd   else serial*/
-	void MeshConstruction(int mode, int saveType, int ThreadSize = 4);
-	void viewRawStream();
-	
+	void MeshConstruction(MeshPreview *viewer, int mode, int saveType, int ThreadSize = 4);
+
+	/*
+	get texture
+	*/
+	void ScanTexture(MeshPreview *viewer, rs2::frame &fra)
+	{
+
+
+
+		double dimensions[3] = { 1280, 720, 1 };
+		const int nComponents = viewer->m_ImageData->GetNumberOfScalarComponents();
+		int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
+
+		viewer->m_ImageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
+		viewer->m_ImageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
+		viewer->m_IsTexture = 1;
+		viewer->m_ImageData->Modified();
+
+
+		const unsigned char* data = static_cast<const unsigned char*>(fra.get_data());
+		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData->GetScalarPointer(0, 0, 0));
+
+		for (int i = 0; i < nScalar; i++)
+		{
+			scalarPointer[i] = data[i];
+		}
+
+		//viewer->m_Renderer->ResetCamera();
+	}
+	//void printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type);
 	void ReleaseModel()
 	{
-		
-		if (points != NULL && points!=nullptr)
+
+		if (points != NULL && points != nullptr)
 		{
 			points->Delete();
-			points=NULL;
+			points = NULL;
 		}
 
 		points = vtkPoints::New();
-	
-		Viewer->ReleaseModel();
-		Viewer->GetRenderWindow()->Modified();
-
 		frames.clear();
 
 	}
@@ -103,22 +132,63 @@ public:
 	{
 		points->Delete();
 		points = NULL;
-
-		Viewer->DestroyVariables();
-		Viewer = NULL;
-
 		frames.clear();
 	}
 
-	MeshPreview *Viewer;
+	void meshSmooth(MeshPreview *viewer, double Relaxation)
+	{
+		vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();
+		smoothFilter->SetInputData(viewer->GetPolyDataAt(0));
+		smoothFilter->SetNumberOfIterations(100);
+		smoothFilter->SetRelaxationFactor(Relaxation);
+		smoothFilter->FeatureEdgeSmoothingOff();
+		smoothFilter->BoundarySmoothingOn();
+		smoothFilter->Update();
 
+		//viewer->GetRenderer()->RemoveActor(viewer->GetActorAt(0));
+		//viewer->GetActorAt(0)->Delete();
+		//viewer->GetActorAt(0) = vtkActor::New();
+
+		//viewer->GetMapperAt(0)->Delete();
+		//viewer->GetMapperAt(0) = vtkPolyDataMapper::New();
+
+		//viewer->GetPolyDataAt(0)->ReleaseData();
+		//viewer->GetPolyDataAt(0)->Delete();
+		//viewer->GetPolyDataAt(0) = vtkPolyData::New();
+
+		viewer->GetMapperAt(0)->SetInputData(smoothFilter->GetOutput());
+		viewer->GetActorAt(0)->SetMapper(viewer->GetMapperAt(0));
+		viewer->GetActorAt(0)->Modified();
+		viewer->GetRenderWindow()->Modified();
+		viewer->Rendering();
+	}
+	//void upDataPoint(DepthMapPreviewer *viewer)
+	//{
+	//	//auto temp= viewer->GetActor()->GetInput()->GetScalarPointer();
+	//	auto pointer = viewer->GetImageData()->GetScalarPointer();
+
+	//	unsigned short* value = static_cast<unsigned short*>(pointer);
+
+	//	for (int i = 0; i < 1280 * 720; i++)
+	//	{
+	//		double orig[3];
+	//		points->GetPoint(i, orig);
+	//		double val = double(value[i]) / (8 * 1024.0);
+	//		//std::cout << val << " ";			
+	//		if (val == 0 || val<-1.0 || val>1.0)
+	//			points->SetPoint(i, 0, 0, 0);
+
+	//		else
+	//			points->SetPoint(i, orig[0], orig[1], val);
+	//	}
+
+	//}
+	vtkPoints* GetPoints() { return points; }
 private:
 	vtkPoints *points;
-	vtkRenderer* MeshConstruct(vtkPoints *point, int saveType);
+	vtkRenderer* MeshConstruct(MeshPreview *viewer, vtkPoints *point, int saveType);
 	double getDistane(double *src, double *tar);
-	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp=0);
-	void MeshConstructWithOMP(vtkPoints *point, int saveType, int ThreadSize);
-	vtkRenderer* MeshConstructWithOMPnSIMD(vtkPoints *point, int saveType, int ThreadSize);
-
-
+	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp = 0);
+	void MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int saveType, int ThreadSize);
+	vtkRenderer* MeshConstructWithOMPnSIMD(MeshPreview *viewer, vtkPoints *point, int saveType, int ThreadSize);
 };

@@ -15,26 +15,26 @@
 #include"double3.h"
 #include"vtkMatrix4x4.h"
 
+#include"MeshPreview.h"
+
 enum { LEFT, FRONT, RIGHT };
 class AlignModule
 {
 private:
-	vtkRenderer* left;
-	vtkRenderer* front;
-	vtkRenderer* right;
+	MeshPreview *left;
+	MeshPreview *front;
+	MeshPreview *right;
 
-	vtkActor* leftActor;
-	vtkActor* frontActor;
-	vtkActor* rightActor;
 public:
 	AlignModule()
 	{
 		left = front = right = nullptr;
-		leftActor = frontActor = rightActor = nullptr;
 	}
 	void align();
+	void mergeActors();
+	//void registeration();
 	std::vector<double3> extractLandMark(vtkRenderer *rend, int flag);
-	void setRight(vtkRenderer *rend);
-	void setFront(vtkRenderer *rend);
-	void setLeft(vtkRenderer *rend);
+	void setRight(MeshPreview *rend);
+	void setFront(MeshPreview *rend);
+	void setLeft(MeshPreview *rend);
 };

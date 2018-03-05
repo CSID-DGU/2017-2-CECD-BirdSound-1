@@ -5,6 +5,12 @@ vtkRenderer* left;
 vtkRenderer* front;
 vtkRenderer* right;
 
+/**
+Member 변수에 있는 left, front, right로 Align을 시행하고
+결과를 vtkRenderer로 뱉어낸다. 
+*/
+void AlignModule::mergeActors()
+{}
 void AlignModule::align()
 {
 	if (left == nullptr || front == nullptr || right == nullptr)
@@ -19,9 +25,9 @@ void AlignModule::align()
 		std::vector<double3>frontMark;
 		std::vector<double3>rightMark;
 
-		leftMark = extractLandMark(left,LEFT);
-		frontMark = extractLandMark(front,FRONT);
-		rightMark = extractLandMark(right,RIGHT);
+		leftMark = extractLandMark(left->GetRenderer(),LEFT);
+		frontMark = extractLandMark(front->GetRenderer(),FRONT);
+		rightMark = extractLandMark(right->GetRenderer(),RIGHT);
 
 
 		vtkPoints*leftPts = vtkPoints::New();
@@ -48,7 +54,7 @@ void AlignModule::align()
 		landmarkTransform->Update(); //should this be here?
 
 	
-		leftActor->SetUserTransform(landmarkTransform);
+		left->GetActorAt(0)->SetUserTransform(landmarkTransform);
 		/*
 		
 		*/
@@ -63,14 +69,17 @@ void AlignModule::align()
 		renderWindowInteractor->SetRenderWindow(renderWindow);
 
 		// Add the actor to the scene
-		renderer->AddActor(leftActor);
-		renderer->AddActor(frontActor);
+		renderer->AddActor(left->GetActorAt(0));
+		renderer->AddActor(front->GetActorAt(0));
 
 
 		// Render and interact
 		renderWindow->Render();
 		renderWindowInteractor->Start();
 	}
+
+
+	//renderWindow를 return한다. 
 
 }
 
@@ -85,12 +94,12 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend, int flag)
 	for (vtkIdType i = 0; i < actorCol->GetNumberOfItems(); i++)
 	{
 		vtkActor *nextActor = actorCol->GetNextActor();
-		if (i == 0)
+		/*if (i == 0)
 		{
 			if (flag == LEFT)leftActor = nextActor;
 			if (flag == RIGHT)rightActor = nextActor;
 			if (flag == FRONT)frontActor = nextActor;
-		}
+		}*/
 		if (i >= 1)
 		{
 			
@@ -104,15 +113,15 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend, int flag)
 	return vec;
 
 }
-void AlignModule::setRight(vtkRenderer *rend)
+void AlignModule::setRight(MeshPreview *rend)
 {
 	right = rend;
 }
-void AlignModule::setFront(vtkRenderer *rend)
+void AlignModule::setFront(MeshPreview *rend)
 {
 	front = rend;
 }
-void AlignModule::setLeft(vtkRenderer *rend)
+void AlignModule::setLeft(MeshPreview *rend)
 {
 	left = rend;
 }
