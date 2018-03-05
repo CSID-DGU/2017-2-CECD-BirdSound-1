@@ -1,5 +1,6 @@
 #pragma once
 #include "ui_initializemodule.h"
+#include <qtimer>
 
 class InitializeModule : public QWidget { //QWidget »ó¼Ó..
 	Q_OBJECT

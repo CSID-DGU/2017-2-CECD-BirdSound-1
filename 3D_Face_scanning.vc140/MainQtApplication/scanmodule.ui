@@ -82,6 +82,9 @@ border-width: 2px;
    </property>
   </widget>
   <widget class="QPushButton" name="NextButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>970</x>
@@ -95,6 +98,22 @@ border-width: 2px;
    </property>
    <property name="text">
     <string>Align</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ScanButton">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>590</y>
+     <width>151</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Scan</string>
    </property>
   </widget>
  </widget>

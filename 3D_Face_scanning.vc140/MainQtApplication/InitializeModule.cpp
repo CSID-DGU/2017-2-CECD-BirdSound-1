@@ -6,12 +6,17 @@ InitializeModule::InitializeModule(QWidget *parent) : QWidget(parent) {
 
 }
 void InitializeModule::Init() {
-
-	ui.progressBar->setRange(0, 100);
+	int max = 100;
+	int div = 10;
+	ui.progressBar->setRange(0, max);
 	ui.progressBar->setValue(0);
 	ui.progressBar->show();
-	for (int i = 1; i <= 100; i++) {
-		_sleep(20); //초기화는 3초면 충분하지.
-		ui.progressBar->setValue(i);
+	for (int i = 1; i <= div; i++) {
+		//프로세스 처리 
+		QEventLoop loop;
+		QTimer::singleShot(100, &loop, SLOT(quit()));
+		loop.exec();
+		qApp->processEvents();
+		ui.progressBar->setValue(i*div);
 	}
 }

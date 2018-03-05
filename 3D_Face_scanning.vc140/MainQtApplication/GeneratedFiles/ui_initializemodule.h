@@ -16,7 +16,6 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QProgressBar>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -29,7 +28,6 @@ public:
     QVBoxLayout *verticalLayout;
     QLabel *label;
     QProgressBar *progressBar;
-    QPushButton *pushButton;
 
     void setupUi(QWidget *InitializeModule)
     {
@@ -57,9 +55,6 @@ public:
 
         verticalLayout->addWidget(progressBar);
 
-        pushButton = new QPushButton(InitializeModule);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(160, 40, 75, 23));
 
         retranslateUi(InitializeModule);
 
@@ -69,8 +64,7 @@ public:
     void retranslateUi(QWidget *InitializeModule)
     {
         InitializeModule->setWindowTitle(QApplication::translate("InitializeModule", "BirdSound - 3D Face Scanning", Q_NULLPTR));
-        label->setText(QApplication::translate("InitializeModule", "\343\205\213\343\204\267\343\205\213\343\204\267", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("InitializeModule", "PushButton", Q_NULLPTR));
+        label->setText(QApplication::translate("InitializeModule", "initializing", Q_NULLPTR));
     } // retranslateUi
 
 };

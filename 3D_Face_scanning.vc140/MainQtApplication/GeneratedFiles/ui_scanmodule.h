@@ -27,6 +27,7 @@ public:
     QFrame *frame_2;
     QFrame *frame_3;
     QPushButton *NextButton;
+    QPushButton *ScanButton;
 
     void setupUi(QWidget *ScanModule)
     {
@@ -68,8 +69,13 @@ public:
         frame_3->setFrameShadow(QFrame::Raised);
         NextButton = new QPushButton(ScanModule);
         NextButton->setObjectName(QStringLiteral("NextButton"));
+        NextButton->setEnabled(false);
         NextButton->setGeometry(QRect(970, 590, 151, 41));
         NextButton->setStyleSheet(QStringLiteral(""));
+        ScanButton = new QPushButton(ScanModule);
+        ScanButton->setObjectName(QStringLiteral("ScanButton"));
+        ScanButton->setGeometry(QRect(800, 590, 151, 41));
+        ScanButton->setStyleSheet(QStringLiteral(""));
 
         retranslateUi(ScanModule);
 
@@ -80,6 +86,7 @@ public:
     {
         ScanModule->setWindowTitle(QApplication::translate("ScanModule", "Form", Q_NULLPTR));
         NextButton->setText(QApplication::translate("ScanModule", "Align", Q_NULLPTR));
+        ScanButton->setText(QApplication::translate("ScanModule", "Scan", Q_NULLPTR));
     } // retranslateUi
 
 };
