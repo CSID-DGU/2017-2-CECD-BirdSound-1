@@ -62,6 +62,11 @@ void ScanModuleQT::InitializeScene()
 	m_ScannedMeshViewer->Create3DScene();
 	m_IsScannedMeshViewer = 1;
 
+	for (int i = 0; i < 3; i++)
+	{
+		m_MiniMeshPreviewer[i] = new MeshPreview(5);
+		m_MiniMeshPreviewer[i]->Create3DScene();
+	}
 //	m_ImagePreviewer = new RealSensePreviewer;
 	//m_ImagePreviewer->Create2DScene();
 	//m_IsImageViewer = 1;
@@ -79,7 +84,7 @@ void ScanModuleQT::InitializeUi()
 	connect(ui.RightSaveBtn, SIGNAL(clicked()), this, SLOT(slotRightSaveBtn()));
 	connect(ui.FrontSaveBtn, SIGNAL(clicked()), this, SLOT(slotFrontSaveBtn()));
 	connect(ui.StreamingBtn, SIGNAL(clicked()), this, SLOT(slotStreamingBtn()));
-
+	connect(ui.MultiCapBtn, SIGNAL(clicked()), this, SLOT(slotCapPicBtn()));
 	
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_2D->width();	sizeY = this->ui.Viewer_cad_2D->height();
@@ -92,10 +97,10 @@ void ScanModuleQT::InitializeUi()
 
 	
 	sizeX = this->ui.Viewer_cad_FRONT->width();	sizeY = this->ui.Viewer_cad_FRONT->height();
-	m_MiniMeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_FRONT->winId()), sizeX, sizeY);
+	m_MiniMeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_LEFT->winId()), sizeX, sizeY);
 
 	sizeX = this->ui.Viewer_cad_LEFT->width();	sizeY = this->ui.Viewer_cad_LEFT->height();
-	m_MiniMeshPreviewer[1]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_LEFT->winId()), sizeX, sizeY);
+	m_MiniMeshPreviewer[1]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_FRONT->winId()), sizeX, sizeY);
 
 	sizeX = this->ui.Viewer_cad_RIGHT->width();	sizeY = this->ui.Viewer_cad_RIGHT->height();
 	m_MiniMeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RIGHT->winId()), sizeX, sizeY);
@@ -127,18 +132,91 @@ void ScanModuleQT::slotCapBtn()
 	/*이부분은 texture부분임. 여기는 fra에 rgb8 영상 넣으면됨. 귀찮으면 써놓은 select sensor복붙 ㄱㄱ*/
 //	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_COLOR, realsense::R1280_720, realsense::RS_400_FORMAT::RGB8, realsense::RS_400_FPS::HZ30);
 //	rs2::frame fra2 = RealSenseD415->capture(realsense::RS400_STREAM_COLOR);
-	//Scanner->ScanTexture(m_MeshPreviewer, fra2);
+//	Scanner->ScanTexture(m_ScannedMeshViewer, fra2);
+
 	
 }
 void ScanModuleQT::slotNextBtn() {}
-void ScanModuleQT::slotLeftSaveBtn() {}
-void ScanModuleQT::slotRightSaveBtn() {}
-void ScanModuleQT::slotFrontSaveBtn() {}
+void ScanModuleQT::slotLeftSaveBtn() 
+{
+	m_MiniMeshPreviewer[0]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[0]->GetRenderWindow(),"Left.obj");
+}
+void ScanModuleQT::slotRightSaveBtn() 
+{
+	m_MiniMeshPreviewer[2]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[2]->GetRenderWindow(), "right.obj");
+}
+void ScanModuleQT::slotFrontSaveBtn() 
+{
+	m_MiniMeshPreviewer[3]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[3]->GetRenderWindow(), "right.obj");
+}
+
+
+void Copy(MeshPreview* src, MeshPreview* des)
+{
+	/*
+	des를 release하고 하나씩 넣나...? 근데 pointer을 넣으면 안되잖아. 
+	*/
+	//des->ReleaseModel();
+	
+	if (des != NULL)
+	{
+		des->ReleaseModel();
+	}
+
+	des->CreateModel("",0);
+
+	for (int i = 0; i < 5; i++)
+	{
+		des->m_PolyData[i]->ShallowCopy(src->GetPolyDataAt(i));
+		des->m_Mapper[i]->ShallowCopy(src->GetMapperAt(i));
+		des->m_Actor[i]->ShallowCopy(src->GetActorAt(i));
+	}
+
+	des->GetRenderer()->Modified();
+	des->GetRenderWindow()->Render();
+}
+void ScanModuleQT::slotCapPicBtn()
+{
+	/*
+	if (index == 0)
+	{
+		ui.Viewer_cad_LEFT->setStyleSheet("border: 3px solid red;background-color:black;");
+		index = 1;
+	}
+	else
+	*/
+	if(index==0)
+	{
+		/*
+		[0]mesh의 내용을 m_mini로 gogo
+		*/
+		
+		Copy(m_ScannedMeshViewer, m_MiniMeshPreviewer[0]);
+		//m_MiniMeshPreviewer[0]->GetActorAt();
+		ui.Viewer_cad_LEFT->setStyleSheet("border: 1px solid black;background-color:black;");
+		ui.Viewer_cad_FRONT->setStyleSheet("border: 3px solid red;background-color:black;");
+		index = 1;
+	}
+
+	else if (index == 1)
+	{
+		Copy(m_ScannedMeshViewer, m_MiniMeshPreviewer[1]);
+		ui.Viewer_cad_FRONT->setStyleSheet("border: 1px solid black;background-color:black;");
+		ui.Viewer_cad_RIGHT->setStyleSheet("border: 3px solid red;background-color:black;");
+		index = 2;
+	}
+
+	else if(index==2)
+	{
+		ui.Viewer_cad_RIGHT->setStyleSheet("border: 1px solid black;background-color:black;");
+		Copy(m_ScannedMeshViewer, m_MiniMeshPreviewer[2]);
+		index = 3;
+		std::cout << "Index Full\n";
+	}
+}
 
 
 void ScanModuleQT::slotStreamingBtn() 
 {
-//	RealSenseD415->selectSensorAndStreamPropsForPreviewer();
-//	m_ImagePreviewer->ReleaseModel();
-	//m_ImagePreviewer->streamingColorRaw16(RealSenseD415);
+
 }

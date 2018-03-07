@@ -19,8 +19,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QWidget>
@@ -46,29 +44,6 @@ public:
     QPushButton *NextBtn;
     QLabel *TitleRight;
     QLabel *Title2D;
-    QScrollArea *scrollArea_2;
-    QWidget *scrollAreaWidgetContents_2;
-    QSlider *horizontalSlider_11;
-    QSlider *horizontalSlider_12;
-    QLabel *ParameterTitle;
-    QLabel *label_27;
-    QLabel *label_28;
-    QLabel *label_29;
-    QSlider *horizontalSlider_13;
-    QLabel *label_30;
-    QSlider *horizontalSlider_14;
-    QSlider *horizontalSlider_15;
-    QLabel *label_31;
-    QSlider *horizontalSlider_16;
-    QLabel *label_32;
-    QSlider *horizontalSlider_17;
-    QLabel *label_33;
-    QSlider *horizontalSlider_18;
-    QLabel *label_34;
-    QSlider *horizontalSlider_19;
-    QLabel *label_35;
-    QSlider *horizontalSlider_20;
-    QLabel *label_36;
     QPushButton *RightSaveBtn;
     QPushButton *StreamingBtn;
     QPushButton *MultiCapBtn;
@@ -144,87 +119,6 @@ public:
         Title2D = new QLabel(centralWidget);
         Title2D->setObjectName(QStringLiteral("Title2D"));
         Title2D->setGeometry(QRect(480, 620, 441, 41));
-        scrollArea_2 = new QScrollArea(centralWidget);
-        scrollArea_2->setObjectName(QStringLiteral("scrollArea_2"));
-        scrollArea_2->setGeometry(QRect(1140, 10, 221, 671));
-        scrollArea_2->setWidgetResizable(true);
-        scrollAreaWidgetContents_2 = new QWidget();
-        scrollAreaWidgetContents_2->setObjectName(QStringLiteral("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 219, 669));
-        horizontalSlider_11 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_11->setObjectName(QStringLiteral("horizontalSlider_11"));
-        horizontalSlider_11->setGeometry(QRect(10, 70, 160, 22));
-        horizontalSlider_11->setOrientation(Qt::Horizontal);
-        horizontalSlider_12 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_12->setObjectName(QStringLiteral("horizontalSlider_12"));
-        horizontalSlider_12->setGeometry(QRect(10, 130, 160, 22));
-        horizontalSlider_12->setOrientation(Qt::Horizontal);
-        ParameterTitle = new QLabel(scrollAreaWidgetContents_2);
-        ParameterTitle->setObjectName(QStringLiteral("ParameterTitle"));
-        ParameterTitle->setGeometry(QRect(10, 10, 151, 16));
-        label_27 = new QLabel(scrollAreaWidgetContents_2);
-        label_27->setObjectName(QStringLiteral("label_27"));
-        label_27->setGeometry(QRect(10, 50, 151, 16));
-        label_28 = new QLabel(scrollAreaWidgetContents_2);
-        label_28->setObjectName(QStringLiteral("label_28"));
-        label_28->setGeometry(QRect(10, 110, 151, 16));
-        label_29 = new QLabel(scrollAreaWidgetContents_2);
-        label_29->setObjectName(QStringLiteral("label_29"));
-        label_29->setGeometry(QRect(10, 180, 151, 16));
-        horizontalSlider_13 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_13->setObjectName(QStringLiteral("horizontalSlider_13"));
-        horizontalSlider_13->setGeometry(QRect(10, 200, 160, 22));
-        horizontalSlider_13->setOrientation(Qt::Horizontal);
-        label_30 = new QLabel(scrollAreaWidgetContents_2);
-        label_30->setObjectName(QStringLiteral("label_30"));
-        label_30->setGeometry(QRect(10, 240, 151, 16));
-        horizontalSlider_14 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_14->setObjectName(QStringLiteral("horizontalSlider_14"));
-        horizontalSlider_14->setGeometry(QRect(10, 260, 160, 22));
-        horizontalSlider_14->setOrientation(Qt::Horizontal);
-        horizontalSlider_15 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_15->setObjectName(QStringLiteral("horizontalSlider_15"));
-        horizontalSlider_15->setGeometry(QRect(10, 320, 160, 22));
-        horizontalSlider_15->setOrientation(Qt::Horizontal);
-        label_31 = new QLabel(scrollAreaWidgetContents_2);
-        label_31->setObjectName(QStringLiteral("label_31"));
-        label_31->setGeometry(QRect(10, 300, 151, 16));
-        horizontalSlider_16 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_16->setObjectName(QStringLiteral("horizontalSlider_16"));
-        horizontalSlider_16->setGeometry(QRect(10, 380, 160, 22));
-        horizontalSlider_16->setOrientation(Qt::Horizontal);
-        label_32 = new QLabel(scrollAreaWidgetContents_2);
-        label_32->setObjectName(QStringLiteral("label_32"));
-        label_32->setGeometry(QRect(10, 360, 151, 16));
-        horizontalSlider_17 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_17->setObjectName(QStringLiteral("horizontalSlider_17"));
-        horizontalSlider_17->setGeometry(QRect(10, 440, 160, 22));
-        horizontalSlider_17->setOrientation(Qt::Horizontal);
-        label_33 = new QLabel(scrollAreaWidgetContents_2);
-        label_33->setObjectName(QStringLiteral("label_33"));
-        label_33->setGeometry(QRect(10, 420, 151, 16));
-        horizontalSlider_18 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_18->setObjectName(QStringLiteral("horizontalSlider_18"));
-        horizontalSlider_18->setGeometry(QRect(10, 490, 160, 22));
-        horizontalSlider_18->setOrientation(Qt::Horizontal);
-        label_34 = new QLabel(scrollAreaWidgetContents_2);
-        label_34->setObjectName(QStringLiteral("label_34"));
-        label_34->setGeometry(QRect(10, 470, 151, 16));
-        horizontalSlider_19 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_19->setObjectName(QStringLiteral("horizontalSlider_19"));
-        horizontalSlider_19->setGeometry(QRect(10, 550, 160, 22));
-        horizontalSlider_19->setOrientation(Qt::Horizontal);
-        label_35 = new QLabel(scrollAreaWidgetContents_2);
-        label_35->setObjectName(QStringLiteral("label_35"));
-        label_35->setGeometry(QRect(10, 530, 151, 16));
-        horizontalSlider_20 = new QSlider(scrollAreaWidgetContents_2);
-        horizontalSlider_20->setObjectName(QStringLiteral("horizontalSlider_20"));
-        horizontalSlider_20->setGeometry(QRect(10, 610, 160, 22));
-        horizontalSlider_20->setOrientation(Qt::Horizontal);
-        label_36 = new QLabel(scrollAreaWidgetContents_2);
-        label_36->setObjectName(QStringLiteral("label_36"));
-        label_36->setGeometry(QRect(10, 590, 151, 16));
-        scrollArea_2->setWidget(scrollAreaWidgetContents_2);
         RightSaveBtn = new QPushButton(centralWidget);
         RightSaveBtn->setObjectName(QStringLiteral("RightSaveBtn"));
         RightSaveBtn->setGeometry(QRect(1030, 690, 71, 20));
@@ -270,20 +164,9 @@ public:
         NextBtn->setText(QApplication::translate("ScanModuleQTClass", "NEXT", Q_NULLPTR));
         TitleRight->setText(QApplication::translate("ScanModuleQTClass", "RIGHT", Q_NULLPTR));
         Title2D->setText(QApplication::translate("ScanModuleQTClass", "2D View <1920x1080 / RGB8 / 30FPS>", Q_NULLPTR));
-        ParameterTitle->setText(QApplication::translate("ScanModuleQTClass", "Camera Parameter", Q_NULLPTR));
-        label_27->setText(QApplication::translate("ScanModuleQTClass", "Parameter1", Q_NULLPTR));
-        label_28->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_29->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_30->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_31->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_32->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_33->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_34->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_35->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
-        label_36->setText(QApplication::translate("ScanModuleQTClass", "Parameter2", Q_NULLPTR));
         RightSaveBtn->setText(QApplication::translate("ScanModuleQTClass", "SAVE", Q_NULLPTR));
         StreamingBtn->setText(QApplication::translate("ScanModuleQTClass", "Streaming", Q_NULLPTR));
-        MultiCapBtn->setText(QApplication::translate("ScanModuleQTClass", "PushButton", Q_NULLPTR));
+        MultiCapBtn->setText(QApplication::translate("ScanModuleQTClass", "SavePic", Q_NULLPTR));
     } // retranslateUi
 
 };

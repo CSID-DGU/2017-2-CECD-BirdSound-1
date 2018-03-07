@@ -7,6 +7,7 @@
 #include"ImagePreview.h"
 //#include"RealSensePreviewer.h"
 #include"Scan.h"
+#include"MeshIO.h"
 class ScanModuleQT : public QMainWindow
 {
 	Q_OBJECT
@@ -33,13 +34,14 @@ public slots:
 	void slotRightSaveBtn();
 	void slotFrontSaveBtn();
 	void slotStreamingBtn();
-
+	void slotCapPicBtn();
 
 
 	void InitializeVariables();
 	void InitializeScene();
 	int DestroyVariables();
 private:
+	int index=0;
 	Ui::ScanModuleQTClass ui;
 
 	realsense::Device *RealSenseD415;

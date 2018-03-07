@@ -32,14 +32,14 @@ public:
 	std::vector<vtkPolyData*>						m_PolyData;
 	vtkPolyData* GetPolyDataAt(int index) { return m_PolyData[index]; }
 
-	vtkImageData*									m_ImageData;
-	vtkImageData* GetImageData() { return m_ImageData; }
+	std::vector<vtkImageData*>						m_ImageData;
+	vtkImageData*									GetImageData(int index) { return m_ImageData[index]; }
 
 	std::vector<vtkPolyDataMapper*>					m_Mapper;
 	vtkPolyDataMapper* GetMapperAt(int index) { return m_Mapper[index]; }
 
-	vtkTexture*										m_Texture;
-	vtkTexture* GetTexture() { return m_Texture; }
+	std::vector<vtkTexture*>						m_Texture;
+	vtkTexture* GetTexture(int index)				{ return m_Texture[index]; }
 	int												m_IsTexture;
 	int IsTexture() { return m_IsTexture; };
 

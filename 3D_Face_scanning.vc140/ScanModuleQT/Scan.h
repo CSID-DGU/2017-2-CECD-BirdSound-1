@@ -93,25 +93,31 @@ public:
 	{
 
 
-
-		double dimensions[3] = { 1280, 720, 1 };
-		const int nComponents = viewer->m_ImageData->GetNumberOfScalarComponents();
-		int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
-
-		viewer->m_ImageData->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
-		viewer->m_ImageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
-		viewer->m_IsTexture = 1;
-		viewer->m_ImageData->Modified();
-
-
+		/*
+		index를 기준으로 해서 Image Data를 Set하는 방법을 찾자.
+		0째 0~1280*720/2
+		이런식으로 4장의 ImageData가 Set되어야 한다. 
+		*/
 		const unsigned char* data = static_cast<const unsigned char*>(fra.get_data());
-		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData->GetScalarPointer(0, 0, 0));
 
-		for (int i = 0; i < nScalar; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			scalarPointer[i] = data[i];
-		}
+			double dimensions[3] = { 1280, 720/4, 1 };
+			const int nComponents = viewer->m_ImageData[i]->GetNumberOfScalarComponents();
+			int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
 
+			viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
+			viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
+			//viewer->m_IsTexture[i] = 1;
+			viewer->m_ImageData[i]->Modified();
+			
+			unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0, 0, 0));
+
+			for (int j = 0; j < nScalar; j++)
+			{
+				scalarPointer[j] = data[(i+1)*1280*720/4];
+			}
+		}
 		//viewer->m_Renderer->ResetCamera();
 	}
 	//void printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type);

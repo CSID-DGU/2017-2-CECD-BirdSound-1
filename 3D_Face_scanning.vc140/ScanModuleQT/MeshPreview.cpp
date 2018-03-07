@@ -1,5 +1,4 @@
 ﻿#include "MeshPreview.h"
-
 #include "MeshIO.h"
 #include "ImageIO.h"
 
@@ -23,7 +22,8 @@ void MeshPreview::setSize(int size)
 	m_PolyData.resize(size);
 	m_Actor.resize(size);
 	m_Mapper.resize(size);
-
+	m_Texture.resize(size);
+	m_ImageData.resize(size);
 
 }
 MeshPreview::~MeshPreview()
@@ -69,7 +69,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 
 		if (m_IsTexture)
 		{
-			m_Actor[i]->SetTexture(m_Texture);
+			m_Actor[i]->SetTexture(m_Texture[i]);
 			m_Actor[i]->GetProperty()->SetInterpolationToGouraud();
 			m_Actor[i]->GetProperty()->SetColor(1.0, 1.0, 1.0);
 			m_Actor[i]->GetProperty()->BackfaceCullingOn();
@@ -88,10 +88,14 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 int MeshPreview::CreateTexture(std::string imgPath, int extType)
 {
 	//m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
-	m_ImageData->Modified();
-
-	m_Texture->SetInputData(m_ImageData);
-	m_Texture->Update();
+	
+	for (int i = 0; i < m_ImageData.size(); i++)
+	{
+		m_ImageData[i]->Modified();
+		m_Texture[i]->SetInputData(m_ImageData[i]);
+		m_Texture[i]->Update();
+	}
+	
 
 	m_IsTexture = 1;
 
@@ -128,15 +132,17 @@ int MeshPreview::ReleaseModel()
 			m_PolyData[i] = vtkPolyData::New();
 		}
 
+		if (m_Texture[i])
+		{
+			m_Texture[i]->Delete();
+			m_Texture[i] = NULL;
+			m_Texture[i] = vtkTexture::New();
+			m_IsTexture = 0;
+		}
+
 	}
 
-	if (m_Texture)
-	{
-		m_Texture->Delete();
-		m_Texture = NULL;
-		m_Texture = vtkTexture::New();
-		m_IsTexture = 0;
-	}
+	
 	/*if (m_ImageData)
 	{
 	m_ImageData->ReleaseData();
@@ -169,9 +175,9 @@ int MeshPreview::InitializeVariables()
 	m_MeshIO = NULL;
 	m_ImageIO = NULL;
 
-	m_ImageData = NULL;
+	
 
-	m_Texture = NULL;
+	//m_Texture = NULL;
 
 	m_Renderer = NULL;
 	m_RenWin = NULL;
@@ -179,17 +185,18 @@ int MeshPreview::InitializeVariables()
 	m_3DStyle = NULL;
 
 	for (int i = 0; i < m_Actor.size(); i++) {
-
+		m_ImageData[i] = vtkImageData::New();;
 		m_PolyData[i] = vtkPolyData::New();
 		m_Mapper[i] = vtkPolyDataMapper::New();
 		m_Actor[i] = vtkActor::New();
+		m_Texture[i] = vtkTexture::New();
 	}
 
 	m_MeshIO = new MeshIO;
 	m_ImageIO = new ImageIO;
 
-	m_ImageData = vtkImageData::New();
-	m_Texture = vtkTexture::New();
+	
+	
 	m_IsTexture = 0;
 	m_Renderer = vtkRenderer::New();
 	m_RenWin = vtkRenderWindow::New();
@@ -215,6 +222,13 @@ int MeshPreview::DestroyVariables()
 	}
 	for (int i = 0; i < m_Actor.size(); i++)
 	{
+		if (m_ImageData[i])
+		{
+			m_ImageData[i]->ReleaseData();
+			m_ImageData[i]->Delete();
+			m_ImageData[i] = NULL;
+		}
+
 		if (m_PolyData[i])
 		{
 			m_PolyData[i]->ReleaseData();
@@ -232,19 +246,16 @@ int MeshPreview::DestroyVariables()
 			m_Actor[i]->Delete();
 			m_Actor[i] = NULL;
 		}
-	}
-	if (m_ImageData)
-	{
-		m_ImageData->ReleaseData();
-		m_ImageData->Delete();
-		m_ImageData = NULL;
-	}
 
-	if (m_Texture)
-	{
-		m_Texture->Delete();
-		m_Texture = NULL;
+		if (m_Texture[i])
+		{
+			m_Texture[i]->Delete();
+			m_Texture[i] = NULL;
+		}
 	}
+	
+
+	
 
 	if (m_Renderer)
 	{
@@ -287,9 +298,10 @@ int MeshPreview::MeshSave(std::string meshPath, int extType)
 
 int MeshPreview::TextureMeshSave(std::string meshPath, int meshExtType, std::string imagePath, int imgExtType)
 {
-	m_MeshIO->ExportOBJFile(m_RenWin, meshPath);
+	/*m_MeshIO->ExportOBJFile(m_RenWin, meshPath);
 	m_ImageIO->ExportImageFile(imgExtType, m_ImageData, imagePath);
 
+	return 1;*/
 	return 1;
 }
 
