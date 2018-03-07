@@ -136,7 +136,16 @@ void ScanModuleQT::slotCapBtn()
 
 	
 }
-void ScanModuleQT::slotNextBtn() {}
+void ScanModuleQT::slotNextBtn() 
+{
+	AlignModule* qwe = new AlignModule;
+	qwe->setLeft(m_MiniMeshPreviewer[0]);
+	qwe->setFront(m_MiniMeshPreviewer[1]);
+	qwe->setRight(m_MiniMeshPreviewer[2]);
+
+	//qwe->mergeActors();
+	qwe->align();
+}
 void ScanModuleQT::slotLeftSaveBtn() 
 {
 	m_MiniMeshPreviewer[0]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[0]->GetRenderWindow(),"Left.obj");
@@ -152,12 +161,7 @@ void ScanModuleQT::slotFrontSaveBtn()
 
 
 void Copy(MeshPreview* src, MeshPreview* des)
-{
-	/*
-	des를 release하고 하나씩 넣나...? 근데 pointer을 넣으면 안되잖아. 
-	*/
-	//des->ReleaseModel();
-	
+{	
 	if (des != NULL)
 	{
 		des->ReleaseModel();

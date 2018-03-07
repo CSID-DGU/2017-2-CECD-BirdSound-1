@@ -8,6 +8,7 @@
 //#include"RealSensePreviewer.h"
 #include"Scan.h"
 #include"MeshIO.h"
+#include"AlignModule.h"
 class ScanModuleQT : public QMainWindow
 {
 	Q_OBJECT
