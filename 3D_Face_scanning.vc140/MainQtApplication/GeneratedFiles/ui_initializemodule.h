@@ -35,7 +35,8 @@ public:
             InitializeModule->setObjectName(QStringLiteral("InitializeModule"));
         InitializeModule->setWindowModality(Qt::NonModal);
         InitializeModule->resize(584, 182);
-        InitializeModule->setCursor(QCursor(Qt::WaitCursor));
+        InitializeModule->setCursor(QCursor(Qt::ArrowCursor));
+        InitializeModule->setMouseTracking(false);
         layoutWidget = new QWidget(InitializeModule);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
         layoutWidget->setGeometry(QRect(10, 130, 561, 40));
@@ -50,6 +51,7 @@ public:
         progressBar = new QProgressBar(layoutWidget);
         progressBar->setObjectName(QStringLiteral("progressBar"));
         progressBar->setValue(24);
+        progressBar->setTextVisible(true);
 
         verticalLayout->addWidget(progressBar);
 
@@ -62,7 +64,7 @@ public:
     void retranslateUi(QWidget *InitializeModule)
     {
         InitializeModule->setWindowTitle(QApplication::translate("InitializeModule", "BirdSound - 3D Face Scanning", Q_NULLPTR));
-        label->setText(QApplication::translate("InitializeModule", "TextLabel", Q_NULLPTR));
+        label->setText(QApplication::translate("InitializeModule", "initializing", Q_NULLPTR));
     } // retranslateUi
 
 };
