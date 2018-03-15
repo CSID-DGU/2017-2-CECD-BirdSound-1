@@ -1,4 +1,4 @@
-#include "device.h"
+ï»¿#include "device.h"
 
 using namespace realsense;
 
@@ -16,16 +16,15 @@ string realsense::getSerial(int devIdx) {
 }
 
 void realsense::ReorderY16(const uint16_t* image, int width, int height) {
-	auto range = width*height/2;
+	auto range = width*height / 2;
 	for (size_t i = 0; i < range; i++) {
 		uint16_t pix1 = image[i];
-		uint16_t pix2 = image[range-i];
+		uint16_t pix2 = image[range - i];
 		uint16_t tmp = pix1;
 		pix2 = pix1;
 		pix2 = tmp;
 	}
 }
-
 
 void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, uint8_t* output)
 {
@@ -51,18 +50,18 @@ void realsense::ConvertYUY2ToRGBA(const uint8_t* image, int width, int height, u
 			src[27], src[27], src[31], src[31],
 		};
 		uint8_t r[16], g[16], b[16];
-			for (int i = 0; i < 16; i++)
-			{
-				int32_t c = y[i] - 16;
-				int32_t d = u[i] - 128;
-				int32_t e = v[i] - 128;
-				int32_t t;
+		for (int i = 0; i < 16; i++)
+		{
+			int32_t c = y[i] - 16;
+			int32_t d = u[i] - 128;
+			int32_t e = v[i] - 128;
+			int32_t t;
 #define clamp(x) ((t=(x)) > 255 ? 255 : t < 0 ? 0 : t)
-				r[i] = clamp((298 * c + 409 * e + 128) >> 8);
-				g[i] = clamp((298 * c - 100 * d - 208 * e + 128) >> 8);
-				b[i] = clamp((298 * c + 516 * d + 128) >> 8);
+			r[i] = clamp((298 * c + 409 * e + 128) >> 8);
+			g[i] = clamp((298 * c - 100 * d - 208 * e + 128) >> 8);
+			b[i] = clamp((298 * c + 516 * d + 128) >> 8);
 #undef clamp
-			}
+		}
 		uint8_t out[16 * 4] = {
 			r[0], g[0], b[0], 255, r[1], g[1], b[1], 255,
 			r[2], g[2], b[2], 255, r[3], g[3], b[3], 255,
@@ -111,16 +110,16 @@ void realsense::ConvertLuminance16ToLuminance8(const uint16_t* image, int width,
 }
 
 
-/** 
- * Class Device
- */
+/**
+* Class Device
+*/
 Device::Device(string serialNumber) {
-	#ifdef _WIN32
+#ifdef _WIN32
 	InitializeCriticalSection(&m_mutex);
-	#else
+#else
 	if (0 != pthread_mutex_init(&m_mutex, NULL)) throw
 		std::runtime_error("pthread_mutex_init failed");
-	#endif
+#endif
 	m_stereoSensor = nullptr;
 	m_colorSensor = nullptr;
 	m_colorStreamCheck = false;
@@ -137,21 +136,21 @@ Device::Device(string serialNumber) {
 			m_device = devices[i];
 		}
 	}
-	
+
 	//check is advanced?
 	/*if (m_device.is<rs400::advanced_mode>()){
-		rs400::advanced_mode advanced = m_device.as<rs400::advanced_mode>();
-		if (advanced.is_enabled()) {
-			advanced.toggle_advanced_mode(true);
-			delete m_context;
-			m_context = new context;
-			devices = m_context->query_devices();
-			for (size_t i = 0; i < devices.size(); i++) {
-				if (devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == serialNumber) {
-					m_device = devices[i];
-				}
-			}
-		}
+	rs400::advanced_mode advanced = m_device.as<rs400::advanced_mode>();
+	if (advanced.is_enabled()) {
+	advanced.toggle_advanced_mode(true);
+	delete m_context;
+	m_context = new context;
+	devices = m_context->query_devices();
+	for (size_t i = 0; i < devices.size(); i++) {
+	if (devices[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == serialNumber) {
+	m_device = devices[i];
+	}
+	}
+	}
 	}*/
 
 	//sensor catch
@@ -165,7 +164,7 @@ Device::Device(string serialNumber) {
 	for (auto&& sp : stream_profiles)
 	{
 		auto streamType = m_stream2Enum(sp.stream_name()); //Infrared 1, Infrared 2, Infrared, Depth, Color
-		
+
 		if (sp.is<rs2::video_stream_profile>()) //"Is" will test if the type tested is of the type given
 		{
 			// "As" will try to convert the instance to the given type
@@ -178,7 +177,7 @@ Device::Device(string serialNumber) {
 			auto code = resolution * 100 + format * 10 + fps;
 			m_streoUniqueStreams[streamType][code] = pair<int, rs2::stream_profile>(sp.unique_id(), sp);
 		}
-		
+
 		//m_streoUniqueStreams[std::make_pair(sp.stream_type(), sp.stream_index())]++;
 	}
 
@@ -209,6 +208,11 @@ Device::Device(string serialNumber) {
 	info.serial = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_SERIAL_NUMBER);
 	info.fw_ver = m_device.get_info(rs2_camera_info::RS2_CAMERA_INFO_FIRMWARE_VERSION);
 
+
+	m_stereoSensor.set_option(RS2_OPTION_DEPTH_UNITS, 0.0001);
+
+	//std::cout<<m_stereoSensor.get_option(RS2_OPTION_ACCURACY)<<"\n";
+
 }
 
 void Device::printDeviceInfo() {
@@ -220,7 +224,7 @@ void Device::printDeviceInfo() {
 			cout << "    " << left << setw(30) << rs2_camera_info_to_string(rs2_camera_info(param))
 			<< ": \t" << m_device.get_info(param) << endl;
 	}
-	
+
 	auto sensors = m_sensors;
 	cout << "\nSensor info: \n";
 	int index = 0;
@@ -230,6 +234,16 @@ void Device::printDeviceInfo() {
 			cout << "    " << index++ << " : " << sensor.get_info(RS2_CAMERA_INFO_NAME) << endl;
 		}
 
+	}
+}
+
+
+void Device::setOption(RS_400_SENSOR sensor, rs2_option option, float value) {
+	if (sensor == RS_400_SENSOR::RGB_CAMERA) {
+		m_colorSensor.set_option(option, value);
+	}
+	else if (sensor == RS_400_SENSOR::STEREO_MODULE) {
+		m_stereoSensor.set_option(option, value);
 	}
 }
 
@@ -267,59 +281,52 @@ void Device::printSensorInfo() {
 			}
 		}
 	}
-	
+
 }
 
 //help function...
-//ÇÏ³ªÀÇ ¼¾¼­¿¡ ¿©·¯ ½ºÆ®¸²ÀÌ Á¢±ÙÇÒ¶§, ÀÓ°è¿µ¿ª¹®Á¦?
-void Device::selectSensorAndStreamProps() {
+//ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½, ï¿½Ó°è¿µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+//ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½, ï¿½Ó°è¿µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+void Device::selectSensorAndStreamProps(RS_400_STREAM_TYPE s_stream, RS_400_RESOLUTION s_resol, RS_400_FORMAT s_format, RS_400_FPS s_fps) {
+	MUTEX_LOCK(&m_mutex);
+	if (s_stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR) {
+		m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
+	}
+	if (s_stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1 || s_stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2 || s_stream == RS_400_STREAM_TYPE::RS400_STREAM_DEPTH || s_stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED) {
+		m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
+	}
 
-	
-	/*size_t command_sensor;
-	size_t command_stream;
-	size_t command_code;
-	cout << "\nÄ«¸Þ¶ó ¼¾¼­¿Í, ½ºÆ®¸²À» ÀÔ·ÂÇÏ¼¼¿ä" << endl;
-	cout << "1. Ä«¸Þ¶ó ¼¾¼­ \n\tSTEREO_MODULE(0)\n\tRGB_CAMERA(1)\n\t >"; cin >> command_sensor;
-	cout << "2. ½ºÆ®¸² Å¸ÀÔ : \n\tRS400_STREAM_DEPTH(0)\n\tRS400_STREAM_INFRARED(1)\n\tRS400_STREAM_INFRARED1(2)\n\tRS400_STREAM_INFRARED2(3)\n\tRS400_STREAM_COLOR(4)\n\t>>"; cin >> command_stream;
-	cout << "3. ½ºÆ®¸² ÄÚµå¸¦ ÀÔ·ÂÇÏ¼¼¿ä >> "; cin >> command_code;
-
-	m_selectedSensor = static_cast<RS_400_SENSOR>(command_sensor);
-		
-	cout << "½ºÆ®¸®¹ÖÀ» ½ÃÀÛÇÕ´Ï´Ù..";
+	uint8_t command_code = s_resol * 100 + s_format * 10 + s_fps;
 	try {
 		if (m_selectedSensor == RS_400_SENSOR::STEREO_MODULE) {
-			startStreaming(m_streoUniqueStreams[command_stream][command_code].second);
-			
+			startStreaming(m_streoUniqueStreams[s_stream][command_code].second);
 		}
 		else if (m_selectedSensor == RS_400_SENSOR::RGB_CAMERA) {
-			startStreaming(m_colorUniqueStreams[command_stream][command_code].second);
+			startStreaming(m_colorUniqueStreams[s_stream][command_code].second);
 		}
 	}
-	catch(...) {
-		cout << "Àß¸øµÈ Á¢±ÙÀÔ´Ï´Ù. ÄÚµåÇ¥¸¦ ÂüÁ¶ÇØÁÖ¼¼¿ä" << endl;
-	}*/
-	
-
-	m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
-
+	catch (...) {
+		cout << "ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½. ï¿½Úµï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½" << endl;
+	}
+	MUTEX_UNLOCK(&m_mutex);
+	/*m_selectedSensor = RS_400_SENSOR::STEREO_MODULE;
 	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED1][423].second);
 	startStreaming(m_streoUniqueStreams[RS400_STREAM_INFRARED2][423].second);
-	
+
 	m_selectedSensor = RS_400_SENSOR::RGB_CAMERA;
-	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);
+	startStreaming(m_colorUniqueStreams[RS400_STREAM_COLOR][463].second);*/
 
 	//Depth #0 (640x480 / Z16 / 30Hz)
 	//startStreaming(m_streoUniqueStreams[RS400_STREAM_DEPTH][493].second);
 
 }
-
 void Device::startStreaming(rs2::stream_profile& stream_profile) {
 	RS_400_STREAM_TYPE streamType = m_stream2Enum(stream_profile.stream_name());
-	if ((streamType > 4)||(streamType<0)) {
+	if ((streamType > 4) || (streamType<0)) {
 		throw std::invalid_argument("Invalid Stream profile");
 	}
-	
-	if ((m_selectedSensor == STEREO_MODULE)&&(m_depthStreamCheck || m_irStreamCheck || m_ir1StreamCheck || m_ir2StreamCheck)) {
+
+	if ((m_selectedSensor == STEREO_MODULE) && (m_depthStreamCheck || m_irStreamCheck || m_ir1StreamCheck || m_ir2StreamCheck)) {
 		//Multiple Streaming
 		vector <rs2::stream_profile> profile_set;
 		m_getProfile(profile_set);
@@ -368,10 +375,10 @@ void Device::startStreaming(vector<rs2::stream_profile> &stream_profile) {
 	for (auto sp : stream_profile) {
 		RS_400_STREAM_TYPE spt = m_stream2Enum(sp.stream_name());
 		switch (spt) {
-		case RS400_STREAM_DEPTH: {m_depthStreamCheck = true;break;}
-		case RS400_STREAM_INFRARED: {m_irStreamCheck = true;break;}
-		case RS400_STREAM_INFRARED1: {m_ir1StreamCheck = true;break;}
-		case RS400_STREAM_INFRARED2: {m_ir2StreamCheck = true;break;}
+		case RS400_STREAM_DEPTH: {m_depthStreamCheck = true; break; }
+		case RS400_STREAM_INFRARED: {m_irStreamCheck = true; break; }
+		case RS400_STREAM_INFRARED1: {m_ir1StreamCheck = true; break; }
+		case RS400_STREAM_INFRARED2: {m_ir2StreamCheck = true; break; }
 		}
 	}
 
@@ -399,7 +406,9 @@ void Device::startStreaming(vector<rs2::stream_profile> &stream_profile) {
 	});
 }
 
-void Device::stopStreaming(rs2::stream_profile& stream_profile) {
+void Device::stopStreaming(RS_400_STREAM_TYPE stream) {
+	vector <rs2::stream_profile> profile_set;
+	m_getProfile(profile_set);
 
 }
 
@@ -418,6 +427,7 @@ void Device::stopStreaming(RS_400_SENSOR sensorName) {
 		m_colorStreamCheck = false;
 	}
 }
+
 
 rs2::frame Device::capture(RS_400_STREAM_TYPE streamType) {
 	switch (streamType) {
@@ -446,9 +456,9 @@ void Device::EnableEmitter(float value) {
 	}
 }
 
-/** 
- * Private Function area.
- */
+/**
+* Private Function area.
+*/
 void Device::m_getProfile(vector<stream_profile> &profile_set) {
 	if (m_depthStreamCheck) {
 		profile_set.push_back(m_depthFrameQueue.wait_for_frame().get_profile());

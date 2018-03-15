@@ -5,12 +5,12 @@ vtkStandardNewMacro(LandMarkInteractorStyle);
 
 void LandMarkInteractorStyle::OnLeftButtonUp()
 {
-	
+
 	int* clickPos = this->GetInteractor()->GetEventPosition();
 	picker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
-	
 
-	if(LastPickedActor !=NULL && mainActor!=NULL && LastPickedActor!=mainActor)
+
+	if (LastPickedActor != NULL && mainActor != NULL && LastPickedActor != mainActor)
 	{
 		vtkMapper *mapperMove = LastPickedActor->GetMapper();
 		vtkSphereSource *sp = vtkSphereSource::New();
@@ -40,15 +40,15 @@ void LandMarkInteractorStyle::Reset()
 	if (this->GetDefaultRenderer())
 		actorCol = this->GetDefaultRenderer()->GetActors();
 
-	
+
 	if (actorCol)
 	{
 		actorCol->InitTraversal();
 		const int loopSIZE = actorCol->GetNumberOfItems();
 		vtkActor *nextActor;
-		
+
 		std::cout << loopSIZE << "\n";
-		for (vtkIdType i = 0;i<loopSIZE; i++)
+		for (vtkIdType i = 0; i<loopSIZE; i++)
 		{
 			nextActor = actorCol->GetNextActor();
 			std::cout << i << "@#!@#!@#\n";
@@ -59,15 +59,15 @@ void LandMarkInteractorStyle::Reset()
 				nextActor->GetMapper()->Delete();
 				nextActor->Delete();
 				nextActor = NULL;
-				
+
 			}
 		}
 	}
 
-	if (LastPickedActor) 
-	{ 
-		LastPickedActor->Delete();
-		LastPickedActor = NULL; 
+	if (LastPickedActor)
+	{
+		//LastPickedActor->Delete();위에 모든 actor을 지우면서 lastPicked Actor을 이미 지워짐.
+		LastPickedActor = NULL;
 	}
 
 	if (this->GetDefaultRenderer() != NULL)
@@ -75,7 +75,7 @@ void LandMarkInteractorStyle::Reset()
 		this->GetDefaultRenderer()->Modified();
 		this->GetDefaultRenderer()->GetRenderWindow()->Render();
 	}
-	
+
 }
 
 std::vector<double3> LandMarkInteractorStyle::getData()
@@ -83,14 +83,14 @@ std::vector<double3> LandMarkInteractorStyle::getData()
 	std::vector<double3> vec;
 	if (this->GetDefaultRenderer() == NULL)return vec;
 
-	vtkActorCollection * actorCol=this->GetDefaultRenderer()->GetActors();
+	vtkActorCollection * actorCol = this->GetDefaultRenderer()->GetActors();
 	actorCol->InitTraversal();
 
 	for (vtkIdType i = 0; i < actorCol->GetNumberOfItems(); i++)
 	{
 		vtkActor *nextActor = actorCol->GetNextActor();
 		double *pos = nextActor->GetCenter();
-		std::cout << pos[0]<<" "<<pos[1]<<" "<<pos[2] << "\n";
+		std::cout << pos[0] << " " << pos[1] << " " << pos[2] << "\n";
 
 		vec.push_back(double3(pos[0], pos[1], pos[2]));
 	}
@@ -106,21 +106,21 @@ void LandMarkInteractorStyle::initialize()
 void LandMarkInteractorStyle::OnLeftButtonDown()
 {
 	int* clickPos = this->GetInteractor()->GetEventPosition();
-	
+
 	picker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
-	
-	vtkActor* temp=picker->GetActor();
+
+	vtkActor* temp = picker->GetActor();
 	double* pos = picker->GetPickPosition();
-	
+
 	int mode = 2;
 
 	if (temp == mainActor)mode = 2;
 	else mode = 1;
-	
-	if (mode==1) //색칠하기 
+
+	if (mode == 1) //색칠하기 
 	{
 		if (LastPickedActor)this->LastPickedActor->GetProperty()->DeepCopy(this->LastPickedProperty);
-	
+
 		this->LastPickedActor = picker->GetActor();
 		if (this->LastPickedActor)
 		{
@@ -131,13 +131,13 @@ void LandMarkInteractorStyle::OnLeftButtonDown()
 		}
 	}
 
-	else if (mode==2) //그리기
+	else if (mode == 2) //그리기
 	{
-		
+
 		vtkSphereSource *sp = vtkSphereSource::New();
 		sp->SetCenter(pos[0], pos[1], pos[2]);
 		sp->SetRadius(radius);
-		
+
 		vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 
 		mapper->SetInputConnection(sp->GetOutputPort());
@@ -154,7 +154,7 @@ void LandMarkInteractorStyle::OnLeftButtonDown()
 		}
 		else this->GetDefaultRenderer()->AddActor(actor);//Rendering
 	}
-	
+
 	this->Modified();
 	vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
 	this->SetMotionFactor(0);
@@ -164,7 +164,7 @@ void LandMarkInteractorStyle::OnKeyPress()
 {
 	std::string PressedKey = this->Interactor->GetKeySym();
 
-	if (PressedKey == "Delete" && LastPickedActor!=NULL)//LastPickedActor가 삭제된다. 
+	if (PressedKey == "Delete" && LastPickedActor != NULL)//LastPickedActor가 삭제된다. 
 	{
 		//vtkPolyData* data=LastPickedActor->GetMapper()->GetInput()->deepCopy;
 		LastPickedActor->GetMapper()->Delete();

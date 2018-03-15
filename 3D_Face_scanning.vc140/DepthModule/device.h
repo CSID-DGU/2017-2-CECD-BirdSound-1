@@ -16,6 +16,9 @@
 ("pthread_mutex_unlock failed")
 #endif
 
+#undef foreach
+#undef Q_FOREACH
+
 
 //#define STB_IMAGE_WRITE_IMPLEMENTATION
 //#include "stb_image_write.h"
@@ -33,7 +36,7 @@
 namespace realsense {
 	using namespace std;
 	using namespace rs2;
-	
+
 	//raw to other formating
 	string getFirstSerial();
 	string getSerial(int devIdx);
@@ -104,7 +107,7 @@ namespace realsense {
 		std::string serial;
 		std::string fw_ver;
 		std::string pid;
-		
+
 		bool isRGB;
 		bool isWide;
 	};
@@ -112,27 +115,28 @@ namespace realsense {
 	class Device {
 	public:
 		Device(string serialNumber);
+		void setOption(RS_400_SENSOR, rs2_option, float value);
 		void printDeviceInfo();
 		void printSensorInfo();
-		void selectSensorAndStreamProps();
+		void Device::selectSensorAndStreamProps(RS_400_STREAM_TYPE s_stream, RS_400_RESOLUTION s_resol, RS_400_FORMAT s_format, RS_400_FPS s_fps);
 		void startStreaming(rs2::stream_profile& stream_profile);
 		void Device::startStreaming(vector<rs2::stream_profile> &stream_profile);
-		void Device::stopStreaming(rs2::stream_profile& stream_profile);
+		void Device::stopStreaming(RS_400_STREAM_TYPE stream);
+		void stopStreaming(RS_400_SENSOR);
 		rs2::frame capture(RS_400_STREAM_TYPE);
 		void EnableEmitter(float value);
-		void stopStreaming(RS_400_SENSOR);
 
 
 		/*camera_info InitializeCamera(string serial_number);
 		bool SetMediaMode(int width, int height, int frameRate, int colorWidth, int colorHeight, bool enableColor);
 		bool GetProfile(rs2::stream_profile& profile, rs2_stream stream, int width, int height, int fps, int index);
 		void EnableAutoExposure(float value);
-		
+
 		void SetAeControl(unsigned int point);
 		void StartCapture();
 		void StartCapture(std::function<void(const void *leftImage, const void *rightImage, const void *depthImage, const uint64_t timeStamp)> callback);
 		auto GetRawImage(RS_400_STREAM_TYPE streamType, rs2_format format);*/
-	
+
 
 		camera_info info;
 		std::uint8_t* leftImage;
@@ -185,11 +189,11 @@ namespace realsense {
 		bool captureStarted;
 		bool stopProcessFrame;
 		bool bColorEnabled;*/
-		#ifdef _WIN32
-			CRITICAL_SECTION m_mutex;
-		#else
-			pthread_mutex_t m_mutex;
-		#endif
+#ifdef _WIN32
+		CRITICAL_SECTION m_mutex;
+#else
+		pthread_mutex_t m_mutex;
+#endif
 	};
 }
 

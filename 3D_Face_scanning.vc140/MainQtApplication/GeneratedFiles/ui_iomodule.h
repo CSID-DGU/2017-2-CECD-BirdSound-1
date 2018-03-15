@@ -20,6 +20,8 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
@@ -100,9 +102,44 @@ public:
     QPushButton *AlignBtn;
     QWidget *tab;
     QFrame *Viewer_cad_RS;
-    QPushButton *CapColBtn;
     QPushButton *CapDepBtn;
-    QPushButton *RecordBtn;
+    QFrame *Viewer_cad_RS_3;
+    QFrame *Viewer_cad_RS_2;
+    QLabel *label_2;
+    QPushButton *CapDepBtn_2;
+    QPushButton *CapDepBtn_3;
+    QFrame *Viewer_cad_RS_4;
+    QPushButton *CapDepBtn_4;
+    QLabel *label_6;
+    QPushButton *CapDepBtn_5;
+    QFrame *Viewer_cad_RS_5;
+    QLabel *label_7;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
+    QSlider *horizontalSlider;
+    QSlider *horizontalSlider_2;
+    QLabel *label_11;
+    QLabel *label_12;
+    QLabel *label_13;
+    QLabel *label_14;
+    QSlider *horizontalSlider_3;
+    QLabel *label_15;
+    QSlider *horizontalSlider_4;
+    QSlider *horizontalSlider_5;
+    QLabel *label_16;
+    QSlider *horizontalSlider_6;
+    QLabel *label_17;
+    QSlider *horizontalSlider_7;
+    QLabel *label_18;
+    QSlider *horizontalSlider_8;
+    QLabel *label_19;
+    QSlider *horizontalSlider_9;
+    QLabel *label_20;
+    QSlider *horizontalSlider_10;
+    QLabel *label_21;
+    QLabel *label_8;
+    QLabel *label_9;
+    QTextBrowser *textBrowser;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -111,7 +148,7 @@ public:
     {
         if (IOModuleClass->objectName().isEmpty())
             IOModuleClass->setObjectName(QStringLiteral("IOModuleClass"));
-        IOModuleClass->resize(1448, 843);
+        IOModuleClass->resize(1387, 883);
         centralWidget = new QWidget(IOModuleClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -446,27 +483,175 @@ public:
         tab->setObjectName(QStringLiteral("tab"));
         Viewer_cad_RS = new QFrame(tab);
         Viewer_cad_RS->setObjectName(QStringLiteral("Viewer_cad_RS"));
-        Viewer_cad_RS->setGeometry(QRect(20, 20, 431, 571));
+        Viewer_cad_RS->setGeometry(QRect(10, 10, 450, 600));
         Viewer_cad_RS->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
         Viewer_cad_RS->setFrameShape(QFrame::StyledPanel);
         Viewer_cad_RS->setFrameShadow(QFrame::Raised);
-        CapColBtn = new QPushButton(tab);
-        CapColBtn->setObjectName(QStringLiteral("CapColBtn"));
-        CapColBtn->setGeometry(QRect(30, 610, 111, 51));
         CapDepBtn = new QPushButton(tab);
         CapDepBtn->setObjectName(QStringLiteral("CapDepBtn"));
-        CapDepBtn->setGeometry(QRect(170, 610, 101, 51));
-        RecordBtn = new QPushButton(tab);
-        RecordBtn->setObjectName(QStringLiteral("RecordBtn"));
-        RecordBtn->setGeometry(QRect(290, 610, 121, 41));
+        CapDepBtn->setGeometry(QRect(1140, 720, 101, 51));
+        Viewer_cad_RS_3 = new QFrame(tab);
+        Viewer_cad_RS_3->setObjectName(QStringLiteral("Viewer_cad_RS_3"));
+        Viewer_cad_RS_3->setGeometry(QRect(960, 10, 150, 200));
+        Viewer_cad_RS_3->setStyleSheet(QLatin1String("background-color: rgb(0, 0, 0);\n"
+"border: 6px solid ;\n"
+"border-color: rgb(255, 0, 0);"));
+        Viewer_cad_RS_3->setFrameShape(QFrame::StyledPanel);
+        Viewer_cad_RS_3->setFrameShadow(QFrame::Raised);
+        Viewer_cad_RS_2 = new QFrame(tab);
+        Viewer_cad_RS_2->setObjectName(QStringLiteral("Viewer_cad_RS_2"));
+        Viewer_cad_RS_2->setGeometry(QRect(470, 10, 450, 600));
+        Viewer_cad_RS_2->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
+        Viewer_cad_RS_2->setFrameShape(QFrame::StyledPanel);
+        Viewer_cad_RS_2->setFrameShadow(QFrame::Raised);
+        label_2 = new QLabel(tab);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(960, 220, 61, 16));
+        CapDepBtn_2 = new QPushButton(tab);
+        CapDepBtn_2->setObjectName(QStringLiteral("CapDepBtn_2"));
+        CapDepBtn_2->setGeometry(QRect(1250, 720, 101, 51));
+        CapDepBtn_3 = new QPushButton(tab);
+        CapDepBtn_3->setObjectName(QStringLiteral("CapDepBtn_3"));
+        CapDepBtn_3->setGeometry(QRect(1040, 220, 71, 20));
+        Viewer_cad_RS_4 = new QFrame(tab);
+        Viewer_cad_RS_4->setObjectName(QStringLiteral("Viewer_cad_RS_4"));
+        Viewer_cad_RS_4->setGeometry(QRect(960, 250, 150, 200));
+        Viewer_cad_RS_4->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
+        Viewer_cad_RS_4->setFrameShape(QFrame::StyledPanel);
+        Viewer_cad_RS_4->setFrameShadow(QFrame::Raised);
+        CapDepBtn_4 = new QPushButton(tab);
+        CapDepBtn_4->setObjectName(QStringLiteral("CapDepBtn_4"));
+        CapDepBtn_4->setGeometry(QRect(1040, 460, 71, 20));
+        label_6 = new QLabel(tab);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setGeometry(QRect(960, 460, 61, 16));
+        CapDepBtn_5 = new QPushButton(tab);
+        CapDepBtn_5->setObjectName(QStringLiteral("CapDepBtn_5"));
+        CapDepBtn_5->setGeometry(QRect(1040, 690, 71, 20));
+        Viewer_cad_RS_5 = new QFrame(tab);
+        Viewer_cad_RS_5->setObjectName(QStringLiteral("Viewer_cad_RS_5"));
+        Viewer_cad_RS_5->setGeometry(QRect(960, 480, 150, 200));
+        Viewer_cad_RS_5->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
+        Viewer_cad_RS_5->setFrameShape(QFrame::StyledPanel);
+        Viewer_cad_RS_5->setFrameShadow(QFrame::Raised);
+        label_7 = new QLabel(tab);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setGeometry(QRect(960, 690, 61, 16));
+        scrollArea = new QScrollArea(tab);
+        scrollArea->setObjectName(QStringLiteral("scrollArea"));
+        scrollArea->setGeometry(QRect(1130, 10, 221, 671));
+        scrollArea->setWidgetResizable(true);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 219, 669));
+        horizontalSlider = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider->setObjectName(QStringLiteral("horizontalSlider"));
+        horizontalSlider->setGeometry(QRect(10, 70, 160, 22));
+        horizontalSlider->setOrientation(Qt::Horizontal);
+        horizontalSlider_2 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_2->setObjectName(QStringLiteral("horizontalSlider_2"));
+        horizontalSlider_2->setGeometry(QRect(10, 130, 160, 22));
+        horizontalSlider_2->setOrientation(Qt::Horizontal);
+        label_11 = new QLabel(scrollAreaWidgetContents);
+        label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setGeometry(QRect(10, 10, 151, 16));
+        label_12 = new QLabel(scrollAreaWidgetContents);
+        label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setGeometry(QRect(10, 50, 151, 16));
+        label_13 = new QLabel(scrollAreaWidgetContents);
+        label_13->setObjectName(QStringLiteral("label_13"));
+        label_13->setGeometry(QRect(10, 110, 151, 16));
+        label_14 = new QLabel(scrollAreaWidgetContents);
+        label_14->setObjectName(QStringLiteral("label_14"));
+        label_14->setGeometry(QRect(10, 180, 151, 16));
+        horizontalSlider_3 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_3->setObjectName(QStringLiteral("horizontalSlider_3"));
+        horizontalSlider_3->setGeometry(QRect(10, 200, 160, 22));
+        horizontalSlider_3->setOrientation(Qt::Horizontal);
+        label_15 = new QLabel(scrollAreaWidgetContents);
+        label_15->setObjectName(QStringLiteral("label_15"));
+        label_15->setGeometry(QRect(10, 240, 151, 16));
+        horizontalSlider_4 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_4->setObjectName(QStringLiteral("horizontalSlider_4"));
+        horizontalSlider_4->setGeometry(QRect(10, 260, 160, 22));
+        horizontalSlider_4->setOrientation(Qt::Horizontal);
+        horizontalSlider_5 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_5->setObjectName(QStringLiteral("horizontalSlider_5"));
+        horizontalSlider_5->setGeometry(QRect(10, 320, 160, 22));
+        horizontalSlider_5->setOrientation(Qt::Horizontal);
+        label_16 = new QLabel(scrollAreaWidgetContents);
+        label_16->setObjectName(QStringLiteral("label_16"));
+        label_16->setGeometry(QRect(10, 300, 151, 16));
+        horizontalSlider_6 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_6->setObjectName(QStringLiteral("horizontalSlider_6"));
+        horizontalSlider_6->setGeometry(QRect(10, 380, 160, 22));
+        horizontalSlider_6->setOrientation(Qt::Horizontal);
+        label_17 = new QLabel(scrollAreaWidgetContents);
+        label_17->setObjectName(QStringLiteral("label_17"));
+        label_17->setGeometry(QRect(10, 360, 151, 16));
+        horizontalSlider_7 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_7->setObjectName(QStringLiteral("horizontalSlider_7"));
+        horizontalSlider_7->setGeometry(QRect(10, 440, 160, 22));
+        horizontalSlider_7->setOrientation(Qt::Horizontal);
+        label_18 = new QLabel(scrollAreaWidgetContents);
+        label_18->setObjectName(QStringLiteral("label_18"));
+        label_18->setGeometry(QRect(10, 420, 151, 16));
+        horizontalSlider_8 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_8->setObjectName(QStringLiteral("horizontalSlider_8"));
+        horizontalSlider_8->setGeometry(QRect(10, 490, 160, 22));
+        horizontalSlider_8->setOrientation(Qt::Horizontal);
+        label_19 = new QLabel(scrollAreaWidgetContents);
+        label_19->setObjectName(QStringLiteral("label_19"));
+        label_19->setGeometry(QRect(10, 470, 151, 16));
+        horizontalSlider_9 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_9->setObjectName(QStringLiteral("horizontalSlider_9"));
+        horizontalSlider_9->setGeometry(QRect(10, 550, 160, 22));
+        horizontalSlider_9->setOrientation(Qt::Horizontal);
+        label_20 = new QLabel(scrollAreaWidgetContents);
+        label_20->setObjectName(QStringLiteral("label_20"));
+        label_20->setGeometry(QRect(10, 530, 151, 16));
+        horizontalSlider_10 = new QSlider(scrollAreaWidgetContents);
+        horizontalSlider_10->setObjectName(QStringLiteral("horizontalSlider_10"));
+        horizontalSlider_10->setGeometry(QRect(10, 610, 160, 22));
+        horizontalSlider_10->setOrientation(Qt::Horizontal);
+        label_21 = new QLabel(scrollAreaWidgetContents);
+        label_21->setObjectName(QStringLiteral("label_21"));
+        label_21->setGeometry(QRect(10, 590, 151, 16));
+        scrollArea->setWidget(scrollAreaWidgetContents);
+        label_8 = new QLabel(tab);
+        label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setGeometry(QRect(20, 620, 431, 41));
+        label_9 = new QLabel(tab);
+        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setGeometry(QRect(470, 620, 441, 41));
+        textBrowser = new QTextBrowser(tab);
+        textBrowser->setObjectName(QStringLiteral("textBrowser"));
+        textBrowser->setGeometry(QRect(10, 680, 911, 91));
         rsWidget->addTab(tab, QString());
+        scrollArea->raise();
+        Viewer_cad_RS->raise();
+        CapDepBtn->raise();
+        Viewer_cad_RS_3->raise();
+        Viewer_cad_RS_2->raise();
+        label_2->raise();
+        CapDepBtn_2->raise();
+        CapDepBtn_3->raise();
+        Viewer_cad_RS_4->raise();
+        CapDepBtn_4->raise();
+        label_6->raise();
+        CapDepBtn_5->raise();
+        Viewer_cad_RS_5->raise();
+        label_7->raise();
+        label_8->raise();
+        label_9->raise();
+        textBrowser->raise();
 
         horizontalLayout->addWidget(rsWidget);
 
         IOModuleClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(IOModuleClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1448, 21));
+        menuBar->setGeometry(QRect(0, 0, 1387, 21));
         IOModuleClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(IOModuleClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -488,7 +673,7 @@ public:
 
         retranslateUi(IOModuleClass);
 
-        rsWidget->setCurrentIndex(2);
+        rsWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(IOModuleClass);
@@ -537,9 +722,37 @@ public:
         SaveBtn_cad_1->setText(QApplication::translate("IOModuleClass", "Save (Origin)", Q_NULLPTR));
         AlignBtn->setText(QApplication::translate("IOModuleClass", "Align", Q_NULLPTR));
         rsWidget->setTabText(rsWidget->indexOf(widget_3), QApplication::translate("IOModuleClass", "CAD", Q_NULLPTR));
-        CapColBtn->setText(QApplication::translate("IOModuleClass", "Color", Q_NULLPTR));
-        CapDepBtn->setText(QApplication::translate("IOModuleClass", "Depth", Q_NULLPTR));
-        RecordBtn->setText(QApplication::translate("IOModuleClass", "Record", Q_NULLPTR));
+        CapDepBtn->setText(QApplication::translate("IOModuleClass", "CAPTURE", Q_NULLPTR));
+        label_2->setText(QApplication::translate("IOModuleClass", "LEFT", Q_NULLPTR));
+        CapDepBtn_2->setText(QApplication::translate("IOModuleClass", "NEXT", Q_NULLPTR));
+        CapDepBtn_3->setText(QApplication::translate("IOModuleClass", "SAVE", Q_NULLPTR));
+        CapDepBtn_4->setText(QApplication::translate("IOModuleClass", "SAVE", Q_NULLPTR));
+        label_6->setText(QApplication::translate("IOModuleClass", "FRONT", Q_NULLPTR));
+        CapDepBtn_5->setText(QApplication::translate("IOModuleClass", "SAVE", Q_NULLPTR));
+        label_7->setText(QApplication::translate("IOModuleClass", "RIGHT", Q_NULLPTR));
+        label_11->setText(QApplication::translate("IOModuleClass", "Camera Parameter", Q_NULLPTR));
+        label_12->setText(QApplication::translate("IOModuleClass", "Parameter1", Q_NULLPTR));
+        label_13->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_14->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_15->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_16->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_17->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_18->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_19->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_20->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_21->setText(QApplication::translate("IOModuleClass", "Parameter2", Q_NULLPTR));
+        label_8->setText(QApplication::translate("IOModuleClass", "3D View", Q_NULLPTR));
+        label_9->setText(QApplication::translate("IOModuleClass", "2D View <1920x1080 / RGB8 / 30FPS>", Q_NULLPTR));
+        textBrowser->setHtml(QApplication::translate("IOModuleClass", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Gulim'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">librealsense \353\262\204\354\240\204 : 2.9.0</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">VTK \353\262\204\354\240\204 : 8.1.0</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Start straming...</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">parameter changed : 00000 -&gt; 00000<br />... (focus on tail)<br />saving LEFT CAPT"
+                        "URE DATA ....<br />saved $PATH !</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", Q_NULLPTR));
         rsWidget->setTabText(rsWidget->indexOf(tab), QApplication::translate("IOModuleClass", "\354\252\275", Q_NULLPTR));
     } // retranslateUi
 

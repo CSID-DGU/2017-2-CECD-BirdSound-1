@@ -52,7 +52,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5AxContainerd.lib;Qt5AxBased.lib;Qt5Bluetoothd.lib;Qt5Concurrentd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Helpd.lib;Qt5Locationd.lib;Qt5Multimediad.lib;Qt5MultimediaWidgetsd.lib;Qt5Networkd.lib;Qt5Nfcd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Positioningd.lib;Qt5PrintSupportd.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;Qt5Scriptd.lib;Qt5ScriptToolsd.lib;Qt5Sensorsd.lib;Qt5SerialPortd.lib;Qt5Sqld.lib;Qt5Svgd.lib;Qt5Testd.lib;Qt5UiToolsd.lib;Qt5WebChanneld.lib;Qt5WebSocketsd.lib;Qt5Widgetsd.lib;Qt5WinExtrasd.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;opencv_world340.lib;opencv_world340d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5AxContainerd.lib;Qt5AxBased.lib;Qt5Bluetoothd.lib;Qt5Concurrentd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Helpd.lib;Qt5Locationd.lib;Qt5Multimediad.lib;Qt5MultimediaWidgetsd.lib;Qt5Networkd.lib;Qt5Nfcd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Positioningd.lib;Qt5PrintSupportd.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickWidgetsd.lib;Qt5Scriptd.lib;Qt5ScriptToolsd.lib;Qt5Sensorsd.lib;Qt5SerialPortd.lib;Qt5Sqld.lib;Qt5Svgd.lib;Qt5Testd.lib;Qt5UiToolsd.lib;Qt5WebChanneld.lib;Qt5WebSocketsd.lib;Qt5Widgetsd.lib;Qt5WinExtrasd.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;opencv_world340d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,26 +88,28 @@
     <ClCompile Include="GeneratedFiles\Release\moc_CalibrationModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="mainTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CalibrationModule.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing CalibrationModule.h...</Message>
+    <CustomBuild Include="CalibrationModule.hpp">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing CalibrationModule.hpp...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_BLUETOOTH_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_HELP_LIB -DQT_LOCATION_LIB -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_NETWORK_LIB -DQT_NFC_LIB -DQT_OPENGL_LIB -DQT_POSITIONING_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_QUICK_LIB -DQT_QUICKWIDGETS_LIB -DQT_SCRIPT_LIB -DQT_SCRIPTTOOLS_LIB -DQT_SENSORS_LIB -DQT_SERIALPORT_LIB -DQT_SQL_LIB -DQT_SVG_LIB -DQT_TESTLIB_LIB -DQT_UITOOLS_LIB -DQT_WEBCHANNEL_LIB -DQT_WEBSOCKETS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB -D_UNICODE  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtBluetooth" "-I$(QTDIR)\include\QtConcurrent" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtHelp" "-I$(QTDIR)\include\QtLocation" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtNfc" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtQml" "-I$(QTDIR)\include\QtQuick" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtScript" "-I$(QTDIR)\include\QtScriptTools" "-I$(QTDIR)\include\QtSensors" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtSql" "-I$(QTDIR)\include\QtSvg" "-I$(QTDIR)\include\QtTest" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWebChannel" "-I$(QTDIR)\include\QtWebSockets" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I.\..\..\$(configuration)\include"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing CalibrationModule.h...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_BLUETOOTH_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_HELP_LIB -DQT_LOCATION_LIB -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_NETWORK_LIB -DQT_NFC_LIB -DQT_OPENGL_LIB -DQT_POSITIONING_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_QUICK_LIB -DQT_QUICKWIDGETS_LIB -DQT_SCRIPT_LIB -DQT_SCRIPTTOOLS_LIB -DQT_SENSORS_LIB -DQT_SERIALPORT_LIB -DQT_SQL_LIB -DQT_SVG_LIB -DQT_TESTLIB_LIB -DQT_UITOOLS_LIB -DQT_WEBCHANNEL_LIB -DQT_WEBSOCKETS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB -D_UNICODE "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtBluetooth" "-I$(QTDIR)\include\QtConcurrent" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtHelp" "-I$(QTDIR)\include\QtLocation" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtNfc" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtQml" "-I$(QTDIR)\include\QtQuick" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtScript" "-I$(QTDIR)\include\QtScriptTools" "-I$(QTDIR)\include\QtSensors" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtSql" "-I$(QTDIR)\include\QtSvg" "-I$(QTDIR)\include\QtTest" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWebChannel" "-I$(QTDIR)\include\QtWebSockets" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I.\..\..\$(configuration)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing CalibrationModule.hpp...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_BLUETOOTH_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_HELP_LIB -DQT_LOCATION_LIB -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_NETWORK_LIB -DQT_NFC_LIB -DQT_OPENGL_LIB -DQT_POSITIONING_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_QUICK_LIB -DQT_QUICKWIDGETS_LIB -DQT_SCRIPT_LIB -DQT_SCRIPTTOOLS_LIB -DQT_SENSORS_LIB -DQT_SERIALPORT_LIB -DQT_SQL_LIB -DQT_SVG_LIB -DQT_TESTLIB_LIB -DQT_UITOOLS_LIB -DQT_WEBCHANNEL_LIB -DQT_WEBSOCKETS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB -D_UNICODE  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtBluetooth" "-I$(QTDIR)\include\QtConcurrent" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtHelp" "-I$(QTDIR)\include\QtLocation" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtNfc" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtQml" "-I$(QTDIR)\include\QtQuick" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtScript" "-I$(QTDIR)\include\QtScriptTools" "-I$(QTDIR)\include\QtSensors" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtSql" "-I$(QTDIR)\include\QtSvg" "-I$(QTDIR)\include\QtTest" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWebChannel" "-I$(QTDIR)\include\QtWebSockets" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I.\..\..\$(configuration)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_BLUETOOTH_LIB -DQT_CONCURRENT_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_HELP_LIB -DQT_LOCATION_LIB -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_NETWORK_LIB -DQT_NFC_LIB -DQT_OPENGL_LIB -DQT_POSITIONING_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_QUICK_LIB -DQT_QUICKWIDGETS_LIB -DQT_SCRIPT_LIB -DQT_SCRIPTTOOLS_LIB -DQT_SENSORS_LIB -DQT_SERIALPORT_LIB -DQT_SQL_LIB -DQT_SVG_LIB -DQT_TESTLIB_LIB -DQT_UITOOLS_LIB -DQT_WEBCHANNEL_LIB -DQT_WEBSOCKETS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB -D_UNICODE "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtBluetooth" "-I$(QTDIR)\include\QtConcurrent" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtHelp" "-I$(QTDIR)\include\QtLocation" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtNfc" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtQml" "-I$(QTDIR)\include\QtQuick" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtScript" "-I$(QTDIR)\include\QtScriptTools" "-I$(QTDIR)\include\QtSensors" "-I$(QTDIR)\include\QtSerialPort" "-I$(QTDIR)\include\QtSql" "-I$(QTDIR)\include\QtSvg" "-I$(QTDIR)\include\QtTest" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWebChannel" "-I$(QTDIR)\include\QtWebSockets" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I.\..\..\$(configuration)\include"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CalibrationModule.ui">
+    <CustomBuild Include="calibrationmodule.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
@@ -120,7 +122,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DepthModule\device.h" />
-    <ClInclude Include="GeneratedFiles\ui_CalibrationModule.h" />
+    <ClInclude Include="GeneratedFiles\ui_calibrationmodule.h" />
+    <ClInclude Include="GeneratedFiles\ui_resultWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="CalibrationModule.qrc">
@@ -132,6 +135,18 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="resultWindow.ui">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,5 +1,5 @@
 #include "iomodule.h"
-
+#include"AlignModule.h"
 
 IOModule::IOModule(QWidget *parent)
 	: QMainWindow(parent)
@@ -32,7 +32,7 @@ void IOModule::InitializeVariables()
 		m_MeshLandmarkStyle[i] = LandMarkInteractorStyle::New();
 
 	m_IsRelalSensePreviewer = 0;
-	m_RelalSensePreviewer = NULL;
+	//m_RelalSensePreviewer = NULL;
 }
 
 void IOModule::InitializeScene()
@@ -44,13 +44,12 @@ void IOModule::InitializeScene()
 		m_IsMeshViewer[i] = 1;
 	}
 
-	m_RelalSensePreviewer = new RelalSensePreviewer();
+	//m_RelalSensePreviewer = new RealSensePreviewer();
 	//m_RelalSensePreviewer->Create2DScene();
 	m_IsRelalSensePreviewer = 1;
 
 	m_ImagePreviewer = new ImagePreview;
 	m_ImagePreviewer->Create2DScene();
-
 	m_IsImageViewer = 1;
 }
 
@@ -108,22 +107,23 @@ void IOModule::InitializeUi()
 	connect(ui.ViewEdgedFace_3, SIGNAL(clicked()), this, SLOT(ViewEdgedFace_3()));
 
 	
-	connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(slotCapColBtnClicked()));
+	//connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(slotCapColBtnClicked()));
 	connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(slotCapDepBtnClicked()));
-	connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(slotRecordBtnClicked()));
+	//connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(slotRecordBtnClicked()));
 
 	int sizeX = 0;	int sizeY = 0;
 	sizeX = this->ui.Viewer_cad_1->width();	sizeY = this->ui.Viewer_cad_1->height();
 	m_MeshPreviewer[0]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_1->winId()), sizeX, sizeY);
+	sizeX = this->ui.Viewer_cad_2->width();	sizeY = this->ui.Viewer_cad_2->height();
 	m_MeshPreviewer[1]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_2->winId()), sizeX, sizeY);
+	sizeX = this->ui.Viewer_cad_3->width();	sizeY = this->ui.Viewer_cad_3->height();
 	m_MeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3->winId()), sizeX, sizeY);
 
-	sizeX = this->ui.Viewer_2d->width();	sizeY = this->ui.Viewer_2d->height();
-	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_2d->winId()), sizeX, sizeY);
-	
-	
 	sizeX = this->ui.Viewer_cad_RS->width();	sizeY = this->ui.Viewer_cad_RS->height();
 	//m_RelalSensePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RS->winId()), sizeX, sizeY);
+	
+	sizeX = this->ui.Viewer_2d->width();	sizeY = this->ui.Viewer_2d->height();
+	m_ImagePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_2d->winId()), sizeX, sizeY);
 }
 
 void IOModule::resizeEvent(QResizeEvent * event)
@@ -132,6 +132,8 @@ void IOModule::resizeEvent(QResizeEvent * event)
 	m_MeshPreviewer[1]->GetRenderWindow()->SetSize(ui.Viewer_cad_2->width(), ui.Viewer_cad_2->height());
 	m_MeshPreviewer[2]->GetRenderWindow()->SetSize(ui.Viewer_cad_3->width(), ui.Viewer_cad_3->height());
 	m_ImagePreviewer->GetRenderWindow()->SetSize(ui.Viewer_2d->width(), ui.Viewer_2d->height());
+
+	//m_RelalSensePreviewer->GetRenderWindow()->SetSize(ui.Viewer_cad_RS->width(), ui.Viewer_cad_RS->height());
 }
 
 
@@ -151,10 +153,12 @@ void IOModule::DestroyVariables()
 		delete m_ImagePreviewer;
 		m_ImagePreviewer = NULL;
 	}
+	if (m_IsRelalSensePreviewer)
+	{
+		//delete m_RelalSensePreviewer;
+		//m_RelalSensePreviewer = NULL;
+	}
 
-	/*
-	land mark style 삭제하는 코드도 추가할 것.
-	*/
 }
 
 
@@ -196,7 +200,7 @@ void IOModule::loadCadBtn(int frameNumber)
 
 
 	m_MeshLandmarkStyle[frameNumber - 1]->SetDefaultRenderer(m_MeshPreviewer[frameNumber - 1]->GetRenderer());
-	m_MeshLandmarkStyle[frameNumber - 1]->setRadis(m_MeshPreviewer[frameNumber - 1]->GetActor());
+//	m_MeshLandmarkStyle[frameNumber - 1]->setRadis(m_MeshPreviewer[frameNumber - 1]->GetActor());
 }
 
 void IOModule::LoadCADData(int type, int frameNum, QString filePath)
@@ -540,29 +544,15 @@ void IOModule::slotToOrignBtn_3Clicked()
 
 void IOModule::slotAlignBtnClicked()
 {
-	std::vector<double3> left; 
-	std::vector<double3> front; 
-	std::vector<double3> right;
+	/*AlignModule *alig =new AlignModule();
+	
+	alig->setLeft(this->m_MeshPreviewer[0]->GetRenderer());
+	alig->setFront(this->m_MeshPreviewer[1]->GetRenderer());
+	alig->setRight(this->m_MeshPreviewer[2]->GetRenderer());
 
-	if(m_MeshLandmarkStyle[0])
-		left = m_MeshLandmarkStyle[0]->getData();
+	alig->align();
 
-	if (m_MeshLandmarkStyle[1])
-		front = m_MeshLandmarkStyle[1]->getData();
-
-	if (m_MeshLandmarkStyle[2])
-		right = m_MeshLandmarkStyle[2]->getData();
-
-	for (int i = 0; i < left.size(); i++)
-		std::cout << left[i] << "\n";
-	std::cout << "\n";
-
-	for (int i = 0; i < front.size(); i++)
-		std::cout << front[i] << "\n";
-	std::cout << "\n";
-
-	for (int i = 0; i < right.size(); i++)
-		std::cout << right[i] << "\n";
+	delete alig;*/
 }
 
 
@@ -570,10 +560,17 @@ void IOModule::slotCapColBtnClicked()
 {}
 
 void IOModule::slotCapDepBtnClicked()
-{}
+{
+	
+}
+
+
+/*Ir의 raw data를 streming하는 코드*/
+
 
 void IOModule::slotRecordBtnClicked()
 {
-	//std::cout << "@@";
-	//m_RelalSensePreviewer->drawStream();
+//	m_RelalSensePreviewer->ReleaseModel();
+//	m_RelalSensePreviewer->streamingColorRGB8();
+	//ui.Viewer_cad_RS = m_RelalSensePreviewer->GetRenderer();
 }
