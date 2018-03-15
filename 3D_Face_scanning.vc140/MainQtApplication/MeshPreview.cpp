@@ -49,40 +49,74 @@ void MeshPreview::setStyle(vtkInteractorStyle *_style)
 
 int MeshPreview::CreateModel(std::string meshPath, int extType)
 {
-	for (int i = 0; i < m_Actor.size(); i++)
+	if (meshPath != "")//only view
 	{
-		if (!m_PolyData[i])
-		{
-			std::cout << "@@";
+		if (!m_PolyData[0])
 			return 0;
-		}
 
-		//	m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
-		m_PolyData[i]->Modified();
+		m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[0]);
+		m_PolyData[0]->Modified();
 
-		//int n = m_PolyData[0]->GetNumberOfPoints();
+		int n = m_PolyData[0]->GetNumberOfPoints();
 
-		m_Mapper[i]->SetInputData(m_PolyData[i]);
-		m_Mapper[i]->Update();
-		m_Actor[i]->SetMapper(m_Mapper[i]);  
-		m_Renderer->AddActor(m_Actor[i]);
+		m_Mapper[0]->SetInputData(m_PolyData[0]);
+		m_Mapper[0]->Update();
+
+		m_Actor[0]->SetMapper(m_Mapper[0]);//actor에 mapper을 set함. 
 
 		if (m_IsTexture)
-		{
-			m_Actor[i]->SetTexture(m_Texture[i]);
-			m_Actor[i]->GetProperty()->SetInterpolationToGouraud();
-			m_Actor[i]->GetProperty()->SetColor(1.0, 1.0, 1.0);
-			m_Actor[i]->GetProperty()->BackfaceCullingOn();
-			m_Actor[i]->Modified();
-		}
+			m_Actor[0]->SetTexture(m_Texture[0]);
+		m_Actor[0]->GetProperty()->SetInterpolationToGouraud();
+		m_Actor[0]->GetProperty()->SetColor(1.0, 1.0, 1.0);
+		m_Actor[0]->GetProperty()->BackfaceCullingOn();
+
+
+		m_Actor[0]->Modified();
+
+		m_Renderer->AddActor(m_Actor[0]);
+		m_Renderer->ResetCamera();
+		m_Renderer->Modified();
+
+		return 1;
 	}
 
 
-	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")!�� \n";
-	m_Renderer->ResetCamera();
-	m_Renderer->Modified();
+	else 
+	{
+		for (int i = 0; i < m_Actor.size(); i++)
+		{
+			if (!m_PolyData[i])
+			{
+				return 0;
+			}
 
-	return 1;
+			//	m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
+			m_PolyData[i]->Modified();
+
+			//int n = m_PolyData[0]->GetNumberOfPoints();
+
+			m_Mapper[i]->SetInputData(m_PolyData[i]);
+			m_Mapper[i]->Update();
+			m_Actor[i]->SetMapper(m_Mapper[i]);
+			m_Renderer->AddActor(m_Actor[i]);
+
+			if (m_IsTexture)
+			{
+				m_Actor[i]->SetTexture(m_Texture[i]);
+				m_Actor[i]->GetProperty()->SetInterpolationToGouraud();
+				m_Actor[i]->GetProperty()->SetColor(1.0, 1.0, 1.0);
+				m_Actor[i]->GetProperty()->BackfaceCullingOn();
+				m_Actor[i]->Modified();
+			}
+		}
+
+
+		std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")!�� \n";
+		m_Renderer->ResetCamera();
+		m_Renderer->Modified();
+
+		return 1;
+	}
 }
 
 int MeshPreview::CreateTexture(std::string imgPath, int extType)

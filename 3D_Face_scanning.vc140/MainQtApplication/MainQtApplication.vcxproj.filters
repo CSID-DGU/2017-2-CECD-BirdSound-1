@@ -134,15 +134,6 @@
     <ClCompile Include="..\DepthModule\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScanModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ScanModule.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ScanModule.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_RegistrationModule.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -152,23 +143,23 @@
     <ClCompile Include="Data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_scanmoduleqt.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_scanmoduleqt.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="RegistrationModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_iomodule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scanmoduleqt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scan.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScanModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ScanModule.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ScanModule.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,13 +187,7 @@
     <CustomBuild Include="calibrationmodule.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="scanmodule.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\CalibrationModule\CalibrationModule.hpp">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ScanModule.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="registrationmodule.ui">
@@ -214,7 +199,7 @@
     <CustomBuild Include="scanmoduleqt.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="scanmoduleqt.h">
+    <CustomBuild Include="ScanModule.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -291,9 +276,6 @@
     <ClInclude Include="GeneratedFiles\ui_mainmodule.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_scanmodule.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -303,11 +285,11 @@
     <ClInclude Include="RelalSensePreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_scanmoduleqt.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scan.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_scanmoduleqt.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

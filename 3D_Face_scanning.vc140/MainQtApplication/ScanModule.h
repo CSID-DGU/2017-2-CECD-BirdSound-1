@@ -9,13 +9,13 @@
 #include"Scan.h"
 #include"MeshIO.h"
 #include"AlignModule.h"
-class ScanModuleQT : public QMainWindow
+class ScanModule : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	ScanModuleQT(QWidget *parent = 0);
-	~ScanModuleQT();
+	ScanModule(QWidget *parent = 0);
+	~ScanModule();
 
 
 	MeshPreview*							m_MiniMeshPreviewer[3];//left, front, right¼ø¼­
