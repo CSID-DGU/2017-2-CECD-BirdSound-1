@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "device.h"
 #include <opencv/cv.hpp>
 #include <opencv/highgui.h>

@@ -68,9 +68,6 @@
     <ClCompile Include="JPGImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LandMark3DStyle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LandMarkInteractorStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -104,7 +101,10 @@
     <ClCompile Include="STLImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RelalSensePreviewer.cpp">
+    <ClCompile Include="AlignModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DepthModule\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_MainModule.cpp">
@@ -222,9 +222,6 @@
     <ClInclude Include="JPGImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LandMark3DStyle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LandMarkInteractorStyle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -258,7 +255,13 @@
     <ClInclude Include="STLImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RelalSensePreviewer.h">
+    <ClInclude Include="AlignModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="double3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DepthModule\device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_calibrationmodule.h">
@@ -278,6 +281,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_registrationmodule.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RelalSensePreviewer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

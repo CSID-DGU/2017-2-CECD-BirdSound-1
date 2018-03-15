@@ -13,7 +13,11 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleSwitch.h>
-#include <vtkAbstractWidget.h>
+//#include <vtkAbstractWidget.h>
+#include<vector>
+#include "MeshIO.h"
+#include "ImageIO.h"
+
 class MeshIO;
 class ImageIO;
 
@@ -22,55 +26,53 @@ class MeshPreview
 public:
 	MeshPreview();
 	~MeshPreview();
+	MeshPreview(int size);
 
 	MeshIO*											m_MeshIO;
 	ImageIO*										m_ImageIO;
 
-	vtkPolyData*									m_PolyData;
-	vtkPolyData* GetPolyData()						{ return m_PolyData; }
+	std::vector<vtkPolyData*>						m_PolyData;
+	vtkPolyData* GetPolyDataAt(int index) { return m_PolyData[index]; }
 
 	vtkImageData*									m_ImageData;
-	vtkImageData* GetImageData()					{ return m_ImageData; }
+	vtkImageData* GetImageData() { return m_ImageData; }
 
-	vtkPolyDataMapper*								m_Mapper;
-	vtkPolyDataMapper* GetMapper()					{ return m_Mapper; }
+	std::vector<vtkPolyDataMapper*>					m_Mapper;
+	vtkPolyDataMapper* GetMapperAt(int index) { return m_Mapper[index]; }
 
 	vtkTexture*										m_Texture;
-	vtkTexture* GetTexture()						{ return m_Texture; }
+	vtkTexture* GetTexture() { return m_Texture; }
 	int												m_IsTexture;
-	int IsTexture()									{ return m_IsTexture; };
+	int IsTexture() { return m_IsTexture; };
 
-	vtkActor*										m_Actor;
-	vtkActor* GetActor()							{ return m_Actor; }
+	std::vector<vtkActor*>							m_Actor;
+	vtkActor* GetActorAt(int index) { return m_Actor[index]; }
 
 	vtkRenderer*									m_Renderer;
-	vtkRenderer* GetRenderer()						{ return m_Renderer; }
+	vtkRenderer* GetRenderer() { return m_Renderer; }
 
 	vtkRenderWindow*								m_RenWin;
-	vtkRenderWindow* GetRenderWindow()				{ return m_RenWin; }
+	vtkRenderWindow* GetRenderWindow() { return m_RenWin; }
 
 	vtkRenderWindowInteractor*						m_IRen;
-	vtkRenderWindowInteractor* GetInteractor()		{ return m_IRen; }
-	
+	vtkRenderWindowInteractor* GetInteractor() { return m_IRen; }
+
 
 
 	vtkInteractorStyleTrackballCamera*				m_3DStyle;
-	vtkInteractorStyleTrackballCamera* Get3DStyle()	{ return m_3DStyle; }
-
-	//vtkActor*										m_OrignActor;
-	//vtkActor* GetOrignActor()						{ return m_OrignActor; }
+	vtkInteractorStyleTrackballCamera* Get3DStyle() { return m_3DStyle; }
 
 	void setStyle(vtkInteractorStyle *_style);
 	int InitializeVariables();
 	int DestroyVariables();
 
 	void ConnectSceneToCtrl(void* uiCtrl, int xCtrlSize, int yCtrlSize);
-	
+
 	int Create3DScene();
 	int CreateModel(std::string meshPath, int extType);
 	int CreateTexture(std::string imgPath, int extType);
 	int ReleaseModel();
-
+	void setSize(int size);
 	int CaptureSave(std::string imagePath, int extType, int sizeRatio);
 	int MeshSave(std::string meshPath, int extType);
 	int TextureMeshSave(std::string meshPath, int meshExtType, std::string imagePath, int imgExtType);
@@ -79,19 +81,4 @@ public:
 	void ChangeViewMode(int mode); //0 point 1 wire 2 face 3 edgeface
 
 	void Rendering();
-	
-	//void ChangeToOrgin()
-	//{
-	//
-	//	m_Renderer->RemoveActor(m_Actor);
-	//
-	//	m_Actor = m_OrignActor;
-	//	m_Renderer->AddActor(m_Actor);
-	//	
-	//	
-	//	//m_Renderer->ResetCamera();
-	//	m_Renderer->Modified();
-	//	m_Renderer->Render();
-	//}
-
 };

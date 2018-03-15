@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="..\CalibrationModule\CalibrationModule.cpp" />
     <ClCompile Include="..\DepthModule\device.cpp" />
+    <ClCompile Include="AlignModule.cpp" />
     <ClCompile Include="BMPExport.cpp" />
     <ClCompile Include="BMPImport.cpp" />
     <ClCompile Include="Data.cpp" />
@@ -219,7 +220,6 @@
     <ClCompile Include="iomodule.cpp" />
     <ClCompile Include="JPGExport.cpp" />
     <ClCompile Include="JPGImport.cpp" />
-    <ClCompile Include="LandMark3DStyle.cpp" />
     <ClCompile Include="LandMarkInteractorStyle.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainModule.cpp" />
@@ -232,7 +232,6 @@
     <ClCompile Include="PNGExport.cpp" />
     <ClCompile Include="PNGImport.cpp" />
     <ClCompile Include="RegistrationModule.cpp" />
-    <ClCompile Include="RelalSensePreviewer.cpp" />
     <ClCompile Include="ScanModule.cpp" />
     <ClCompile Include="STLExport.cpp" />
     <ClCompile Include="STLImport.cpp" />
@@ -301,6 +300,8 @@
     <ClInclude Include="BMPImport.h" />
     <ClInclude Include="GeneratedFiles\ui_calibrationmodule.h" />
     <ClInclude Include="GeneratedFiles\ui_initializemodule.h" />
+    <ClInclude Include="AlignModule.h" />
+    <ClInclude Include="double3.h" />
     <ClInclude Include="GeneratedFiles\ui_iomodule.h" />
     <ClInclude Include="GeneratedFiles\ui_mainmodule.h" />
     <ClInclude Include="GeneratedFiles\ui_registrationmodule.h" />
@@ -327,7 +328,6 @@
     </CustomBuild>
     <ClInclude Include="JPGExport.h" />
     <ClInclude Include="JPGImport.h" />
-    <ClInclude Include="LandMark3DStyle.h" />
     <ClInclude Include="LandMarkInteractorStyle.h" />
     <CustomBuild Include="MainModule.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
