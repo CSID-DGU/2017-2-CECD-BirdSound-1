@@ -1,4 +1,5 @@
 #pragma once
+
 #include"vtkRenderer.h"
 #include"vtkActor.h"
 #include<vector>
@@ -13,10 +14,10 @@
 #include"vtkRenderWindow.h"
 #include"vtkRenderWindowInteractor.h"
 #include"double3.h"
-#include"vtkMatrix4x4.h"
+//#include"vtkMatrix4x4.h"
 
 #include"MeshPreview.h"
-
+#include"vtkAssembly.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule
 {
@@ -31,7 +32,7 @@ public:
 		left = front = right = nullptr;
 	}
 	void align();
-	void mergeActors();
+	void mergeActors(MeshPreview *mesh, int place);
 	//void registeration();
 	std::vector<double3> extractLandMark(vtkRenderer *rend, int flag);
 	void setRight(MeshPreview *rend);

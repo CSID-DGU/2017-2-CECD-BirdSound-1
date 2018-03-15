@@ -15,8 +15,9 @@
 #include<string>
 
 #include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingFreeType);
-VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
+VTK_MODULE_INIT(vtkInteractionStyle);
+
 
 #define IMG_TYPE_BMP	0
 #define IMG_TYPE_JPG	1

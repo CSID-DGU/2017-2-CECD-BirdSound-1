@@ -108,7 +108,7 @@ void IOModule::InitializeUi()
 
 	
 	//connect(ui.CapColBtn, SIGNAL(clicked()), this, SLOT(slotCapColBtnClicked()));
-	connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(slotCapDepBtnClicked()));
+	//connect(ui.CapDepBtn, SIGNAL(clicked()), this, SLOT(slotCapDepBtnClicked()));
 	//connect(ui.RecordBtn, SIGNAL(clicked()), this, SLOT(slotRecordBtnClicked()));
 
 	int sizeX = 0;	int sizeY = 0;
@@ -119,7 +119,7 @@ void IOModule::InitializeUi()
 	sizeX = this->ui.Viewer_cad_3->width();	sizeY = this->ui.Viewer_cad_3->height();
 	m_MeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_3->winId()), sizeX, sizeY);
 
-	sizeX = this->ui.Viewer_cad_RS->width();	sizeY = this->ui.Viewer_cad_RS->height();
+//	sizeX = this->ui.Viewer_cad_RS->width();	sizeY = this->ui.Viewer_cad_RS->height();
 	//m_RelalSensePreviewer->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RS->winId()), sizeX, sizeY);
 	
 	sizeX = this->ui.Viewer_2d->width();	sizeY = this->ui.Viewer_2d->height();
@@ -200,7 +200,7 @@ void IOModule::loadCadBtn(int frameNumber)
 
 
 	m_MeshLandmarkStyle[frameNumber - 1]->SetDefaultRenderer(m_MeshPreviewer[frameNumber - 1]->GetRenderer());
-//	m_MeshLandmarkStyle[frameNumber - 1]->setRadis(m_MeshPreviewer[frameNumber - 1]->GetActor());
+	//m_MeshLandmarkStyle[frameNumber - 1]->setRadis(m_MeshPreviewer[frameNumber - 1]->GetActor());
 }
 
 void IOModule::LoadCADData(int type, int frameNum, QString filePath)

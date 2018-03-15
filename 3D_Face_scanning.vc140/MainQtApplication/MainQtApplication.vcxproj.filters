@@ -47,9 +47,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_iomodule.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_iomodule.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="BMPExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -146,9 +143,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ScanModule.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="RegistrationModule.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_RegistrationModule.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -156,6 +150,24 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_scanmoduleqt.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_scanmoduleqt.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="RegistrationModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_iomodule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scanmoduleqt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -197,6 +209,12 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="RegistrationModule.hpp">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="scanmoduleqt.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="scanmoduleqt.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -283,6 +301,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="RelalSensePreviewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_scanmoduleqt.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

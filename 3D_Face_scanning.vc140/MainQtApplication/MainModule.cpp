@@ -57,8 +57,11 @@ void MainModule::runCalibrationModule() {
 }
 
 void MainModule::runViewerModule() {
+	//ScanModule *sc = new ScanModule();
+	//sc->show();
 	IOModule *c = new IOModule();
 	c->show();
+	
 }
 
 void MainModule::runExpModule() {
