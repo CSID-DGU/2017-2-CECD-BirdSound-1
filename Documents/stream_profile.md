@@ -12,6 +12,8 @@
 |   320x240  |   8  |       UYVY       |   8  |           |      |  
 |   320x180  |   9  |        Z16       |   9  |           |      |  
 
+* 위 코드맵은 임의로 작성한것이므로 librealsense 에서 제공해주지 않으며 이용할수도 없다.
+device.cpp 에 정의된 `realsense::Device::startStreaming(vector<rs2::stream_profile> &stream_profile);` 함수 사용목적으로 작성하였다.
 
 # Sensor :  RGB_CAMERA Supports  
 
