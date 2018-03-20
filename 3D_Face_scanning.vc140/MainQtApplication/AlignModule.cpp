@@ -177,13 +177,18 @@ void AlignModule::slotAlign()
 
 	else
 	{
+		if (!resultMesh)
+		{
+			resultMesh->ReleaseModel();
+			resultMesh->CreateModel("",0);
+		}
 		std::vector<double3>leftMark;
 		std::vector<double3>frontMark;
 		std::vector<double3>rightMark;
 
-		leftMark = extractLandMark(left->GetRenderer(), LEFT);
-		frontMark = extractLandMark(front->GetRenderer(), FRONT);
-		rightMark = extractLandMark(right->GetRenderer(), RIGHT);
+		leftMark = extractLandMark(left->GetRenderer());
+		frontMark = extractLandMark(front->GetRenderer());
+		rightMark = extractLandMark(right->GetRenderer());
 
 		vtkPoints*leftPts = vtkPoints::New();
 		vtkPoints*rightPts = vtkPoints::New();
@@ -199,16 +204,35 @@ void AlignModule::slotAlign()
 		for (int i = frontMark.size() / 2; i < frontMark.size(); i++)
 			frontPtsTail->InsertNextPoint(frontMark[i].getData());
 	
-
 		for (int i = 0; i < rightMark.size(); i++)
 			rightPts->InsertNextPoint(rightMark[i].getData());
 		
+		std::cout << "leftMark\n";
+		for (int i = 0; i < leftMark.size(); i++)
+			std::cout << leftMark[i] << " ";
+		std::cout << "\n";
 
-		if (leftMark.size() != 3 || rightMark.size() != 3 || frontPtsHead->GetNumberOfPoints() != 3 || frontPtsTail->GetNumberOfPoints() != 3)
+		std::cout << "frontMark he\n";
+		for (int i = 0; i < frontMark.size()/2; i++)
+			std::cout << frontMark[i] << " ";
+		std::cout << "\n";
+
+		std::cout << "frontMark ta\n";
+		for (int i = frontMark.size()/2; i < frontMark.size(); i++)
+			std::cout << frontMark[i] << " ";
+		std::cout << "\n";
+
+		std::cout << "rightMark\n";
+		for (int i = 0; i < rightMark.size(); i++)
+			std::cout << rightMark[i] << " ";
+		std::cout << "\n";
+
+
+		/*if (leftMark.size() != 3 || rightMark.size() != 3 || frontPtsHead->GetNumberOfPoints() != 3 || frontPtsTail->GetNumberOfPoints() != 3)
 		{
 			std::cout << "3개씩 넣어요";
 			return;
-		}
+		}*/
 
 		vtkLandmarkTransform*landmarkTransform = vtkLandmarkTransform::New();
 		landmarkTransform->SetSourceLandmarks(frontPtsHead);
@@ -251,28 +275,22 @@ void AlignModule::slotAlign()
 		rightFilt->SetTransform(landmarkTransform2);
 		rightFilt->Update();
 
-		std::cout <<"leftFilt의 수는 "<< leftFilt->GetOutput()->GetNumberOfCells() << "\n";
+
 		vtkAppendPolyData *res = vtkAppendPolyData::New();
-		
 		res->AddInputData(leftFilt->GetOutput());
 		res->AddInputData(frontpoly->GetOutput());
 		res->AddInputData(rightFilt->GetOutput());
 		res->Update();
 
 
-		vtkPolyData *lastPoly = vtkPolyData::New();
-		lastPoly->DeepCopy(res->GetOutput());
-		lastPoly->Modified();
 
-		resultMesh->GetPolyDataAt(0)->DeepCopy(lastPoly);
-		std::cout << resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints() << " " << resultMesh->GetPolyDataAt(0)->GetPolys()->GetNumberOfCells() << "\n";
-		resultMesh->GetRenderer()->Modified();
+		resultMesh->GetPolyDataAt(0)->DeepCopy(res->GetOutput());
+		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 
 
 
-		lastPoly->Delete();
 		res->Delete();
 		rightFilt->Delete();
 		leftFilt->Delete();
@@ -280,18 +298,18 @@ void AlignModule::slotAlign()
 		frontpoly->Delete();
 		rightpoly->Delete();
 		landmarkTransform->Delete();
-
 		leftPts->Delete();
 		rightPts->Delete();
 		frontPtsHead->Delete();
 		frontPtsTail->Delete();
 		landmarkTransform2->Delete();
-
-		leftMark.clear(); frontMark.clear(); rightMark.clear();
+		leftMark.clear(); 
+		frontMark.clear();
+		rightMark.clear();
 	}
 }
 
-std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend, int flag)
+std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 {
 	std::vector<double3>vec;
 	if (rend == NULL)return vec;

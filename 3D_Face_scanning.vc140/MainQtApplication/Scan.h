@@ -196,5 +196,5 @@ private:
 	double getDistane(double *src, double *tar);
 	void cellInsert(vtkCellArray *cell, int number, long long index1, long long index2, long long index3, long long disp = 0);
 	void MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int saveType, int ThreadSize);
-	vtkRenderer* MeshConstructWithOMPnSIMD(MeshPreview *viewer, vtkPoints *point, int saveType, int ThreadSize);
+
 };

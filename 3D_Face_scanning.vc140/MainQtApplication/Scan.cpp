@@ -143,13 +143,14 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 		for (vtkIdType i = 0; i < threadPoint->GetNumberOfPoints(); i++)
 		{
+		
 			if (i + 1 + width > threadPoint->GetNumberOfPoints())continue;
 			if ((i + 1) % width == 0)continue;
 
 			double orign[3], right[3], down[3], diga[3];
 
 			threadPoint->GetPoint(i, orign);
-			if (orign[0] == 0)continue;
+			if (orign[2] == 0)continue;
 
 			threadPoint->GetPoint(i + 1, right);
 			threadPoint->GetPoint(i + width, down);
@@ -163,21 +164,21 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 			if (_down < _dia)
 			{
-				if (right[0] != 0 && down[0] != 0)
+				if (right[2] != 0 && down[2] != 0)
 				{
 					cellInsert(threadCell, 3, i, i + 1, i + width);
-					if (diga[0] != 0)
+					if (diga[2] != 0)
 						cellInsert(threadCell, 3, i + 1, i + width + 1, i + width);
 				}
 			}
 
 			else
 			{
-				if (diga[0] != 0)
+				if (diga[2] != 0)
 				{
-					if (right[0] != 0)
+					if (right[2] != 0)
 						cellInsert(threadCell, 3, i, i + 1, i + width + 1);
-					if (down[0] != 0)
+					if (down[2] != 0)
 						cellInsert(threadCell, 3, i, i + width + 1, i + width);
 				}
 			}
@@ -194,7 +195,6 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 	vtkPoints *boundary = vtkPoints::New();
 	vtkCellArray *cellBoundary = vtkCellArray::New();
-	vtkPolyData *polyBoundary = vtkPolyData::New();
 
 	for (int j = 1; j <= ThreadSize - 1; j++)
 	{
@@ -217,28 +217,28 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 			boundary->GetPoint(i + width, down);
 			boundary->GetPoint(i + width + 1, diga);
 
-			if (orign[0] == 0)continue;
+			if (orign[2] == 0)continue;
 
 			double _dia = getDistane(orign, diga);
 			double _down = getDistane(orign, down);
 
 			if (_down < _dia)
 			{
-				if (right[0] != 0 && down[0] != 0)
+				if (right[2] != 0 && down[2] != 0)
 				{
 					cellInsert(cellBoundary, 3, i, i + 1, i + width);
-					if (diga[0] != 0)
+					if (diga[2] != 0)
 						cellInsert(cellBoundary, 3, i + 1, i + width + 1, i + width);
 				}
 			}
 
 			else
 			{
-				if (diga[0] != 0)
+				if (diga[2] != 0)
 				{
-					if (right[0] != 0)
+					if (right[2] != 0)
 						cellInsert(cellBoundary, 3, i, i + 1, i + width + 1);
-					if (down[0] != 0)
+					if (down[2] != 0)
 						cellInsert(cellBoundary, 3, i, i + width + 1, i + width);
 				}
 			}
@@ -248,10 +248,12 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 	std::cout << omp_get_num_threads() << "\n";
 	viewer->GetPolyDataAt(ThreadSize)->SetPoints(boundary);
-	viewer->GetPolyDataAt(ThreadSize)->SetPolys(cellBoundary);//이거 주석 풀고 나갔다 옴
+	viewer->GetPolyDataAt(ThreadSize)->SetPolys(cellBoundary);
 	viewer->GetPolyDataAt(ThreadSize)->Modified();
-	//boundary->Delete();
-	//cellBoundary->Delete();
+
+	boundary->Delete();
+	cellBoundary->Delete();
+	
 
 	viewer->GetRenderWindow()->Modified();
 	viewer->GetRenderWindow()->Render();
@@ -353,9 +355,6 @@ void Scan::MeshConstruction(MeshPreview *viewer, int mode, int saveType, int Thr
 	case 0:
 		MeshConstructWithOMP(viewer, this->points, saveType, ThreadSize);
 		break;
-	case 1:
-		MeshConstructWithOMPnSIMD(viewer, this->points, saveType, ThreadSize);
-		break;
 	default:
 		MeshConstruct(viewer, this->points, saveType);
 		break;
@@ -383,8 +382,8 @@ void Scan::frame2Points(const rs2::frame& frame)
 	{
 		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)
 		{
-			//points->InsertNextPoint(v[i].x, v[i].y, 0);
-			points->InsertNextPoint(0, 0, 0);
+			points->InsertNextPoint(v[i].x, v[i].y, 0);
+			//points->InsertNextPoint(0, 0, 0);
 		}
 		else
 			points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
@@ -393,201 +392,4 @@ void Scan::frame2Points(const rs2::frame& frame)
 
 	}
 
-}
-
-vtkRenderer*  Scan::MeshConstructWithOMPnSIMD(MeshPreview *viewer, vtkPoints *point, int saveType, int ThreadSize)
-{
-	vtkRenderer *threadRenderer = vtkRenderer::New();
-	vtkRenderWindow *win = vtkRenderWindow::New();
-	vtkRenderWindowInteractor * interactor = vtkRenderWindowInteractor::New();
-	interactor->SetRotation(0.1);
-
-	//std::cout << point->GetNumberOfPoints() << "\n";
-
-	const int ThreadNum = ThreadSize;
-
-#pragma omp parallel num_threads(ThreadNum)	shared(threadRenderer) 
-	{
-		vtkPoints *threadPoint = vtkPoints::New();
-		vtkCellArray *threadCell = vtkCellArray::New();
-		vtkPolyData *threadPoly = vtkPolyData::New();
-		vtkPolyDataMapper *threadMapper = vtkPolyDataMapper::New();
-		vtkActor *threadActor = vtkActor::New();
-
-		__declspec(align(64)) double _orign[4] = { 0, };
-		__declspec(align(64)) double _right[4] = { 0, };
-		__declspec(align(64)) double _down[4] = { 0, };
-		__declspec(align(64)) double _diga[4] = { 0, };
-		__declspec(align(64)) double result[4] = { 0, };
-
-#pragma omp for
-		for (int i = 0; i < width*height; i++)
-		{
-			double temp[3];
-			point->GetPoint(i, temp);
-			threadPoint->InsertNextPoint(temp);
-		}
-
-		for (int j = 0; j<threadPoint->GetNumberOfPoints() - width; j += 4)
-		{
-			/*seting*/
-			int index = 0;
-			double orign[3], right[3], down[3], diga[3];
-			for (int k = j; k < j + 4; k++)
-			{
-				threadPoint->GetPoint(k, orign);
-				threadPoint->GetPoint(k + 1, right);
-				threadPoint->GetPoint(k + width, down);
-				threadPoint->GetPoint(k + width + 1, diga);
-
-				_orign[index] = orign[2];
-				_right[index] = right[2];
-				_down[index] = down[2];
-				_diga[index] = diga[2];
-				index++;
-			}
-
-			/*chunk calculate*/
-			__m256d __m256d_orign = _mm256_loadu_pd(_orign);
-			__m256d __m256d_down = _mm256_loadu_pd(_down);
-			__m256d __m256d_diga = _mm256_loadu_pd(_diga);
-			__m256d __m256d_result = _mm256_sub_pd(_mm256_sub_pd(__m256d_orign, __m256d_down), \
-				_mm256_sub_pd(__m256d_orign, __m256d_diga));
-
-			__m256d_result = _mm256_mul_pd(__m256d_result, __m256d_result);//�Ÿ��� �������� ����.
-			_mm256_store_pd(result, __m256d_result);
-
-			/*make poly*/
-			for (int i = 0; i < 4; i++)
-			{
-				if (_orign[i] == 0)continue;
-
-				if (result[i] > 0)//�Ʒ��� ����
-				{
-					if (_right[i] != 0 && _down[i] != 0)
-					{
-						cellInsert(threadCell, 3, i, i + 1, i + width, j);
-						if (_diga[i] != 0)
-							cellInsert(threadCell, 3, i + 1, i + width + 1, i + width, j);
-					}
-				}
-
-				else //if (result[i] < 0)//�밢������
-				{
-					if (_diga[i] != 0)
-					{
-						if (_right[i] != 0)
-							cellInsert(threadCell, 3, i, i + 1, i + width + 1, j);
-						if (_down[i] != 0)
-							cellInsert(threadCell, 3, i, i + width + 1, i + width, j);
-					}
-				}
-			}
-		}
-
-		//_start = omp_get_wtime();
-
-		threadPoly->SetPoints(threadPoint);
-		threadPoly->SetPolys(threadCell);
-
-		threadMapper->SetInputData(threadPoly);
-		threadActor->SetMapper(threadMapper);
-
-#pragma omp critical
-		{
-			threadRenderer->AddActor(threadActor);
-		}
-		threadPoint->Delete();
-		threadCell->Delete();
-		threadPoly->Delete();
-		threadMapper->Delete();
-		threadActor->Delete();
-
-		//printf("%lf\n\n", omp_get_wtime() - _start);
-	}
-
-
-	vtkPoints *boundary = vtkPoints::New();
-	vtkCellArray *cellBoundary = vtkCellArray::New();
-	vtkPolyData *polyBoundary = vtkPolyData::New();
-	vtkActor *actorBoundary = vtkActor::New();
-	vtkPolyDataMapper *mapperBoundary = vtkPolyDataMapper::New();
-
-	for (int j = 1; j <= ThreadNum - 1; j++)
-	{
-		for (int i = j*width * height / ThreadNum - width; i <j*width * height / ThreadNum + width * 2 - width; i++)
-		{
-			double temp[3];
-			point->GetPoint(i, temp);
-			boundary->InsertNextPoint(temp);
-		}
-	}
-
-	/*���⵵ simd�����غ� ��.*/
-	for (int j = 0; j < ThreadNum - 1; j++)
-	{
-		double orign[3], right[3], down[3], diga[3];
-		for (vtkIdType i = 2 * j*width; i < 2 * width*j + width; i++)
-		{
-			boundary->GetPoint(i, orign);
-			boundary->GetPoint(i + 1, right);
-			boundary->GetPoint(i + width, down);
-			boundary->GetPoint(i + width + 1, diga);
-
-
-			if (orign[0] == 0)continue;
-
-			double _dia = getDistane(orign, diga);
-			double _down = getDistane(orign, down);
-
-			if (_down < _dia)
-			{
-				if (right[0] != 0 && down[0] != 0)
-				{
-					cellInsert(cellBoundary, 3, i, i + 1, i + width);
-					if (diga[0] != 0)
-						cellInsert(cellBoundary, 3, i + 1, i + width + 1, i + width);
-				}
-			}
-
-			else
-			{
-				if (diga[0] != 0)
-				{
-					if (right[0] != 0)
-						cellInsert(cellBoundary, 3, i, i + 1, i + width + 1);
-					if (down[0] != 0)
-						cellInsert(cellBoundary, 3, i, i + width + 1, i + width);
-				}
-			}
-
-		}
-	}
-	polyBoundary->SetPoints(boundary);
-	polyBoundary->SetPolys(cellBoundary);
-	mapperBoundary->SetInputData(polyBoundary);
-	actorBoundary->SetMapper(mapperBoundary);
-
-	threadRenderer->AddActor(actorBoundary);
-
-	threadRenderer->GetActiveCamera()->ParallelProjectionOff();
-	win->AddRenderer(threadRenderer);
-	//win->Render();
-
-
-	interactor->SetRenderWindow(win);
-	//interactor->Start();
-
-	boundary->Delete();
-	cellBoundary->Delete();
-	polyBoundary->Delete();
-	actorBoundary->Delete();
-	mapperBoundary->Delete();
-
-	interactor->Delete();
-	threadRenderer->Delete();
-	win->Delete();
-
-	return threadRenderer;
-	//printf("%lf\n\n", omp_get_wtime() - _start);
 }

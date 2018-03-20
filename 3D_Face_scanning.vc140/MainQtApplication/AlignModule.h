@@ -51,7 +51,7 @@ public:
 	AlignModule();
 	void mergeActors(MeshPreview *mesh, int place);
 	//void registeration();
-	std::vector<double3> extractLandMark(vtkRenderer *rend, int flag);
+	std::vector<double3> extractLandMark(vtkRenderer *rend);
 	void setRight(MeshPreview *rend);
 	void setFront(MeshPreview *rend);
 	void setLeft(MeshPreview *rend);
@@ -59,6 +59,7 @@ public:
 	void InitializeVariables();
 	int DestroyVariables();
 	void InitializeUi();
+	void registration();
 	
 public slots:
 	void slotAlign();
