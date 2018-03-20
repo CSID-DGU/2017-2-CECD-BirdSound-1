@@ -27,6 +27,7 @@
 #include"LandMarkInteractorStyle.h"
 #include"vtkAppendPolyData.h"
 #include"vtkTransformPolyDataFilter.h"
+#include"vtkIterativeClosestPointTransform.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {

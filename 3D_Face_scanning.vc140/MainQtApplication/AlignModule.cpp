@@ -37,7 +37,7 @@ void AlignModule::InitializeVariables()
 	frontStyle = LandMarkInteractorStyle::New();
 	rightStyle = LandMarkInteractorStyle::New();
 
-	resultMesh = new MeshPreview(1);
+	resultMesh = new MeshPreview(3);
 	resultMesh->CreateModel("",0);
 	resultMesh->Create3DScene();
 }
@@ -164,7 +164,97 @@ void AlignModule::registration()
 {
 
 
-
+//	vtkSmartPointer<vtkIterativeClosestPointTransform> icp =vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
+//	icp->SetSource(source);
+//	icp->SetTarget(target);
+//	icp->GetLandmarkTransform()->SetModeToRigidBody();
+//	icp->SetMaximumNumberOfIterations(20);
+//	//icp->StartByMatchingCentroidsOn();
+//	icp->Modified();
+//	icp->Update();
+//
+//	// Get the resulting transformation matrix (this matrix takes the source points to the target points)
+//	vtkSmartPointer<vtkMatrix4x4> m = icp->GetMatrix();
+//	std::cout << "The resulting matrix is: " << *m << std::endl;
+//
+//	// Transform the source points by the ICP solution
+//	vtkSmartPointer<vtkTransformPolyDataFilter> icpTransformFilter =
+//		vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+//#if VTK_MAJOR_VERSION <= 5
+//	icpTransformFilter->SetInput(source);
+//#else
+//	icpTransformFilter->SetInputData(source);
+//#endif
+//	icpTransformFilter->SetTransform(icp);
+//	icpTransformFilter->Update();
+//
+//	/*
+//	// If you need to take the target points to the source points, the matrix is:
+//	icp->Inverse();
+//	vtkSmartPointer<vtkMatrix4x4> minv = icp->GetMatrix();
+//	std::cout << "The resulting inverse matrix is: " << *minv << std::cout;
+//	*/
+//
+//	// Visualize
+//	vtkSmartPointer<vtkPolyDataMapper> sourceMapper =
+//		vtkSmartPointer<vtkPolyDataMapper>::New();
+//#if VTK_MAJOR_VERSION <= 5
+//	sourceMapper->SetInputConnection(source->GetProducerPort());
+//#else
+//	sourceMapper->SetInputData(source);
+//#endif
+//
+//	vtkSmartPointer<vtkActor> sourceActor =
+//		vtkSmartPointer<vtkActor>::New();
+//	sourceActor->SetMapper(sourceMapper);
+//	sourceActor->GetProperty()->SetColor(1, 0, 0);
+//	sourceActor->GetProperty()->SetPointSize(4);
+//
+//	vtkSmartPointer<vtkPolyDataMapper> targetMapper =
+//		vtkSmartPointer<vtkPolyDataMapper>::New();
+//#if VTK_MAJOR_VERSION <= 5
+//	targetMapper->SetInputConnection(target->GetProducerPort());
+//#else
+//	targetMapper->SetInputData(target);
+//#endif
+//
+//	vtkSmartPointer<vtkActor> targetActor =
+//		vtkSmartPointer<vtkActor>::New();
+//	targetActor->SetMapper(targetMapper);
+//	targetActor->GetProperty()->SetColor(0, 1, 0);
+//	targetActor->GetProperty()->SetPointSize(4);
+//
+//	vtkSmartPointer<vtkPolyDataMapper> solutionMapper =
+//		vtkSmartPointer<vtkPolyDataMapper>::New();
+//	solutionMapper->SetInputConnection(icpTransformFilter->GetOutputPort());
+//
+//	vtkSmartPointer<vtkActor> solutionActor =
+//		vtkSmartPointer<vtkActor>::New();
+//	solutionActor->SetMapper(solutionMapper);
+//	solutionActor->GetProperty()->SetColor(0, 0, 1);
+//	solutionActor->GetProperty()->SetPointSize(3);
+//
+//	// Create a renderer, render window, and interactor
+//	vtkSmartPointer<vtkRenderer> renderer =
+//		vtkSmartPointer<vtkRenderer>::New();
+//	vtkSmartPointer<vtkRenderWindow> renderWindow =
+//		vtkSmartPointer<vtkRenderWindow>::New();
+//	renderWindow->AddRenderer(renderer);
+//	vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+//		vtkSmartPointer<vtkRenderWindowInteractor>::New();
+//	renderWindowInteractor->SetRenderWindow(renderWindow);
+//
+//	// Add the actor to the scene
+//	renderer->AddActor(sourceActor);
+//	renderer->AddActor(targetActor);
+//	renderer->AddActor(solutionActor);
+//	renderer->SetBackground(.3, .6, .3); // Background color green
+//
+//										 // Render and interact
+//	renderWindow->Render();
+//	renderWindowInteractor->Start();
+//
+	//return EXIT_SUCCESS;
 
 }
 void AlignModule::slotAlign()
@@ -276,22 +366,26 @@ void AlignModule::slotAlign()
 		rightFilt->Update();
 
 
-		vtkAppendPolyData *res = vtkAppendPolyData::New();
+		/*vtkAppendPolyData *res = vtkAppendPolyData::New();
 		res->AddInputData(leftFilt->GetOutput());
 		res->AddInputData(frontpoly->GetOutput());
 		res->AddInputData(rightFilt->GetOutput());
-		res->Update();
+		res->Update();*/
 
 
 
-		resultMesh->GetPolyDataAt(0)->DeepCopy(res->GetOutput());
+		resultMesh->GetPolyDataAt(0)->DeepCopy(leftFilt->GetOutput());
+		resultMesh->GetPolyDataAt(1)->DeepCopy(frontpoly->GetOutput());
+		resultMesh->GetPolyDataAt(2)->DeepCopy(rightFilt->GetOutput());
+
+
 		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 
 
 
-		res->Delete();
+	
 		rightFilt->Delete();
 		leftFilt->Delete();
 		leftpoly->Delete();
