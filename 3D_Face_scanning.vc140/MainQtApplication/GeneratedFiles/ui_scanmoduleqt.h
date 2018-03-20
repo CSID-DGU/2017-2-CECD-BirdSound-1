@@ -161,7 +161,7 @@ public:
         TitleFront->setText(QApplication::translate("ScanModuleQTClass", "FRONT", Q_NULLPTR));
         Title3D->setText(QApplication::translate("ScanModuleQTClass", "3D View", Q_NULLPTR));
         TitleLeft->setText(QApplication::translate("ScanModuleQTClass", "LEFT", Q_NULLPTR));
-        NextBtn->setText(QApplication::translate("ScanModuleQTClass", "NEXT", Q_NULLPTR));
+        NextBtn->setText(QApplication::translate("ScanModuleQTClass", "Next", Q_NULLPTR));
         TitleRight->setText(QApplication::translate("ScanModuleQTClass", "RIGHT", Q_NULLPTR));
         Title2D->setText(QApplication::translate("ScanModuleQTClass", "2D View <1920x1080 / RGB8 / 30FPS>", Q_NULLPTR));
         RightSaveBtn->setText(QApplication::translate("ScanModuleQTClass", "SAVE", Q_NULLPTR));

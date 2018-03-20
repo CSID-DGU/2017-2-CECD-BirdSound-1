@@ -161,6 +161,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ScanModule.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AlignModule.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AlignModule.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">
@@ -201,6 +207,12 @@
     </CustomBuild>
     <CustomBuild Include="ScanModule.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AlignModule.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Align.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -258,9 +270,6 @@
     <ClInclude Include="STLImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AlignModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="double3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -289,6 +298,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_scanmoduleqt.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_Align.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

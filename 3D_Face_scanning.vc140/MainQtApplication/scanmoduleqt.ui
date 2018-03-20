@@ -220,7 +220,7 @@ border-color: rgb(255, 0, 0);</string>
      </rect>
     </property>
     <property name="text">
-     <string>NEXT</string>
+     <string>Next</string>
     </property>
    </widget>
    <widget class="QLabel" name="TitleRight">

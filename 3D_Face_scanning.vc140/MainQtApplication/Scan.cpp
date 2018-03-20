@@ -6,9 +6,6 @@
 double Scan::getDistane(double *src, double *tar)
 {
 	double retv = 0.0;
-	//if (tar[0] == 0)return INF;
-	//retv += (src[0] - tar[0])*(src[0] - tar[0]);
-	//retv += (src[1] - tar[1])*(src[1] - tar[1]);
 	retv += abs((src[2] - tar[2]));
 	return retv;
 }
@@ -189,35 +186,10 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 		#pragma omp critical
 		{
-			//if (omp_get_thread_num() == 1)/*여기서만 제대로 set이 안되는 이유가 있을까?*/
-		/*	if(0)
-			{
-				viewer->GetPolyDataAt(omp_get_thread_num())->SetPoints(threadPoint);
-				viewer->GetPolyDataAt(omp_get_thread_num())->SetPolys(threadCell);
-				viewer->GetPolyDataAt(omp_get_thread_num())->Modified();
-				viewer->GetMapperAt(1)->SetInputData(viewer->GetPolyDataAt(1));
-				viewer->GetActorAt(1)->SetMapper(viewer->GetMapperAt(1));
-				viewer->GetRenderer()->AddActor(viewer->GetActorAt(1));
-
-				std::cout << viewer->GetPolyDataAt(omp_get_thread_num())->GetPolys()->GetNumberOfCells() << "개개개\n";
-			}
-*/
-			//else
-			{
-				viewer->GetPolyDataAt(omp_get_thread_num())->SetPoints(threadPoint);
-				viewer->GetPolyDataAt(omp_get_thread_num())->SetPolys(threadCell);
-				viewer->GetPolyDataAt(omp_get_thread_num())->Modified();
-				/*viewer->GetPolyDataAt(1)->SetPoints(threadPoint);
-				viewer->GetPolyDataAt(1)->SetPolys(threadCell);
-				viewer->GetMapperAt(1)->SetInputData(viewer->GetPolyDataAt(1));
-				viewer->GetActorAt(1);
-				viewer->GetActorAt(1);
-				viewer->GetRenderer()->AddActor(viewer->GetActorAt(1));*/
-			}
+			viewer->GetPolyDataAt(omp_get_thread_num())->SetPoints(threadPoint);
+			viewer->GetPolyDataAt(omp_get_thread_num())->SetPolys(threadCell);
+			viewer->GetPolyDataAt(omp_get_thread_num())->Modified();	
 		}
-
-		//threadPoint->Delete();
-		//threadCell->Delete();
 	}
 
 	vtkPoints *boundary = vtkPoints::New();
@@ -409,10 +381,15 @@ void Scan::frame2Points(const rs2::frame& frame)
 	////std::ofstream str("test.txt");
 	for (auto i = 0; i < width*height; i++)
 	{
-	/*	if (v[i].z >= 1 || v[i].z <= -1 || v[i].z==0)
-			points->InsertNextPoint(v[i].x, v[i].y, 0);
-		else*/
-		points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
+		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)
+		{
+			//points->InsertNextPoint(v[i].x, v[i].y, 0);
+			points->InsertNextPoint(0, 0, 0);
+		}
+		else
+			points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
+		//else
+		//points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
 
 	}
 

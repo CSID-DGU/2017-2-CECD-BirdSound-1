@@ -10,7 +10,9 @@ void LandMarkInteractorStyle::OnLeftButtonUp()
 	picker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
 
 
-	if (LastPickedActor != NULL && mainActor != NULL && LastPickedActor != mainActor)
+	if (LastPickedActor != NULL && mainActor != NULL && LastPickedActor != mainActor[0]
+		&& LastPickedActor != mainActor[1] && LastPickedActor != mainActor[2] && 
+		LastPickedActor != mainActor[3] && LastPickedActor != mainActor[4])
 	{
 		vtkMapper *mapperMove = LastPickedActor->GetMapper();
 		vtkSphereSource *sp = vtkSphereSource::New();
@@ -52,7 +54,7 @@ void LandMarkInteractorStyle::Reset()
 		{
 			nextActor = actorCol->GetNextActor();
 			std::cout << i << "@#!@#!@#\n";
-			if (i >= 1)
+			if (i >= 5)
 			{
 				std::cout << "deleted" << " " << i << "\n";
 				this->GetDefaultRenderer()->RemoveActor(nextActor);
@@ -78,25 +80,6 @@ void LandMarkInteractorStyle::Reset()
 
 }
 
-std::vector<double3> LandMarkInteractorStyle::getData()
-{
-	std::vector<double3> vec;
-	if (this->GetDefaultRenderer() == NULL)return vec;
-
-	vtkActorCollection * actorCol = this->GetDefaultRenderer()->GetActors();
-	actorCol->InitTraversal();
-
-	for (vtkIdType i = 0; i < actorCol->GetNumberOfItems(); i++)
-	{
-		vtkActor *nextActor = actorCol->GetNextActor();
-		double *pos = nextActor->GetCenter();
-		std::cout << pos[0] << " " << pos[1] << " " << pos[2] << "\n";
-
-		vec.push_back(double3(pos[0], pos[1], pos[2]));
-	}
-
-	return vec;
-}
 void LandMarkInteractorStyle::initialize()
 {
 	LastPickedActor = NULL;
@@ -112,10 +95,17 @@ void LandMarkInteractorStyle::OnLeftButtonDown()
 	vtkActor* temp = picker->GetActor();
 	double* pos = picker->GetPickPosition();
 
-	int mode = 2;
+	int mode = 1;
 
-	if (temp == mainActor)mode = 2;
-	else mode = 1;
+	for (int i = 0; i < 5; i++)
+	{
+		if (mainActor[i] == temp)
+		{
+			mode = 2;
+			break;
+		}
+	}
+
 
 	if (mode == 1) //»öÄ¥ÇÏ±â 
 	{

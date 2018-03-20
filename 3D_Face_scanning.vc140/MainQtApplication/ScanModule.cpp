@@ -107,8 +107,6 @@ void ScanModule::InitializeUi()
 }
 
 
-
-
 void ScanModule::slotCapBtn()
 {
 
@@ -143,8 +141,12 @@ void ScanModule::slotNextBtn()
 	qwe->setFront(m_MiniMeshPreviewer[1]);
 	qwe->setRight(m_MiniMeshPreviewer[2]);
 
-	//qwe->mergeActors();
-	qwe->align();
+
+
+	//m_MiniMeshPreviewer
+	qwe->Rendering();
+	qwe->show();
+	//qwe->align();
 }
 void ScanModule::slotLeftSaveBtn()
 {
@@ -167,13 +169,15 @@ void Copy(MeshPreview* src, MeshPreview* des)
 		des->ReleaseModel();
 	}
 
+
 	des->CreateModel("",0);
 
 	for (int i = 0; i < 5; i++)
 	{
-		des->m_PolyData[i]->ShallowCopy(src->GetPolyDataAt(i));
-		des->m_Mapper[i]->ShallowCopy(src->GetMapperAt(i));
-		des->m_Actor[i]->ShallowCopy(src->GetActorAt(i));
+		des->m_PolyData[i]->DeepCopy(src->GetPolyDataAt(i));
+		//des->m_PolyData[i]->ShallowCopy(src->GetPolyDataAt(i));
+		//des->m_Mapper[i]->ShallowCopy(src->GetMapperAt(i));
+		//des->m_Actor[i]->ShallowCopy(src->GetActorAt(i));
 	}
 
 	des->GetRenderer()->Modified();
@@ -181,22 +185,9 @@ void Copy(MeshPreview* src, MeshPreview* des)
 }
 void ScanModule::slotCapPicBtn()
 {
-	/*
-	if (index == 0)
-	{
-		ui.Viewer_cad_LEFT->setStyleSheet("border: 3px solid red;background-color:black;");
-		index = 1;
-	}
-	else
-	*/
 	if(index==0)
 	{
-		/*
-		[0]mesh의 내용을 m_mini로 gogo
-		*/
-		
 		Copy(m_ScannedMeshViewer, m_MiniMeshPreviewer[0]);
-		//m_MiniMeshPreviewer[0]->GetActorAt();
 		ui.Viewer_cad_LEFT->setStyleSheet("border: 1px solid black;background-color:black;");
 		ui.Viewer_cad_FRONT->setStyleSheet("border: 3px solid red;background-color:black;");
 		index = 1;

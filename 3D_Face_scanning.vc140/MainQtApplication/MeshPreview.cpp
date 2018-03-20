@@ -81,7 +81,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 	}
 
 
-	else 
+	else //used for omp etc....
 	{
 		for (int i = 0; i < m_Actor.size(); i++)
 		{

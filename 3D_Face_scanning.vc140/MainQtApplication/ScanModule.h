@@ -37,7 +37,6 @@ public slots:
 	void slotStreamingBtn();
 	void slotCapPicBtn();
 
-
 	void InitializeVariables();
 	void InitializeScene();
 	int DestroyVariables();

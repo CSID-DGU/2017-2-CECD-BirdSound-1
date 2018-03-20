@@ -33,6 +33,11 @@ public:
 	virtual void OnLeftButtonUp();
 	void initialize();
 	void Reset();
+	void setMainActors(std::vector<vtkActor*> actor)
+	{
+		for (int i = 0; i < 5; i++)
+			mainActor[i] = actor[i];
+	}
 	void setRadis(vtkActor *_mainActor)
 	{
 		double *bound= _mainActor->GetBounds();
@@ -40,27 +45,22 @@ public:
 		double col = bound[3] - bound[2];
 		double retv = (row)*(col);//*(bound[5]-bound[4]);
 
+		std::cout << retv << " ";
 		if (row >= 1 && col >= 1) 
 		{
 			retv /= bound[1];
 			retv /= bound[3];
-			retv /= 1.2;
 		}
 
-		else retv /= 30;
+		else retv /= 10;
 		
 		radius = abs(retv);
-		for (int i = 0; i < 6; i++)
-			std::cout << bound[i] << " ";
-
-		mainActor = _mainActor;
 		std::cout << radius << "\n";
 	}
 
-	std::vector<double3> getData();
 private:
 	vtkActor*				LastPickedActor=NULL;
-	vtkActor*				mainActor = NULL;
+	vtkActor*				mainActor[5];
 	vtkProperty*			LastPickedProperty = NULL;
 	vtkPropPicker *picker = vtkPropPicker::New();
 	double					radius;
