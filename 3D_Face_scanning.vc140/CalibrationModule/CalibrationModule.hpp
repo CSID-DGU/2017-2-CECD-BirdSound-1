@@ -2,6 +2,7 @@
 #ifndef CALIB_H
 #define CALIB_H
 #include <QtWidgets/QMainWindow>
+#include <qthread.h>
 #include "ui_CalibrationModule.h"
 #include "opencv2/opencv.hpp"
 #undef foreach //Q_FOREACH
@@ -26,10 +27,28 @@ public:
 	void capture();
 	void capture(RS_400_STREAM_TYPE stream);
 	void calibration();
+
+public slots:
+void updateColor(QPixmap pixmap) {
+	ui.rgbLabel->setPixmap(pixmap);
+	ui.rgbLabel->setScaledContents(true);
+	ui.rgbLabel->show();
+};
+void updateIR1(QPixmap pixmap) {
+	ui.irLeftLabel->setPixmap(pixmap);
+	ui.irLeftLabel->setScaledContents(true);
+	ui.irLeftLabel->show();
+}
+void updateIR2(QPixmap pixmap) {
+	ui.irRightLabel->setPixmap(pixmap);
+	ui.irRightLabel->setScaledContents(true);
+	ui.irRightLabel->show();
+}
+
 private:
 	std::mutex m;
-	std::vector<std::thread> m_thread_pool;
 	Ui::CalibrationModule ui;
+	
 
 	int m_numCornersHor = 7, m_numCornersVer = 9;
 	int m_numSquares = m_numCornersHor * m_numCornersVer;
@@ -50,6 +69,7 @@ private:
 	std::vector<std::vector<cv::Point3f>> m_right_object_points;
 	std::vector<std::vector<cv::Point3f>> m_object_points;
 
+
 	std::vector<std::vector<cv::Point2f>> m_colorImage_points;
 	std::vector<std::vector<cv::Point2f>> m_leftImage_points;
 	std::vector<std::vector<cv::Point2f>> m_rightrImage_points;
@@ -57,6 +77,13 @@ private:
 	std::vector<cv::Point2f> m_pointBufColor;
 	std::vector<cv::Point2f> m_pointBufLeft;
 	std::vector<cv::Point2f> m_pointBufRight;
+
+//Q_SIGNALS:
+//	void CalibrationModule::updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE);
+//
+//public slots:
+//	void CalibrationModule::updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE);
+
 };
 
 

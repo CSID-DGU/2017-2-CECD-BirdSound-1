@@ -1,3 +1,4 @@
+#include "WorkerThread.hpp"
 #include "CalibrationModule.hpp"
 #include "../DepthModule/device.h"
 #include <thread>
@@ -7,6 +8,9 @@ using namespace realsense;
 CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 {
 	ui.setupUi(this);
+	
+
+
 
 	string devSerialNumber = getFirstSerial();
 	m_device = new Device(devSerialNumber);
@@ -15,8 +19,25 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 	ui.serialNum->setText(toQstr(m_device->info.serial));
 	ui.firmwareVer->setText(toQstr(m_device->info.fw_ver));
 	
+	//QObject::connect(otherThread, SIGNAL(updatePixmap(const QPixmap&)), this, SLOT(updatePixmap(const QPixmap&)));
+	//cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
+	//connect(, SIGNAL)
 
-	cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
+
+	//thread start
+	/*CalibrationModule* c1 = new CalibrationModule;
+	CalibrationModule* c3 = new CalibrationModule;
+	CalibrationModule* c2 = new CalibrationModule;
+	c1->moveToThread(&t1);
+	c2->moveToThread(&t2);
+	c3->moveToThread(&t3);
+	connect(&t1, SIGNAL(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)), this, SLOT(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)));
+	connect(&t2, SIGNAL(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)), this, SLOT(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)));
+	connect(&t3, SIGNAL(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)), this, SLOT(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)));
+	t1.start(); t2.start(); t3.start();*/
+	//thread end
+
+
 	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(); });
 	connect(ui.rgbStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_COLOR); });
 	connect(ui.leftStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_INFRARED1); });
@@ -34,18 +55,18 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 }
 
 void CalibrationModule::startStreaming() {
-	std::thread t1([this] {this->startStreaming(RS400_STREAM_COLOR); });
-	std::thread t2([this] {this->startStreaming(RS400_STREAM_INFRARED1); });
-	std::thread t3([this] {this->startStreaming(RS400_STREAM_INFRARED2); });
+	WorkerThread *worker = new WorkerThread(m_device, RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 
-	t1.detach();
-	t2.detach();
-	t3.detach();
+	//connect(worker, &WorkerThread::progressChanged, this, &CalibrationModule::onProgressChanged);
+	connect(worker, &WorkerThread::updateColorPixmap, this, &CalibrationModule::updateColor);
+	//connect(worker, &WorkerThread::finished, worker, &QObject::deleteLater);
+	worker->start();
+	ui.rgbLabel->setText("Thread is Started!!!");
+
+	//this->startStreaming(RS400_STREAM_COLOR);
+
 	
-	
-	/*startStreaming(RS400_STREAM_COLOR);
-	startStreaming(RS400_STREAM_INFRARED1);
-	startStreaming(RS400_STREAM_INFRARED2);*/
+
 /*	int numSquares = numCornersHor * numCornersVer;
 	cv::Size board_sz = cv::Size(numCornersHor, numCornersVer);
 	bool m_streamingAll = true;
@@ -106,20 +127,30 @@ void CalibrationModule::startStreaming() {
 
 }
 
+
+/*
+
+
+
+
+*/
 void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 		//m.lock();
 		if (stream == RS400_STREAM_COLOR && m_streamingColor == false) {
 			//use unrectified format for calibration. noted Custom_Calib_paper.pdf 2.4 11page.
 			//IR1,2 = Y16, RGB = YUY2 (YUYV)
-			m_device->selectSensorAndStreamProps(stream, R1920_1080, YUYV, HZ15);
+			//m_device->selectSensorAndStreamProps(stream, R1920_1080, YUYV, HZ15);
+			m_device->selectSensorAndStreamProps(stream, R1920_1080, RGB8, HZ15);
 			m_streamingColor = true;
 			unique_ptr<uint32_t[]> colorBuf = unique_ptr<uint32_t[]>(new uint32_t[m_w*(m_h + 1)]);
+			static int count = 0;
 			while (m_streamingColor) {
+				count++;
 				auto fColor = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
-				uint32_t *color = colorBuf.get();
-				ConvertYUY2ToRGBA((uint8_t*)fColor.get_data(), m_w, m_h, (uint8_t*)color);
-				cv::Mat colorImage(cv::Size(m_w, m_h), CV_8U, (uint8_t*)color, cv::Mat::AUTO_STEP);
-				cv::Mat gray_image;
+				//uint32_t *color = colorBuf.get();
+				//ConvertYUY2ToRGBA((uint8_t*)fColor.get_data(), m_w, m_h, (uint8_t*)color);
+				//cv::Mat colorImage(cv::Size(m_w, m_h), CV_8UC4, (uint8_t*)color, cv::Mat::AUTO_STEP);
+				//cv::Mat gray_image;
 				/*bool foundColor = cv::findChessboardCorners(colorImage, m_board_sz, m_pointBufColor, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 				if (foundColor)
 				{
@@ -127,13 +158,16 @@ void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 				cv::cornerSubPix(gray_image, m_pointBufColor, cv::Size(7, 9), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
 				cv::drawChessboardCorners(colorImage, cv::Size(7, 9), cv::Mat(m_pointBufColor), foundColor);
 				}*/
-				cv::waitKey(1);
-				//QImage color_image((uchar*)fColor.get_data(), w, h, QImage::Format_RGB888);
-				QImage color_image(colorImage.data, m_w, m_h, QImage::Format_RGB888);
+				//cv::waitKey(1);
+				QImage color_image((uchar*)fColor.get_data(), m_w, m_h, QImage::Format_RGB888);
+				////QImage color_image(colorImage.data, m_w, m_h, QImage::Format_RGB888);
 				QPixmap cbuf = QPixmap::fromImage(color_image);
-				ui.rgbLabel->setPixmap(cbuf);
-				ui.rgbLabel->setScaledContents(true);
-				ui.rgbLabel->show();
+				//emit updatePixmap(cbuf, RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+				
+				ui.label->setText(toQstr(std::to_string(count)));
+				//ui.rgbLabel->setPixmap(cbuf);
+				//ui.rgbLabel->setScaledContents(true);
+				//ui.rgbLabel->show();
 			}
 		}
 		else if (stream == RS400_STREAM_INFRARED1 && m_streamingIR1 == false) {
@@ -194,10 +228,12 @@ void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 		//m.unlock();
 }
 
+
 void CalibrationModule::capture() {
-	capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+
+	/*capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 	capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
-	capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
+	capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);*/
 	/*vector<cv::Point3f> obj;
 	for (int j = 0; j<numSquares; j++)
 		obj.push_back(cv::Point3f(j / numCornersHor, j%numCornersHor, 0.0f));
@@ -250,6 +286,7 @@ void CalibrationModule::stopStreaming() {
 }
 
 void CalibrationModule::stopStreaming(RS_400_STREAM_TYPE stream) {
+	ui.rgbLabel->setText(toQstr(to_string(10)));
 	if (stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR && m_streamingColor == true) {
 		m_streamingColor = false;
 		m_device->stopStreaming(stream);
@@ -265,8 +302,6 @@ void CalibrationModule::stopStreaming(RS_400_STREAM_TYPE stream) {
 		m_device->stopStreaming(stream);
 		ui.irRightLabel->clear();
 	}
-
-	
 }
 
 void CalibrationModule::calibration() {
@@ -283,6 +318,7 @@ void CalibrationModule::calibration() {
 
 
 }
+
 
 inline QString CalibrationModule::toQstr(std::string str) {
 	return QString::fromUtf8(str.c_str());
