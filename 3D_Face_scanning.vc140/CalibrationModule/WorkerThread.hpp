@@ -11,11 +11,22 @@ class WorkerThread: public QThread {
 	Q_OBJECT
 public:
 		WorkerThread(Device *device, RS_400_STREAM_TYPE stream) {
-		isCalib = false;
+		isDetect = false;
 		m_stream = stream;
 		m_device = device;
+		//connect(workerColor, &WorkerThread::updateColorPixmap, this, &CalibrationModule::updateColor);
+		
 	}
 		void run() override;;
+
+public slots:
+	void setDetection() {
+		isDetect = true;
+	}
+
+	void unsetDetection() {
+		isDetect = false;
+	}
 
 signals:
 void updateColorPixmap(QPixmap pixmap);
@@ -25,6 +36,6 @@ void updateIR2Pixmap(QPixmap pixmap);
 private:
 	RS_400_STREAM_TYPE m_stream;
 	realsense::Device* m_device;
-	bool isCalib;
+	bool isDetect;
 
 };

@@ -2,9 +2,9 @@
 #ifndef CALIB_H
 #define CALIB_H
 #include <QtWidgets/QMainWindow>
-#include <qthread.h>
 #include "ui_CalibrationModule.h"
 #include "opencv2/opencv.hpp"
+#include "WorkerThread.hpp"
 #undef foreach //Q_FOREACH
 #include <fstream>
 #include <vector>
@@ -20,6 +20,29 @@ class CalibrationModule : public QWidget
 public:
 	QString toQstr(std::string);
 	CalibrationModule(QWidget *parent = Q_NULLPTR);
+	void startDetection();
+	void startDetection(RS_400_STREAM_TYPE stream);
+	void stopDetection() {
+		stopDetection(RS400_STREAM_COLOR);
+		stopDetection(RS400_STREAM_INFRARED1);
+		stopDetection(RS400_STREAM_INFRARED2);
+	};
+	void stopDetection(RS_400_STREAM_TYPE stream) {
+		if (stream == RS400_STREAM_COLOR) {
+			updateSysMsg("stop color stream detection!");
+			emit stopColorDetect();
+		}
+		else if (stream == RS400_STREAM_INFRARED1) {
+			updateSysMsg("stop left stream deteection!");
+			emit stopIR1Detect();
+		}
+		else if (stream == RS400_STREAM_INFRARED2) {
+			updateSysMsg("sstop right stream detection!");
+			emit stopIR2Detect();
+		}
+	};
+
+
 	void startStreaming();
 	void startStreaming(RS_400_STREAM_TYPE stream);
 	void stopStreaming();
@@ -45,10 +68,23 @@ void updateIR2(QPixmap pixmap) {
 	ui.irRightLabel->show();
 }
 
+signals:
+void startColorDetect();
+void startIR1Detect();
+void startIR2Detect();
+void stopColorDetect();
+void stopIR1Detect();
+void stopIR2Detect();
+
 private:
+	void updateSysMsg(string msg) {
+		ui.message->setText(toQstr(msg));
+	};
 	std::mutex m;
 	Ui::CalibrationModule ui;
-	
+	WorkerThread *workerColor;
+	WorkerThread *workerIR1;
+	WorkerThread *workerIR2;
 
 	int m_numCornersHor = 7, m_numCornersVer = 9;
 	int m_numSquares = m_numCornersHor * m_numCornersVer;
@@ -77,12 +113,6 @@ private:
 	std::vector<cv::Point2f> m_pointBufColor;
 	std::vector<cv::Point2f> m_pointBufLeft;
 	std::vector<cv::Point2f> m_pointBufRight;
-
-//Q_SIGNALS:
-//	void CalibrationModule::updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE);
-//
-//public slots:
-//	void CalibrationModule::updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE);
 
 };
 

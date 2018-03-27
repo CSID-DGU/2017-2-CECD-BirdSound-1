@@ -1,4 +1,3 @@
-#include "WorkerThread.hpp"
 #include "CalibrationModule.hpp"
 #include "../DepthModule/device.h"
 #include <thread>
@@ -9,9 +8,7 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 	
-
-
-
+	//Set static info
 	string devSerialNumber = getFirstSerial();
 	m_device = new Device(devSerialNumber);
 	m_device->EnableEmitter(0.0f);
@@ -19,52 +16,67 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 	ui.serialNum->setText(toQstr(m_device->info.serial));
 	ui.firmwareVer->setText(toQstr(m_device->info.fw_ver));
 	
-	//QObject::connect(otherThread, SIGNAL(updatePixmap(const QPixmap&)), this, SLOT(updatePixmap(const QPixmap&)));
-	//cv::namedWindow("namedWindow", CV_WINDOW_AUTOSIZE);
-	//connect(, SIGNAL)
-
-
-	//thread start
-	/*CalibrationModule* c1 = new CalibrationModule;
-	CalibrationModule* c3 = new CalibrationModule;
-	CalibrationModule* c2 = new CalibrationModule;
-	c1->moveToThread(&t1);
-	c2->moveToThread(&t2);
-	c3->moveToThread(&t3);
-	connect(&t1, SIGNAL(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)), this, SLOT(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)));
-	connect(&t2, SIGNAL(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)), this, SLOT(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)));
-	connect(&t3, SIGNAL(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)), this, SLOT(updatePixmap(const QPixmap& pixmap, realsense::RS_400_STREAM_TYPE)));
-	t1.start(); t2.start(); t3.start();*/
-	//thread end
-
-
-	connect(ui.startStreaming, &QPushButton::clicked, [this] {startStreaming(); });
-	connect(ui.rgbStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_COLOR); });
-	connect(ui.leftStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_INFRARED1); });
-	connect(ui.rightStart, &QPushButton::clicked, [this] {startStreaming(RS400_STREAM_INFRARED2); });
+	connect(ui.allStart, &QPushButton::clicked, [this] {startDetection(); });
+	connect(ui.rgbStart, &QPushButton::clicked, [this] {startDetection(RS400_STREAM_COLOR); });
+	connect(ui.leftStart, &QPushButton::clicked, [this] {startDetection(RS400_STREAM_INFRARED1); });
+	connect(ui.rightStart, &QPushButton::clicked, [this] {startDetection(RS400_STREAM_INFRARED2); });
 	
-	connect(ui.captrueImage, &QPushButton::clicked, [this] {capture(); });
+	connect(ui.allCapture, &QPushButton::clicked, [this] {capture(); });
 	connect(ui.rgbCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_COLOR); });
 	connect(ui.leftCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED1); });
 	connect(ui.rightCapture, &QPushButton::clicked, [this] {capture(RS400_STREAM_INFRARED2); });
 
-	connect(ui.stopStreaming, &QPushButton::clicked, [this] {stopStreaming(); });
+	connect(ui.allStop, &QPushButton::clicked, [this] {stopDetection(); });
+	connect(ui.rgbStop, &QPushButton::clicked, [this] {stopDetection(RS400_STREAM_COLOR); });
+	connect(ui.leftStop, &QPushButton::clicked, [this] {stopDetection(RS400_STREAM_INFRARED1); });
+	connect(ui.rightStop, &QPushButton::clicked, [this] {stopDetection(RS400_STREAM_INFRARED2); });
 	
 
-	connect(ui.startCalibration, &QPushButton::clicked, [this] {calibration(); });
+	connect(ui.startCalibrate, &QPushButton::clicked, [this] {calibration(); });
+
+	//Start each Streaming
+	WorkerThread *workerColor = new WorkerThread(m_device, RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+	WorkerThread *workerIR1 = new WorkerThread(m_device, RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
+	WorkerThread *workerIR2 = new WorkerThread(m_device, RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
+	connect(workerColor, &WorkerThread::updateColorPixmap, this, &CalibrationModule::updateColor);
+	connect(workerIR1, &WorkerThread::updateIR1Pixmap, this, &CalibrationModule::updateIR1);
+	connect(workerIR2, &WorkerThread::updateIR2Pixmap, this, &CalibrationModule::updateIR2);
+	workerColor->start();
+	workerIR1->start();
+	workerIR2->start();
+
+	connect(this, &CalibrationModule::startColorDetect, workerColor, &WorkerThread::setDetection);
+	connect(this, &CalibrationModule::startIR1Detect, workerIR1, &WorkerThread::setDetection);
+	connect(this, &CalibrationModule::startIR2Detect, workerIR2, &WorkerThread::setDetection);
+
+	connect(this, &CalibrationModule::stopColorDetect, workerColor, &WorkerThread::unsetDetection);
+	connect(this, &CalibrationModule::stopIR1Detect, workerIR1, &WorkerThread::unsetDetection);
+	connect(this, &CalibrationModule::stopIR2Detect, workerIR2, &WorkerThread::unsetDetection);
+}
+
+void CalibrationModule::startDetection() {
+	startDetection(RS400_STREAM_COLOR);
+	startDetection(RS400_STREAM_INFRARED1);
+	startDetection(RS400_STREAM_INFRARED2);
+}
+
+void CalibrationModule::startDetection(RS_400_STREAM_TYPE stream) {
+	if (stream == RS400_STREAM_COLOR) {
+		updateSysMsg("color camera start detection!!");
+		emit startColorDetect();
+	}
+	else if (stream == RS400_STREAM_INFRARED1) {
+		updateSysMsg("left camera start detection!!");
+		emit startIR1Detect();
+	}
+	else if (stream == RS400_STREAM_INFRARED2) {
+		updateSysMsg("right camera start detection!!");
+		emit startIR2Detect();
+	}
 }
 
 void CalibrationModule::startStreaming() {
-	WorkerThread *worker = new WorkerThread(m_device, RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
-
-	//connect(worker, &WorkerThread::progressChanged, this, &CalibrationModule::onProgressChanged);
-	connect(worker, &WorkerThread::updateColorPixmap, this, &CalibrationModule::updateColor);
-	//connect(worker, &WorkerThread::finished, worker, &QObject::deleteLater);
-	worker->start();
-	ui.rgbLabel->setText("Thread is Started!!!");
-
-	//this->startStreaming(RS400_STREAM_COLOR);
-
+	
 	
 
 /*	int numSquares = numCornersHor * numCornersVer;
@@ -128,12 +140,6 @@ void CalibrationModule::startStreaming() {
 }
 
 
-/*
-
-
-
-
-*/
 void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 		//m.lock();
 		if (stream == RS400_STREAM_COLOR && m_streamingColor == false) {
@@ -287,18 +293,15 @@ void CalibrationModule::stopStreaming() {
 
 void CalibrationModule::stopStreaming(RS_400_STREAM_TYPE stream) {
 	ui.rgbLabel->setText(toQstr(to_string(10)));
-	if (stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR && m_streamingColor == true) {
-		m_streamingColor = false;
+	if (stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR) {
 		m_device->stopStreaming(stream);
 		ui.rgbLabel->clear();
 	}
-	else if (stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1 && m_streamingIR1 == true) {
-		m_streamingIR1 = false;
+	else if (stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1) {
 		m_device->stopStreaming(stream);
 		ui.irLeftLabel->clear();
 	}
-	else if (stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2 && m_streamingIR2 == true) {
-		m_streamingIR2 = false;
+	else if (stream == RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2) {
 		m_device->stopStreaming(stream);
 		ui.irRightLabel->clear();
 	}
