@@ -267,7 +267,7 @@ void CalibrationModule::capture(RS_400_STREAM_TYPE stream) {
 		ui.rgbCount->setText(toQstr(str));
 		break;
 	case RS400_STREAM_INFRARED1:
-		m_leftImage_points.push_back(m_pointBufLeft);
+		//m_leftImage_points.push_back(m_pointBufLeft);
 		m_left_object_points.push_back(obj);
 		m_left_stored++;
 		str = to_string(m_left_stored) + "/20";

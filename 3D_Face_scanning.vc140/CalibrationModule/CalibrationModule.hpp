@@ -86,9 +86,9 @@ private:
 	WorkerThread *workerIR1;
 	WorkerThread *workerIR2;
 
-	int m_numCornersHor = 7, m_numCornersVer = 9;
-	int m_numSquares = m_numCornersHor * m_numCornersVer;
-	cv::Size m_board_sz = cv::Size(m_numCornersHor, m_numCornersVer);
+	
+	
+	
 	int m_w = 1920, m_h = 1080;
 	bool m_streamingColor = false;
 	bool m_streamingIR1 = false;
@@ -111,7 +111,7 @@ private:
 	std::vector<std::vector<cv::Point2f>> m_rightrImage_points;
 	
 	std::vector<cv::Point2f> m_pointBufColor;
-	std::vector<cv::Point2f> m_pointBufLeft;
+	
 	std::vector<cv::Point2f> m_pointBufRight;
 
 };
