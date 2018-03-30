@@ -128,6 +128,7 @@ void LandMarkInteractorStyle::OnLeftButtonDown()
 		sp->SetCenter(pos[0], pos[1], pos[2]);
 		sp->SetRadius(radius);
 
+		std::cout <<"Á¡ Âï¾î¼­"<< pos[0] << " " << pos[1] << " " << pos[2] << "\n";
 		vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 
 		mapper->SetInputConnection(sp->GetOutputPort());

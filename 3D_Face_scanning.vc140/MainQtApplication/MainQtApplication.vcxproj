@@ -240,6 +240,7 @@
     <ClCompile Include="PLYImport.cpp" />
     <ClCompile Include="PNGExport.cpp" />
     <ClCompile Include="PNGImport.cpp" />
+    <ClCompile Include="qrc_iomodule.cpp" />
     <ClCompile Include="RegistrationModule.cpp" />
     <ClCompile Include="Scan.cpp" />
     <ClCompile Include="ScanModule.cpp" />

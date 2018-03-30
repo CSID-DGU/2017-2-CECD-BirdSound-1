@@ -154,11 +154,11 @@ void ScanModule::slotLeftSaveBtn()
 }
 void ScanModule::slotRightSaveBtn()
 {
-	m_MiniMeshPreviewer[2]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[2]->GetRenderWindow(), "right.obj");
+	m_MiniMeshPreviewer[1]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[1]->GetRenderWindow(), "right.obj");
 }
 void ScanModule::slotFrontSaveBtn() 
 {
-	m_MiniMeshPreviewer[3]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[3]->GetRenderWindow(), "right.obj");
+	m_MiniMeshPreviewer[2]->m_MeshIO->ExportOBJFile(m_MiniMeshPreviewer[2]->GetRenderWindow(), "right.obj");
 }
 
 
@@ -185,7 +185,7 @@ void Copy(MeshPreview* src, MeshPreview* des)
 }
 void ScanModule::slotCapPicBtn()
 {
-	if(index==0)
+	if (index == 0)
 	{
 		Copy(m_ScannedMeshViewer, m_MiniMeshPreviewer[0]);
 		ui.Viewer_cad_LEFT->setStyleSheet("border: 1px solid black;background-color:black;");
@@ -201,12 +201,20 @@ void ScanModule::slotCapPicBtn()
 		index = 2;
 	}
 
-	else if(index==2)
+	else if (index == 2)
 	{
 		ui.Viewer_cad_RIGHT->setStyleSheet("border: 1px solid black;background-color:black;");
 		Copy(m_ScannedMeshViewer, m_MiniMeshPreviewer[2]);
 		index = 3;
 		std::cout << "Index Full\n";
+	}
+
+
+	else
+	{
+		ui.Viewer_cad_RIGHT->setStyleSheet("border: 1px solid black;background-color:black;");
+		ui.Viewer_cad_LEFT->setStyleSheet("border: 3px solid red;background-color:black;");
+		index = 0;
 	}
 }
 

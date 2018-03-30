@@ -42,20 +42,15 @@ public:
 	{
 		double *bound= _mainActor->GetBounds();
 		double row = bound[1] - bound[0];
-		double col = bound[3] - bound[2];
-		double retv = (row)*(col);//*(bound[5]-bound[4]);
+	
+		if (row < 0)row = -row;
+		double retv = row;//*(bound[5]-bound[4]);
 
 		std::cout << retv << " ";
-		if (row >= 1 && col >= 1) 
-		{
-			retv /= bound[1];
-			retv /= bound[3];
-		}
-
-		else retv /= 10;
+		retv / 25;
 		
-		radius = abs(retv);
-		std::cout << radius << "\n";
+		radius = 0.005;
+		std::cout << radius << "이 원 크기\n";
 	}
 
 private:

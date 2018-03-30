@@ -167,6 +167,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_AlignModule.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="qrc_iomodule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">

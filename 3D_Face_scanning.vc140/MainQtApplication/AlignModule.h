@@ -28,6 +28,10 @@
 #include"vtkAppendPolyData.h"
 #include"vtkTransformPolyDataFilter.h"
 #include"vtkIterativeClosestPointTransform.h"
+#include"vtkMatrix4x4.h"
+
+
+#include"vtkSTLWriter.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -50,7 +54,6 @@ public:
 		right->Rendering();
 	}
 	AlignModule();
-	void mergeActors(MeshPreview *mesh, int place);
 	//void registeration();
 	std::vector<double3> extractLandMark(vtkRenderer *rend);
 	void setRight(MeshPreview *rend);
@@ -61,7 +64,7 @@ public:
 	int DestroyVariables();
 	void InitializeUi();
 	void registration();
-	
+	int getIndex(vtkPolyData *poly, double *pos);
 public slots:
 	void slotAlign();
 	void slotLanMarkLeft();
