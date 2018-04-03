@@ -10,13 +10,13 @@ void WorkerThread::run() {
 		unique_ptr<uint32_t[]> colorBuf = unique_ptr<uint32_t[]>(new uint32_t[1920 * (1080 + 1)]);
 		
 		QImage color_image;
-		while (true) {
+		while (m_threadLife) {
 
 			auto fColor = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 			uint32_t *color = colorBuf.get();
 			ConvertYUY2ToRGBA((uint8_t*)fColor.get_data(), 1920, 1080, (uint8_t*)color);
 			//캘리브레이션 모드에 들어가있으면 이를 시작한다.
-			if (isDetect) {
+			if (isSetDetect) {
 				cv::Mat cv_color(cv::Size(1920, 1080), CV_8UC4, (uint8_t*)color, cv::Mat::AUTO_STEP);
 				cv::Mat cv_gray;
 				bool found = cv::findChessboardCorners(cv_color, m_board_sz, m_pointBuf, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
@@ -50,7 +50,7 @@ void WorkerThread::run() {
 			auto fLeft = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED1);
 			uint8_t *left = (uint8_t*)leftBuf.get();
 			ConvertLuminance16ToLuminance8((uint16_t*)fLeft.get_data(), 1920, 1080, left);
-			if (isDetect) {
+			if (isSetDetect) {
 				cv::Mat cv_left(cv::Size(1920, 1080), CV_8U, left, cv::Mat::AUTO_STEP);
 				bool found = cv::findChessboardCorners(cv_left, m_board_sz, m_pointBuf, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 				if (found)
@@ -80,7 +80,7 @@ void WorkerThread::run() {
 			auto fRight = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_INFRARED2);
 			uint8_t *right = (uint8_t*)rightBuf.get();
 			ConvertLuminance16ToLuminance8((uint16_t*)fRight.get_data(), 1920, 1080, right);
-			if (isDetect) {
+			if (isSetDetect) {
 				cv::Mat cv_right(cv::Size(1920, 1080), CV_8U, right, cv::Mat::AUTO_STEP);
 				bool found = cv::findChessboardCorners(cv_right, m_board_sz, m_pointBuf, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 				if (found)

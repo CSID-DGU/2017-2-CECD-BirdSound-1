@@ -492,12 +492,12 @@
     <string>RGB Camera</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="asdasd">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>380</y>
-     <width>511</width>
+     <width>101</width>
      <height>16</height>
     </rect>
    </property>
@@ -505,7 +505,7 @@
     <string>IR Camera Left</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_10">
+  <widget class="QLabel" name="ir2Count">
    <property name="geometry">
     <rect>
      <x>550</x>
@@ -563,8 +563,8 @@
   <zorder>message</zorder>
   <zorder>rightStop</zorder>
   <zorder>label_5</zorder>
-  <zorder>label</zorder>
-  <zorder>label_10</zorder>
+  <zorder>asdasd</zorder>
+  <zorder>ir2Count</zorder>
   <zorder>label_9</zorder>
  </widget>
  <resources/>

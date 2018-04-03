@@ -42,6 +42,8 @@ public:
 		}
 	};
 
+	
+
 
 	void startStreaming();
 	void startStreaming(RS_400_STREAM_TYPE stream);
@@ -67,6 +69,8 @@ void updateIR2(QPixmap pixmap) {
 	ui.irRightLabel->setScaledContents(true);
 	ui.irRightLabel->show();
 }
+void updateCaptureNum(int captureNum, RS_400_STREAM_TYPE m_stream);
+void flagCalibration(std::vector<std::vector<cv::Point3f>> object_points, std::vector<std::vector<cv::Point2f>> image_points, RS_400_STREAM_TYPE m_stream);
 
 signals:
 void startColorDetect();
@@ -88,7 +92,10 @@ private:
 
 	
 	
-	
+	bool m_rgbCalib_flag = false;
+	bool m_leftCalib_flag = false;
+	bool m_rightCalib_flag = false;
+
 	int m_w = 1920, m_h = 1080;
 	bool m_streamingColor = false;
 	bool m_streamingIR1 = false;

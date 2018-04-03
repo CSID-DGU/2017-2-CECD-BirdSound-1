@@ -42,9 +42,10 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 	connect(workerIR1, &WorkerThread::updateIR1Pixmap, this, &CalibrationModule::updateIR1);
 	connect(workerIR2, &WorkerThread::updateIR2Pixmap, this, &CalibrationModule::updateIR2);
 	workerColor->start();
-	workerIR1->start();
-	workerIR2->start();
+	//workerIR1->start();
+	//workerIR2->start();
 
+	//Detection set/unset
 	connect(this, &CalibrationModule::startColorDetect, workerColor, &WorkerThread::setDetection);
 	connect(this, &CalibrationModule::startIR1Detect, workerIR1, &WorkerThread::setDetection);
 	connect(this, &CalibrationModule::startIR2Detect, workerIR2, &WorkerThread::setDetection);
@@ -52,6 +53,21 @@ CalibrationModule::CalibrationModule(QWidget *parent) : QWidget(parent)
 	connect(this, &CalibrationModule::stopColorDetect, workerColor, &WorkerThread::unsetDetection);
 	connect(this, &CalibrationModule::stopIR1Detect, workerIR1, &WorkerThread::unsetDetection);
 	connect(this, &CalibrationModule::stopIR2Detect, workerIR2, &WorkerThread::unsetDetection);
+
+	//set capture signal
+	connect(ui.rgbCapture, &QPushButton::clicked, workerColor, &WorkerThread::capture);
+	connect(ui.leftCapture, &QPushButton::clicked, workerIR1, &WorkerThread::capture);
+	connect(ui.rightCapture, &QPushButton::clicked, workerIR2, &WorkerThread::capture);
+
+	//update Capture number
+	connect(workerColor, &WorkerThread::updateCapture, this, &CalibrationModule::updateCaptureNum);
+	connect(workerIR1, &WorkerThread::updateCapture, this, &CalibrationModule::updateCaptureNum);
+	connect(workerIR2, &WorkerThread::updateCapture, this, &CalibrationModule::updateCaptureNum);
+
+	//notify ready 2 calibration
+	connect(workerColor, &WorkerThread::ready2Calibration, this, &CalibrationModule::flagCalibration);
+	connect(workerIR1, &WorkerThread::ready2Calibration, this, &CalibrationModule::flagCalibration);
+	connect(workerIR2, &WorkerThread::ready2Calibration, this, &CalibrationModule::flagCalibration);
 }
 
 void CalibrationModule::startDetection() {
@@ -140,6 +156,8 @@ void CalibrationModule::startStreaming() {
 }
 
 
+
+//invalid function
 void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 		//m.lock();
 		if (stream == RS400_STREAM_COLOR && m_streamingColor == false) {
@@ -170,7 +188,7 @@ void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 				QPixmap cbuf = QPixmap::fromImage(color_image);
 				//emit updatePixmap(cbuf, RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
 				
-				ui.label->setText(toQstr(std::to_string(count)));
+				//ui.label->setText(toQstr(std::to_string(count)));
 				//ui.rgbLabel->setPixmap(cbuf);
 				//ui.rgbLabel->setScaledContents(true);
 				//ui.rgbLabel->show();
@@ -234,7 +252,7 @@ void CalibrationModule::startStreaming(RS_400_STREAM_TYPE stream) {
 		//m.unlock();
 }
 
-
+//invalid function
 void CalibrationModule::capture() {
 
 	/*capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
@@ -253,37 +271,41 @@ void CalibrationModule::capture() {
 	ui.message->setText(toQstr(msg));*/
 }
 
+//invalid function
 void CalibrationModule::capture(RS_400_STREAM_TYPE stream) {
-	vector<cv::Point3f> obj;
-	for (int j = 0; j<numSquares; j++)
-		obj.push_back(cv::Point3f(j / numCornersHor, j%numCornersHor, 0.0f));
-	std::string str;
-	switch (stream) {
-	case RS400_STREAM_COLOR:
-		m_colorImage_points.push_back(m_pointBufColor);
-		m_color_object_points.push_back(obj);
-		m_color_stored++;
-		str = to_string(m_color_stored) + "/20";
-		ui.rgbCount->setText(toQstr(str));
-		break;
-	case RS400_STREAM_INFRARED1:
-		//m_leftImage_points.push_back(m_pointBufLeft);
-		m_left_object_points.push_back(obj);
-		m_left_stored++;
-		str = to_string(m_left_stored) + "/20";
-		ui.leftCount->setText(toQstr(str));
-		break;
-	case RS400_STREAM_INFRARED2:
-		m_rightrImage_points.push_back(m_pointBufRight);
-		m_right_object_points.push_back(obj);
-		m_right_stored++;
-		str = to_string(m_right_stored) + "/20";
-		ui.rightCount->setText(toQstr(str));
-		break;
-	}
+
+
+	//vector<cv::Point3f> obj;
+	//for (int j = 0; j<numSquares; j++)
+	//	obj.push_back(cv::Point3f(j / numCornersHor, j%numCornersHor, 0.0f));
+	//std::string str;
+	//switch (stream) {
+	//case RS400_STREAM_COLOR:
+	//	m_colorImage_points.push_back(m_pointBufColor);
+	//	m_color_object_points.push_back(obj);
+	//	m_color_stored++;
+	//	str = to_string(m_color_stored) + "/20";
+	//	ui.rgbCount->setText(toQstr(str));
+	//	break;
+	//case RS400_STREAM_INFRARED1:
+	//	//m_leftImage_points.push_back(m_pointBufLeft);
+	//	m_left_object_points.push_back(obj);
+	//	m_left_stored++;
+	//	str = to_string(m_left_stored) + "/20";
+	//	ui.leftCount->setText(toQstr(str));
+	//	break;
+	//case RS400_STREAM_INFRARED2:
+	//	m_rightrImage_points.push_back(m_pointBufRight);
+	//	m_right_object_points.push_back(obj);
+	//	m_right_stored++;
+	//	str = to_string(m_right_stored) + "/20";
+	//	ui.rightCount->setText(toQstr(str));
+	//	break;
+	//}
 
 }
 
+//invalid function
 void CalibrationModule::stopStreaming() {
 	//All stop streaming
 	stopStreaming(RS400_STREAM_COLOR);
@@ -291,6 +313,7 @@ void CalibrationModule::stopStreaming() {
 	stopStreaming(RS400_STREAM_INFRARED2);
 }
 
+//invalid function
 void CalibrationModule::stopStreaming(RS_400_STREAM_TYPE stream) {
 	ui.rgbLabel->setText(toQstr(to_string(10)));
 	if (stream == RS_400_STREAM_TYPE::RS400_STREAM_COLOR) {
@@ -307,22 +330,79 @@ void CalibrationModule::stopStreaming(RS_400_STREAM_TYPE stream) {
 	}
 }
 
-void CalibrationModule::calibration() {
-	cv::Mat intrinsic = cv::Mat(3, 3, CV_32FC1);
-	cv::Mat distCoeffs;
-	std::vector<cv::Mat> rvecs;
-	std::vector<cv::Mat> tvecs;
+
+//Flag stream for calibratoin & terminate thread(signal from thread)
+//store calibration data;
+void CalibrationModule::flagCalibration(std::vector<std::vector<cv::Point3f>> object_points, std::vector<std::vector<cv::Point2f>> image_points, RS_400_STREAM_TYPE m_stream) {
 	
-	int w = 640, h = 480;
-	auto fColor = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
-	cv::Mat colorImage(cv::Size(w, h), CV_8UC3, (void*)fColor.get_data(), cv::Mat::AUTO_STEP);
+	if (m_stream == RS400_STREAM_COLOR) {
+		ui.rgbCapture->setEnabled(false);
+		m_rgbCalib_flag = true;
+		m_color_object_points = object_points;
+		m_colorImage_points = image_points;
+	}
+	else if (m_stream == RS400_STREAM_INFRARED1) {
+		ui.leftCapture->setEnabled(false);
+		m_leftCalib_flag = true;
+		m_left_object_points = object_points;
+		m_leftImage_points = image_points;
+	}
+	else if (m_stream == RS400_STREAM_INFRARED2) {
+		ui.rightCapture->setEnabled(false);
+		m_rightCalib_flag = true;
+		m_right_object_points = object_points;
+		m_rightrImage_points = image_points;
+	}
+}
 
-	cv::calibrateCamera(m_color_object_points, m_colorImage_points, colorImage.size(), intrinsic, distCoeffs, rvecs, tvecs);
+//3개의 스트림 모두 활성화 된 경우에 실행합니다.
+void CalibrationModule::calibration() {
+	
+	if (m_rgbCalib_flag == true) {
+		cv::Mat intrinsic = cv::Mat(3, 3, CV_32FC1);
+		cv::Mat distCoeffs;
+		std::vector<cv::Mat> rvecs;
+		std::vector<cv::Mat> tvecs;
 
+		int w = 1920, h = 1080;
+		auto fColor = m_device->capture(RS_400_STREAM_TYPE::RS400_STREAM_COLOR);
+		unique_ptr<uint32_t[]> colorBuf = unique_ptr<uint32_t[]>(new uint32_t[1920 * (1080 + 1)]);
+		uint32_t *color = colorBuf.get();
+		ConvertYUY2ToRGBA((uint8_t*)fColor.get_data(), 1920, 1080, (uint8_t*)color);
+		cv::Mat colorImage(cv::Size(w, h), CV_8UC4, (uint8_t*)color, cv::Mat::AUTO_STEP);
 
+		cv::calibrateCamera(m_color_object_points, m_colorImage_points, colorImage.size(), intrinsic, distCoeffs, rvecs, tvecs);
+		
+		
+		//캘리브 결과
+		cv::Mat colorImageBGR;
+		cv::Mat Calibrated;
+		cv::cvtColor(colorImage, colorImageBGR, CV_RGBA2BGR);
+		undistort(colorImageBGR, Calibrated, intrinsic, distCoeffs);
+		cv::resize(colorImageBGR, colorImageBGR, cv::Size(1024, 576));
+		cv::resize(Calibrated, Calibrated, cv::Size(1024, 576));
+		imshow("Original", colorImageBGR);
+		imshow("After Calibratoin", Calibrated);
+		cv::waitKey(1);
+
+	}
+	
 }
 
 
 inline QString CalibrationModule::toQstr(std::string str) {
 	return QString::fromUtf8(str.c_str());
+}
+
+void CalibrationModule::updateCaptureNum(int captureNum, RS_400_STREAM_TYPE m_stream) {
+	string  tmp = "/20";
+	if (m_stream == RS400_STREAM_COLOR) {
+		ui.rgbCount->setText(toQstr(to_string(captureNum) + tmp));
+	}
+	else if (m_stream == RS400_STREAM_INFRARED1) {
+		ui.leftCount->setText(toQstr(to_string(captureNum) + tmp));
+	}
+	else if (m_stream == RS400_STREAM_INFRARED2) {
+		ui.rightCount->setText(toQstr(to_string(captureNum) + tmp));
+	}
 }
