@@ -411,12 +411,12 @@ ct = A_ct+B_ct+C_ct
 ct += len(addedmesh_frle)
 ct += len(addedmesh_frri)
 addedmesh_list = ""
-addedmesh_list += '\n'.join(addedmesh_frle) +"\n"
-addedmesh_list += '\n'.join(addedmesh_frri)
+#addedmesh_list += '\n'.join(addedmesh_frle) +"\n"
+#addedmesh_list += '\n'.join(addedmesh_frri)
 
 
 #Mesh 만들면서 저장하기
 print("\twrtie Polygon",ct )
-header += "\n\nPOLYGONS "+str(ct)+" "+str(ct*4)+"\n"+A_ct_list+"\n"+B_ct_list +"\n"+C_ct_list +"\n" +addedmesh_list
+header += "\n\nPOLYGONS "+str(ct)+" "+str(ct*4)+"\n"+A_ct_list+"\n"+B_ct_list +"\n"+C_ct_list +"\n" #+addedmesh_list
 with open(filename+'.vtk','w') as f2:
     f2.write(header)
