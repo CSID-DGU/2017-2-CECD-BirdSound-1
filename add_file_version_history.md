@@ -1,0 +1,11 @@
+## 추가 설치파일 변경이력
+- v1 : realsense 및 vtk lib 파일 추가
+- v2 : realsense x64용으로 lib 교체
+- v3 : Qt dll추가
+- v4 : realsense lib 파일 재컴파일 (C/C++ -> Code Generation -> Runtime Library -> MDd 및 MD로)
+- v5 : realsense 버전변경 2.9.1_rc -> 2.9.0
+- v6 : vtk 라이브러리 파일추가
+- v7 : vtk header파일 중복 제거
+- v8 : Qt dll파일 중복 제거
+- v9 : OpenCV 파일 추가
+- v10 : OpenCV 누락파일 추가 (dll 과 lib MD/MT 구분 주의...)
