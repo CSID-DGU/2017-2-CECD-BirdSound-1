@@ -34,6 +34,8 @@ F_L3 = [680,480]
 F_R1 = [790,330]
 F_R2 = []
 F_R3 = [760,470]
+F_LL = []
+F_RL = []
 
 R1 = [740, 340]
 R2 = []
@@ -60,11 +62,11 @@ with open(filename+'.txt','r') as f:
             A[ix][i] = A[ix][i].split()
             for j in range(3):
                 A[ix][i][j] = float(A[ix][i][j])
-
+'''
     for i in range(POINTS):
         for j in range(3):
             A[RI][i][j] = 0.0
-
+'''
 
 def getPointIdx(A):
     return A[0] + A[1]*WIDTH
@@ -82,6 +84,44 @@ def delPointFromTexture(point, page, direction):
             if T[page][ix][0] < T_s[0] : 
                 A[page][ix][0] = A[page][ix][1] = A[page][ix][2] = 0.0
 
+def getGrad(P1, P3):
+    if P1[0] == P3[0]:
+        print("분모 is 0 ")
+        return exit(1)
+    return (P1[1] - P3[1])/float(P1[0] - P3[0])
+def getGradDelPoint(P1,P3):
+    m = getGrad(P1, P3)
+    k = (-P1[0]) * m + P1[1]
+
+    lists = []
+    for ele in range(P1[1],P3[1]):
+        lists.append([int((ele - k) / m), ele])
+        lists.append([int((ele - k) / m), ele])
+        lists.append([int((ele - k) / m), ele])
+        lists.append([int((ele - k) / m), ele])
+        lists.append([int((ele - k) / m), ele])
+        lists.append([int((ele - k) / m), ele])
+    print(m)
+    return lists[:]
+def getDeleteIndex2(remainPage, deletePage, D1,remaine_list):
+    del_point = []
+    d_nxt =D1[:]
+    del_point.append([remaine_list[0],d_nxt])
+    WS_d = getWorkingSet(deletePage,d_nxt)
+    for r_nxt in remaine_list:  #최대 하강 길이까지
+        min_idx = 0
+        min = 99999.0
+        for d_idx in range(len(WS_d)):
+            tmp = getDistance3D(A[remainPage][getPointIdx(r_nxt)],WS_d[d_idx])    #주변 점들의 거리를 계산하고
+            if min > tmp :      #최소인 점 min에 대해
+                min = tmp
+                min_idx = d_idx
+        d_nxt = getNextWorkingSetIndex(d_nxt,min_idx)
+        del_point.append([r_nxt,d_nxt]) #그리고 해당점은 제거할 리스트에 넣는다.
+
+        WS_d = getWorkingSet(deletePage, d_nxt)
+        #print(min_idx)
+    return del_point[:],0,1
 
 def getDistance3D(P1,P2):
     return math.sqrt(pow(P1[0]-P2[0],2) + pow(P1[1]-P2[1],2)+pow(P1[2]-P2[2],2))
@@ -105,6 +145,7 @@ def getNextWorkingSetIndex(now_p, idx):
         return  [now_p[0]+1,now_p[1]]
     elif idx == 3:
         return [now_p[0],now_p[1]+1]
+
 def getDeleteIndex(remainPage, deletePage,remain_land_eye,remain_land_mouse,delete_land_eye,delete_land_mouse):
     del_point = []
     t = remain_land_mouse[1]
@@ -125,12 +166,12 @@ def getDeleteIndex(remainPage, deletePage,remain_land_eye,remain_land_mouse,dele
                 if min > tmp :      #최소인 점 min에 대해 
                     min = tmp
                     min_idx = [r_idx,d_idx]
-        print(remainPage,getNextWorkingSetIndex(r_nxt,min_idx[0]),remain_land_mouse, getNextWorkingSetIndex(d_nxt,min_idx[1]), delete_land_mouse)
+        #print(remainPage,getNextWorkingSetIndex(r_nxt,min_idx[0]),remain_land_mouse, getNextWorkingSetIndex(d_nxt,min_idx[1]), delete_land_mouse)
         if getNextWorkingSetIndex(r_nxt,min_idx[0]) == remain_land_mouse[0] or getNextWorkingSetIndex(d_nxt,min_idx[1]) ==  delete_land_mouse[0]: #점이 최대 x좌표 까지 간다면
-            r_nxt = getNextWorkingSetIndex(r_nxt, 3)    #아래에 있는 점을 다음점으로 지정한다. 
+            r_nxt = getNextWorkingSetIndex(r_nxt, 3)    #아래에 있는 점을 다음점으로 지정한다.
             d_nxt = getNextWorkingSetIndex(d_nxt, 3)
         elif getNextWorkingSetIndex(r_nxt,min_idx[0])[0] == remain_land_mouse[0]:
-            r_nxt = getNextWorkingSetIndex(r_nxt, 3)  
+            r_nxt = getNextWorkingSetIndex(r_nxt, 3)
             d_nxt = getNextWorkingSetIndex(d_nxt,min_idx[1])
         elif getNextWorkingSetIndex(d_nxt,min_idx[1])[0]  ==  delete_land_mouse[0]:
             r_nxt = getNextWorkingSetIndex(r_nxt,min_idx[0]) 
@@ -139,7 +180,7 @@ def getDeleteIndex(remainPage, deletePage,remain_land_eye,remain_land_mouse,dele
             r_nxt = getNextWorkingSetIndex(r_nxt,min_idx[0])
             d_nxt = getNextWorkingSetIndex(d_nxt,min_idx[1])
             if r_nxt[:] == del_point[len(del_point)-1][0][:] and d_nxt[:] == del_point[len(del_point)-1][1][:] : #그런데 두 값이 같으면
-                r_nxt = getNextWorkingSetIndex(r_nxt, 3)    #아래에 있는 점을 다음점으로 지정한다. 
+                r_nxt = getNextWorkingSetIndex(r_nxt, 3)    #아래에 있는 점을 다음점으로 지정한다.
                 d_nxt = getNextWorkingSetIndex(d_nxt, 3)
         del_point.append([r_nxt,d_nxt]) #그리고 해당점은 제거할 리스트에 넣는다. 
 
@@ -306,26 +347,34 @@ delPointFromTexture(F_R1,FR,"RIGHT")
 delPointFromTexture(L2,LE,"RIGHT")
 '''
 
+#FR 이미지의 포인트 구하기
+F_LL = getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1)+getGradDelPoint(F_L1,F_L3)+getGradDelPoint(F_L3,[F_L3[0]-50,F_L3[1]+200])
+F_RL = getGradDelPoint([F_R1[0]+30,F_R1[1]-100],F_R1)+getGradDelPoint(F_R1,F_R3)+getGradDelPoint(F_R3,[F_R3[0]+50,F_R3[1]+200])
+#pprint.pprint(getDeleteIndex2(FR,LE,F_L1,F_L3,L1,L3,F_LL))
+#FR 기준에서 가장 가까운점 구하기
+
 
 #중첩된점 구하기
 print("\tget \t\tOverlap Point ")
-del_tmp_point_frle,frle_point_page_FR,frle_point_page_LE = getDeleteIndex(FR,LE,F_L1,F_L3,L1,L3)
+#del_tmp_point_frle,frle_point_page_FR,frle_point_page_LE = getDeleteIndex(FR,LE,F_L1,F_L3,L1,L3)
+del_tmp_point_frle,frle_point_page_FR,frle_point_page_LE = getDeleteIndex2(FR,LE,[L1[0]-30,L1[1]-100],F_LL)
 part_del_point_frle_FR = getDeletePoint(frle_point_page_FR, del_tmp_point_frle, "deletePositive")
 part_del_point_frle_LE = getDeletePoint(frle_point_page_LE, del_tmp_point_frle,"deleteNagative")  #deleteNagative / deletePositive
 
-'''
-del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex(FR,RI,F_R1,F_R3,R1,R3)
+
+#del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex(FR,RI,F_R1,F_R3,R1,R3)
+del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex2(FR,RI,[R1[0]+30,R1[1]-100],F_RL)
 part_del_point_frri_FR = getDeletePoint(frri_point_page_FR, del_tmp_point_frri, "deleteNagative")
 part_del_point_frri_RI = getDeletePoint(frri_point_page_RI,del_tmp_point_frri,"deletePositive")  #deleteNagative / deletePositive
-'''
+
 #중첩된 점 제거
 print("\tdelete \t\tOverlap Point ")
 deletePoint(FR,"deleteNagative",part_del_point_frle_FR)
 deletePoint(LE,"deletePositive",part_del_point_frle_LE)
-'''
+
 deletePoint(FR,"deletePositive",part_del_point_frri_FR)
 deletePoint(RI,"deleteNagative",part_del_point_frri_RI)
-'''
+
 #point를 str으로 생성
 print("\ttranslate points to string")
 header += transPointToStr(A[RI]) +"\n"
@@ -350,24 +399,24 @@ print("\tget \t\tMesh Polygon")
 connPoint_frle = getMeshLine(part_del_point_frle_FR, part_del_point_frle_LE,FR,LE)
 addedmesh_frle = addedMakeMesh(FR,LE, connPoint_frle)
 print("\t\tconnect \tPoint Length(frle) : ", len(connPoint_frle))
-'''
+
 connPoint_frri = getMeshLine(part_del_point_frri_RI,part_del_point_frri_FR,RI,FR)
 addedmesh_frri = addedMakeMesh(RI,FR, connPoint_frri)
 print("\t\tconnect \tPoint Length(frri) : ", len(connPoint_frri))
-'''
+
 #Polygon 출력하기
 print(" ")
 print("Ready for writting Mesh Polygon")
 ct = A_ct+B_ct+C_ct
-#ct += len(addedmesh_frle)
-#ct += len(addedmesh_frri)
+ct += len(addedmesh_frle)
+ct += len(addedmesh_frri)
 addedmesh_list = ""
 addedmesh_list += '\n'.join(addedmesh_frle) +"\n"
-#addedmesh_list += '\n'.join(addedmesh_frri)
+addedmesh_list += '\n'.join(addedmesh_frri)
 
 
 #Mesh 만들면서 저장하기
 print("\twrtie Polygon",ct )
-header += "\n\nPOLYGONS "+str(ct)+" "+str(ct*4)+"\n"+A_ct_list+"\n"+B_ct_list +"\n"+C_ct_list +"\n" #+addedmesh_list
+header += "\n\nPOLYGONS "+str(ct)+" "+str(ct*4)+"\n"+A_ct_list+"\n"+B_ct_list +"\n"+C_ct_list +"\n" +addedmesh_list
 with open(filename+'.vtk','w') as f2:
     f2.write(header)
