@@ -113,12 +113,34 @@ public:
 			
 			unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0, 0, 0));
 
+			int disp = i*1280 * 720/4;
 			for (int j = 0; j < nScalar; j++)
 			{
-				scalarPointer[j] = data[(i+1)*1280*720/4];
+				scalarPointer[j] = data[disp+j];
+				
 			}
+
+			viewer->m_ImageData[i]->Modified();
 		}
-		//viewer->m_Renderer->ResetCamera();
+
+
+		//vtkRenderer *rend = vtkRenderer::New();
+		//vtkImageActor *act = vtkImageActor::New();
+		//act->SetInputData(viewer->m_ImageData[1]);
+		//act->Update();
+		//
+		//vtkRenderWindow *win = vtkRenderWindow::New();
+		////vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
+
+
+		//rend->ResetCamera();
+		//rend->AddActor(act);
+		//
+		//win->AddRenderer(rend);
+		//win->Start();
+		////it->SetRenderWindow(win);
+		////it->Start();
+		////viewer->m_Renderer->ResetCamera();
 	}
 	//void printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type);
 	void ReleaseModel()

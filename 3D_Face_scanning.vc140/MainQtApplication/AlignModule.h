@@ -22,7 +22,6 @@
 //#include"vtkMatrix4x4.h"
 
 #include"MeshPreview.h"
-#include"vtkAssembly.h"
 
 #include"LandMarkInteractorStyle.h"
 #include"vtkAppendPolyData.h"
@@ -31,7 +30,7 @@
 #include"vtkMatrix4x4.h"
 
 
-#include"vtkSTLWriter.h"
+#include"vtkOBJExporter.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -63,8 +62,11 @@ public:
 	void InitializeVariables();
 	int DestroyVariables();
 	void InitializeUi();
-	void registration();
+	void registration(vtkPoints *left, vtkPoints *leftFront, vtkPoints* rightFront, vtkPoints* front);
 	int getIndex(vtkPolyData *poly, double *pos);
+
+private:
+	vtkPolyData* point2mesh(vtkPoints *pts);
 public slots:
 	void slotAlign();
 	void slotLanMarkLeft();

@@ -15,6 +15,15 @@
 #include<vtkPolyDataMapper.h>
 #include<vector>
 #include<vtkActorCollection.h>
+
+
+#include<vtkPointPicker.h>
+
+#include<vtkCellPicker.h>
+#include<vtkSelectionNode.h>
+#include<vtkSelection.h>
+#include<vtkExtractSelection.h>
+#include<vtkUnstructuredGrid.h>
 #include"double3.h"
 
 
@@ -38,6 +47,7 @@ public:
 		for (int i = 0; i < 5; i++)
 			mainActor[i] = actor[i];
 	}
+
 	void setRadis(vtkActor *_mainActor)
 	{
 		double *bound= _mainActor->GetBounds();
@@ -56,8 +66,11 @@ public:
 private:
 	vtkActor*				LastPickedActor=NULL;
 	vtkActor*				mainActor[5];
+
+
 	vtkProperty*			LastPickedProperty = NULL;
-	vtkPropPicker *picker = vtkPropPicker::New();
+	vtkCellPicker *picker = vtkCellPicker::New();
+	vtkSmartPointer<vtkPointPicker> pointPicker = vtkSmartPointer<vtkPointPicker>::New();
 	double					radius;
 };
 #endif

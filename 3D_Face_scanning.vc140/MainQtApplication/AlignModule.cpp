@@ -1,10 +1,6 @@
 
 #include"AlignModule.h"
 
-vtkAssembly* leftActor;
-vtkAssembly* frontActor;
-vtkAssembly* rightActor;
-
 /**
 Member 변수에 있는 left, front, right로 Align을 시행하고
 결과를 vtkRenderer로 뱉어낸다.
@@ -55,6 +51,7 @@ void AlignModule::slotLanMarkLeft()
 
 	leftStyle->setMainActors(left->m_Actor);
 	leftStyle->SetDefaultRenderer(left->GetRenderer());
+	
 }
 void AlignModule::slotLanMarkFront()
 {
@@ -142,55 +139,93 @@ void AlignModule::InitializeUi()
 	front->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.cadFront->winId()), sizeX, sizeY);
 }
 
-void AlignModule::registration()
+vtkPolyData* AlignModule::point2mesh(vtkPoints *pts)
 {
-	//vtkSmartPointer<vtkIterativeClosestPointTransform> icp =vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
-	//icp->SetSource(resultMesh->GetPolyDataAt(0));
-	//icp->SetTarget(resultMesh->GetPolyDataAt(1));
-	//icp->GetLandmarkTransform()->SetModeToRigidBody();
-	//icp->SetMaximumNumberOfIterations(20);
-	////icp->StartByMatchingCentroidsOn();
-	//icp->Modified();
-	//icp->Update();
+	vtkPolyData* poly = vtkPolyData::New();
+	vtkCellArray *cell = vtkCellArray::New();
 
-	//vtkSmartPointer<vtkIterativeClosestPointTransform> icp1 = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
-	//icp1->SetSource(resultMesh->GetPolyDataAt(2));
-	//icp1->SetTarget(resultMesh->GetPolyDataAt(1));
-	//icp1->GetLandmarkTransform()->SetModeToRigidBody();
-	//icp1->SetMaximumNumberOfIterations(20);
+	
+	cell->InsertNextCell(pts->GetNumberOfPoints());
+	for (int i = 0; i < pts->GetNumberOfPoints(); i++)
+	{
+		cell->InsertCellPoint(i);
+	}
+
+	poly->SetPolys(cell);
+	poly->SetPoints(pts);
+
+	cell->Delete();
+
+	return poly;
+}
+void AlignModule::registration(vtkPoints *left, vtkPoints *leftFront, vtkPoints* rightFront, vtkPoints* right)
+{
+	//vtkPolyData *polyLeft  = vtkPolyData::New();
+	//vtkPolyData *polyleFront = vtkPolyData::New();
+	//vtkPolyData *polyriFront1 = vtkPolyData::New();
+	//vtkPolyData *polyRight = vtkPolyData::New();
+
+
+	//polyLeft = point2mesh(left);
+	//polyleFront = point2mesh(leftFront);
+	//polyriFront1 = point2mesh(rightFront);
+	//polyRight = point2mesh(right);
+
+
+	//const int alpha = 3;//If alpha big -> too slow
+	//vtkSmartPointer<vtkIterativeClosestPointTransform> IcpleftFront =vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
+	//IcpleftFront->SetSource(polyLeft);
+	//IcpleftFront->SetTarget(polyleFront);
+	//IcpleftFront->GetLandmarkTransform()->SetModeToRigidBody();
+	//IcpleftFront->SetMaximumNumberOfIterations(alpha);
 	////icp->StartByMatchingCentroidsOn();
-	//icp1->Modified();
-	//icp1->Update();
+	//IcpleftFront->Modified();
+	//IcpleftFront->Update();
+
+	//vtkSmartPointer<vtkIterativeClosestPointTransform> IcprightFront = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
+	//IcprightFront->SetSource(polyRight);
+	//IcprightFront->SetTarget(polyriFront1);
+	//IcprightFront->GetLandmarkTransform()->SetModeToRigidBody();
+	//IcprightFront->SetMaximumNumberOfIterations(alpha);
+	////icp->StartByMatchingCentroidsOn();
+	//IcprightFront->Modified();
+	//IcprightFront->Update();
 
 
 	//// Transform the source points by the ICP solution
-	//vtkSmartPointer<vtkTransformPolyDataFilter> icpTransformFilter =vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+	//vtkSmartPointer<vtkTransformPolyDataFilter> leftFrontFilter =vtkSmartPointer<vtkTransformPolyDataFilter>::New();
 
-	//icpTransformFilter->SetInputData(resultMesh->GetPolyDataAt(0));
-	//icpTransformFilter->SetTransform(icp);
-	//icpTransformFilter->Update();
+	//leftFrontFilter->SetInputData(resultMesh->GetPolyDataAt(0));
+	//leftFrontFilter->SetTransform(IcpleftFront);
+	//leftFrontFilter->Update();
 
-	//vtkSmartPointer<vtkTransformPolyDataFilter> icpTransformFilter1 = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+	//vtkSmartPointer<vtkTransformPolyDataFilter> rightFrontFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
 
-	//icpTransformFilter1->SetInputData(resultMesh->GetPolyDataAt(2));
-	//icpTransformFilter1->SetTransform(icp);
-	//icpTransformFilter1->Update();
+	//rightFrontFilter->SetInputData(resultMesh->GetPolyDataAt(2));
+	//rightFrontFilter->SetTransform(IcprightFront);
+	//rightFrontFilter->Update();
 
 
+
+	//resultMesh->GetPolyDataAt(2)->ReleaseData();
 	//resultMesh->GetPolyDataAt(2)->Delete();
 	//resultMesh->m_PolyData[2] = vtkPolyData::New();
-	//resultMesh->GetPolyDataAt(2)->DeepCopy(icpTransformFilter1->GetOutput());
+	//resultMesh->GetPolyDataAt(2)->DeepCopy(leftFrontFilter->GetOutput());
+	//resultMesh->GetMapperAt(2)->SetInputData(resultMesh->m_PolyData[2]);
+	//resultMesh->GetActorAt(2)->Modified();
 
+
+	//resultMesh->GetPolyDataAt(0)->ReleaseData();
 	//resultMesh->GetPolyDataAt(0)->Delete();
 	//resultMesh->m_PolyData[0] = vtkPolyData::New();
-	//resultMesh->GetPolyDataAt(0)->DeepCopy(icpTransformFilter->GetOutput());
+	//resultMesh->GetPolyDataAt(0)->DeepCopy(rightFrontFilter->GetOutput());
+	//resultMesh->GetMapperAt(0)->SetInputData(resultMesh->m_PolyData[0]);
+	//resultMesh->GetActorAt(0)->Modified();
+	//
 
 
-	
 	resultMesh->GetRenderWindow()->Render();
 	resultMesh->GetRenderWindow()->Start();
-
-
 
 }
 
@@ -323,18 +358,7 @@ void AlignModule::slotAlign()
 
 
 
-
-		vtkSTLWriter *stl = vtkSTLWriter::New();
-		vtkAppendPolyData *app = vtkAppendPolyData::New();
-
-		for(int i=0;i<3;i++)
-			app->AddInputData(resultMesh->GetPolyDataAt(i));
-
-		app->Update();
-		stl->SetFileName("result.stl");
-		stl->SetInputData(app->GetOutput());
-		stl->Write();
-
+		registration(leftPts, frontNleft, frontNright, rightPts);
 
 		rightFilt->Delete();
 		leftFilt->Delete();
@@ -351,7 +375,7 @@ void AlignModule::slotAlign()
 		frontMark.clear();
 		rightMark.clear();
 
-		registration();
+	
 	}
 }
 

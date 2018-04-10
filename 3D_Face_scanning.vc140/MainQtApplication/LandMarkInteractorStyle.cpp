@@ -84,6 +84,7 @@ void LandMarkInteractorStyle::initialize()
 {
 	LastPickedActor = NULL;
 	LastPickedProperty = vtkProperty::New();
+	pointPicker->SetTolerance(0.01);
 }
 
 void LandMarkInteractorStyle::OnLeftButtonDown()
@@ -123,6 +124,9 @@ void LandMarkInteractorStyle::OnLeftButtonDown()
 
 	else if (mode == 2) //±×¸®±â
 	{
+		
+		pointPicker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
+		pos = pointPicker->GetPickPosition();
 
 		vtkSphereSource *sp = vtkSphereSource::New();
 		sp->SetCenter(pos[0], pos[1], pos[2]);

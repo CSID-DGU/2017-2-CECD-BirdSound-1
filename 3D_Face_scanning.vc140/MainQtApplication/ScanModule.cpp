@@ -106,7 +106,50 @@ void ScanModule::InitializeUi()
 	m_MiniMeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RIGHT->winId()), sizeX, sizeY);
 }
 
+void setTexture(MeshPreview *mesh)
+{
 
+
+	
+
+	for (int i = 0; i < 1; i++)
+	{
+		vtkSmartPointer<vtkDoubleArray> textureCoordinates =vtkSmartPointer<vtkDoubleArray>::New();
+
+		const int NumOfCom = mesh->GetPolyDataAt(i)->GetNumberOfPoints();
+		
+		textureCoordinates->SetNumberOfComponents(2);
+		textureCoordinates->SetName("TextureCoordinates");
+
+		for (int j = 0; j < NumOfCom; j++) 
+		{
+			double tuple[3] = { 0,0,0 };
+			mesh->GetPolyDataAt(i)->GetPoint(j, tuple);
+			textureCoordinates->InsertNextTuple(tuple);
+			
+		}
+
+		mesh->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates);
+		//mesh->GetActorAt(i)->SetTexture(mesh->GetTextureAt(i));
+	}
+
+	mesh->GetRenderWindow()->Modified();
+	mesh->GetRenderWindow()->Render();
+	mesh->GetRenderWindow()->Start();
+	
+	/*vtkRenderer *rend = vtkRenderer::New();
+	vtkImageActor *act = vtkImageActor::New();
+	act->SetInputData(mesh->m_ImageData[0]);
+
+	rend->AddActor(act);
+	vtkRenderWindow *win = vtkRenderWindow::New();
+
+
+	win->AddRenderer(rend);
+	win->Modified();
+	win->Start();*/
+	//mesh->GetActorAt(0)->SetTexture(mesh_
+}
 void ScanModule::slotCapBtn()
 {
 
@@ -116,8 +159,10 @@ void ScanModule::slotCapBtn()
 		m_ScannedMeshViewer->ReleaseModel();
 		Scanner->ReleaseModel();
 	}
+
+	//m_ScannedMeshViewer->CreateTexture("", 0);
 	m_ScannedMeshViewer->CreateModel("", 0);
-	m_ScannedMeshViewer->Rendering();
+	//m_ScannedMeshViewer->Rendering();
 
 	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
 
@@ -128,11 +173,13 @@ void ScanModule::slotCapBtn()
 
 
 	/*이부분은 texture부분임. 여기는 fra에 rgb8 영상 넣으면됨. 귀찮으면 써놓은 select sensor복붙 ㄱㄱ*/
-//	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_COLOR, realsense::R1280_720, realsense::RS_400_FORMAT::RGB8, realsense::RS_400_FPS::HZ30);
-//	rs2::frame fra2 = RealSenseD415->capture(realsense::RS400_STREAM_COLOR);
-//	Scanner->ScanTexture(m_ScannedMeshViewer, fra2);
-
+	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_COLOR, realsense::R1280_720, realsense::RS_400_FORMAT::RGB8, realsense::RS_400_FPS::HZ30);
+	rs2::frame fra2 = RealSenseD415->capture(realsense::RS400_STREAM_COLOR);
+	Scanner->ScanTexture(m_ScannedMeshViewer, fra2);
+	setTexture(m_ScannedMeshViewer);
 	
+
+	m_ScannedMeshViewer->Rendering();
 }
 void ScanModule::slotNextBtn()
 {
@@ -169,7 +216,7 @@ void Copy(MeshPreview* src, MeshPreview* des)
 		des->ReleaseModel();
 	}
 
-
+	des->CreateTexture("", 0);
 	des->CreateModel("",0);
 
 	for (int i = 0; i < 5; i++)

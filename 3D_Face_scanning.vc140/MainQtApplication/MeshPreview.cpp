@@ -122,12 +122,16 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 int MeshPreview::CreateTexture(std::string imgPath, int extType)
 {
 	//m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
+	if (imgPath == ""){}
 	
-	for (int i = 0; i < m_ImageData.size(); i++)
+	else 
 	{
-		m_ImageData[i]->Modified();
-		m_Texture[i]->SetInputData(m_ImageData[i]);
-		m_Texture[i]->Update();
+		for (int i = 0; i < m_ImageData.size(); i++)
+		{
+			m_ImageData[i]->Modified();
+			m_Texture[i]->SetInputData(m_ImageData[i]);
+			m_Texture[i]->Update();
+		}
 	}
 	
 

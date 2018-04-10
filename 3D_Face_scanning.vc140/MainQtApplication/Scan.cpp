@@ -256,7 +256,7 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 	
 
 	viewer->GetRenderWindow()->Modified();
-	viewer->GetRenderWindow()->Render();
+	//viewer->GetRenderWindow()->Render();
 
 	std::cout << "Done";
 }

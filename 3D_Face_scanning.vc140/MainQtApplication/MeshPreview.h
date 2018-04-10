@@ -39,7 +39,7 @@ public:
 	vtkPolyDataMapper* GetMapperAt(int index) { return m_Mapper[index]; }
 
 	std::vector<vtkTexture*>						m_Texture;
-	vtkTexture* GetTexture(int index)				{ return m_Texture[index]; }
+	vtkTexture* GetTextureAt(int index)				{ return m_Texture[index]; }
 	int												m_IsTexture;
 	int IsTexture() { return m_IsTexture; };
 
