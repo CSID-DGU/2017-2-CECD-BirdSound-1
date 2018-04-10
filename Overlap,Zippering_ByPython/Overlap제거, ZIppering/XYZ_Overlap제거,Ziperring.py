@@ -348,8 +348,8 @@ delPointFromTexture(L2,LE,"RIGHT")
 '''
 
 #FR 이미지의 포인트 구하기
-F_LL = getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1)+getGradDelPoint(F_L1,F_L3)+getGradDelPoint(F_L3,[F_L3[0]-50,F_L3[1]+200])
-F_RL = getGradDelPoint([F_R1[0]+30,F_R1[1]-100],F_R1)+getGradDelPoint(F_R1,F_R3)+getGradDelPoint(F_R3,[F_R3[0]+50,F_R3[1]+200])
+F_LL = getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1)+getGradDelPoint(F_L1,F_L3)+getGradDelPoint(F_L3,[F_L3[0]+10,HEIGHT])
+F_RL = getGradDelPoint([F_R1[0]+30,F_R1[1]-100],F_R1)+getGradDelPoint(F_R1,F_R3)+getGradDelPoint(F_R3,[F_R3[0]+200,HEIGHT])
 #pprint.pprint(getDeleteIndex2(FR,LE,F_L1,F_L3,L1,L3,F_LL))
 #FR 기준에서 가장 가까운점 구하기
 
