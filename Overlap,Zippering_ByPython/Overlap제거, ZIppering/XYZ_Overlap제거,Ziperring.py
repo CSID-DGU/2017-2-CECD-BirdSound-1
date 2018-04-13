@@ -1,5 +1,6 @@
 import math
 import pprint
+import shelve
 WIDTH = 1280
 HEIGHT = 720
 POINTS = 921600
@@ -12,11 +13,12 @@ FR = 1
 LE = 2
 
 T= []
-degree = 0
-#filename = input(".vtk Filename(except Extension) : ")
+PageNum = 3
 filename = "resulttmp"
-header = "# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS "
 POINTS_str = ""
+
+#filename = input(".vtk Filename(except Extension) : ")
+header = "# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " +str(POINTS*PageNum)+" float\n"
 
 #
 #when a x point is zero to negative location, Mesh is right location
@@ -43,30 +45,27 @@ R3 = [800, 460]
 ##
 
 #포인트 파일 가져오기
+def getXYZData():
+    global header, A
+    with open(filename+'.txt','r') as f:
+        txt = f.read()
+        txt = txt.splitlines()
 
-PageNum = 3
-with open(filename+'.txt','r') as f:
-    txt = f.read()
-    txt = txt.splitlines()
+        for i in range(PageNum):
+            A.append(txt[POINTS*i:POINTS*(i+1)])
+        print("Number of POINTS : "+str(POINTS*PageNum))
 
-    header = header+str(POINTS*PageNum)+" float\n"
-
-    for i in range(PageNum):
-        A.append(txt[POINTS*i:POINTS*(i+1)])
-    
-    print("Number of POINTS : "+str(POINTS*PageNum))
-
-#포인트 실수로 만들기
-    for ix in range(PageNum):
+    #포인트 실수로 만들기
+        for ix in range(PageNum):
+            for i in range(POINTS):
+                A[ix][i] = A[ix][i].split()
+                for j in range(3):
+                    A[ix][i][j] = float(A[ix][i][j])
+    '''
         for i in range(POINTS):
-            A[ix][i] = A[ix][i].split()
-            for j in range(3):
-                A[ix][i][j] = float(A[ix][i][j])
-'''
-    for i in range(POINTS):
         for j in range(3):
             A[RI][i][j] = 0.0
-'''
+    '''
 
 def getPointIdx(A):
     return A[0] + A[1]*WIDTH
@@ -95,9 +94,6 @@ def getGradDelPoint(P1,P3):
 
     lists = []
     for ele in range(P1[1],P3[1]):
-        lists.append([int((ele - k) / m), ele])
-        lists.append([int((ele - k) / m), ele])
-        lists.append([int((ele - k) / m), ele])
         lists.append([int((ele - k) / m), ele])
         lists.append([int((ele - k) / m), ele])
         lists.append([int((ele - k) / m), ele])
@@ -229,7 +225,6 @@ def deletePoint(page, direction, part_del_point, ):
                             A[page][ix][i] = 0.0
 
             elif direction == "deleteNagative":
-                st_0 = getPointIdx(part_del_point[idx])
                 part_del_point[idx][0] = part_del_point[idx][0] + 1
                 for ix in range(st_0, st_0 - WIDTH, -1):
                     # print(ix)
@@ -286,23 +281,21 @@ def makeMesh(A,base):
 def getMeshLine(part_del_point_0,part_del_point_1,page0,page1):
     now_ptr_s = 0
     connPoint = []
-    mesh_point_0_now = 0
-    mesh_point_1_now = 0
-
     for i in range(len(part_del_point_0)):
         min = 100.0
         min_idx = -1
-        for j in range(len(part_del_point_1)):
-            tmp = getDistance3D(A[page0][getPointIdx(part_del_point_0[i])],A[page1][getPointIdx(part_del_point_1[j])])
-            if min>tmp:
-                min_idx = j
-                min = tmp
-        if now_ptr_s !=0 and min_idx <= now_ptr_s:
-            connPoint.append([part_del_point_0[i], connPoint[len(connPoint)-1][1]])
-        else:
-            for idx in range(now_ptr_s,min_idx):
-                connPoint.append([part_del_point_0[i],part_del_point_1[idx]])
-            now_ptr_s = min_idx
+        if A[page0][getPointIdx(part_del_point_0[i])][0] !=0.0:
+            for j in range(len(part_del_point_1)):
+                tmp = getDistance3D(A[page0][getPointIdx(part_del_point_0[i])],A[page1][getPointIdx(part_del_point_1[j])])
+                if min>tmp:
+                    min_idx = j
+                    min = tmp
+            if now_ptr_s !=0 and min_idx <= now_ptr_s:
+                connPoint.append([part_del_point_0[i], connPoint[len(connPoint)-1][1]])
+            else:
+                for idx in range(now_ptr_s,min_idx+1):
+                    connPoint.append([part_del_point_0[i],part_del_point_1[idx]])
+                now_ptr_s = min_idx+1
     return connPoint[:]
 def addedMakeMesh(page0,page1,connP):
     addedmesh = []
@@ -320,22 +313,28 @@ def addedMakeMesh(page0,page1,connP):
                     pp1 = p1
                     pp2 = [p2[0]-i,p2[1]]
                     pp3 = [p2[0]-i-1, p2[1]]
-                    addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
+                    #addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
             elif p1[0] > p2[0]:
                 for i in range(p1[0]-p2[0]):
                     pp1 = p2
                     pp2 = [p1[0]-i-1, p1[1]]
                     pp3 = [p1[0]-i,p1[1]]
-                    addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
+                    #addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
         #connect mesh
         if(getDistance3D(A[page0][getPointIdx(p1)],A[page1][getPointIdx(p3)]) < getDistance3D(A[page0][getPointIdx(p2)],A[page1][getPointIdx(p4)])):
-            addedmesh.append(makeStrMesh(getPointIdx(p1)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
+            if A[page0][getPointIdx(p1)][0] != 0.0 and A[page1][getPointIdx(p3)][0] != 0.0 and A[page1][getPointIdx(p4)][0] != 0.0:
+                if page1 == LE:
+                    print(A[page0][getPointIdx(p1)] , A[page1][getPointIdx(p3)], A[page1][getPointIdx(p4)] != 0.0)
+                addedmesh.append(makeStrMesh(getPointIdx(p1)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
             if p1[:] != p2[:]:
-                addedmesh.append(makeStrMesh(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base))
+                if A[page0][getPointIdx(p1)][0] != 0.0 and A[page0][getPointIdx(p2)][0] != 0.0 and A[page1][getPointIdx(p3)][0] != 0.0:
+                    addedmesh.append(makeStrMesh(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base))
         else:
-            addedmesh.append(makeStrMesh(getPointIdx(p1)+page0_base,getPointIdx(p2)+page0_base,getPointIdx(p4)+page1_base))
+            if A[page0][getPointIdx(p1)][0] != 0.0 and A[page0][getPointIdx(p2)][0] != 0.0 and A[page1][getPointIdx(p4)][0] != 0.0:
+                addedmesh.append(makeStrMesh(getPointIdx(p1)+page0_base,getPointIdx(p2)+page0_base,getPointIdx(p4)+page1_base))
             if p3[:] != p4[:]:
-                addedmesh.append(makeStrMesh(getPointIdx(p2)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
+                if A[page0][getPointIdx(p2)][0] != 0.0 and A[page1][getPointIdx(p3)][0] != 0.0 and A[page1][getPointIdx(p4)][0] != 0.0:
+                    addedmesh.append(makeStrMesh(getPointIdx(p2)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
     return addedmesh[:]
 ''''''''''''
 
@@ -346,13 +345,14 @@ delPointFromTexture(F_L1,FR,"LEFT")
 delPointFromTexture(F_R1,FR,"RIGHT")
 delPointFromTexture(L2,LE,"RIGHT")
 '''
+'''
+getXYZData()
 
 #FR 이미지의 포인트 구하기
 F_LL = getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1)+getGradDelPoint(F_L1,F_L3)+getGradDelPoint(F_L3,[F_L3[0]+10,HEIGHT])
 F_RL = getGradDelPoint([F_R1[0]+30,F_R1[1]-100],F_R1)+getGradDelPoint(F_R1,F_R3)+getGradDelPoint(F_R3,[F_R3[0]+200,HEIGHT])
 #pprint.pprint(getDeleteIndex2(FR,LE,F_L1,F_L3,L1,L3,F_LL))
 #FR 기준에서 가장 가까운점 구하기
-
 
 #중첩된점 구하기
 print("\tget \t\tOverlap Point ")
@@ -381,6 +381,29 @@ header += transPointToStr(A[RI]) +"\n"
 header += transPointToStr(A[FR]) +"\n"
 header += transPointToStr(A[LE])
 print("Load ended\n")
+
+#파일 임시 저장
+sF = shelve.open('preDate')
+
+sF['A'] = A
+sF['header'] = header
+sF['part_del_point_frle_FR'] =part_del_point_frle_FR
+sF['part_del_point_frle_LE'] =part_del_point_frle_LE
+sF['part_del_point_frri_FR'] =part_del_point_frri_FR
+sF['part_del_point_frri_RI'] =part_del_point_frri_RI
+sF.close()
+exit(1)
+'''
+#파일 불러오기
+print('*** Load Shelf File ***\n')
+sF = shelve.open('preDate')
+A = sF['A']
+header = sF['header']
+part_del_point_frle_FR = sF['part_del_point_frle_FR']
+part_del_point_frle_LE = sF['part_del_point_frle_LE']
+part_del_point_frri_FR = sF['part_del_point_frri_FR']
+part_del_point_frri_RI = sF['part_del_point_frri_RI']
+print('*** Finished Shelf File ***\n')
 
 #만들어질 Mesh 갯수 구하기
 print("Get \tMesh")
@@ -411,12 +434,12 @@ ct = A_ct+B_ct+C_ct
 ct += len(addedmesh_frle)
 ct += len(addedmesh_frri)
 addedmesh_list = ""
-#addedmesh_list += '\n'.join(addedmesh_frle) +"\n"
-#addedmesh_list += '\n'.join(addedmesh_frri)
+addedmesh_list += '\n'.join(addedmesh_frle) +"\n"
+addedmesh_list += '\n'.join(addedmesh_frri)
 
 
 #Mesh 만들면서 저장하기
 print("\twrtie Polygon",ct )
-header += "\n\nPOLYGONS "+str(ct)+" "+str(ct*4)+"\n"+A_ct_list+"\n"+B_ct_list +"\n"+C_ct_list +"\n" #+addedmesh_list
+header += "\n\nPOLYGONS "+str(ct)+" "+str(ct*4)+"\n"+A_ct_list+"\n"+B_ct_list +"\n"+C_ct_list +"\n" +addedmesh_list
 with open(filename+'.vtk','w') as f2:
     f2.write(header)
