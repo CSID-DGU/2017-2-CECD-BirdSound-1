@@ -307,24 +307,26 @@ def addedMakeMesh(page0,page1,connP):
         p3 = connP[idx+1][1]
         p4 = connP[idx][1]
         #add spatial mesh
-        if(page0 == RI):    #메시 중
-            if p1[0] < p2[0]:
-                for i in range(p2[0]-p1[0]):
+        if page0 == RI:    #메시 중
+            if p1[0] < p2[0] :
+                for i in range(p2[0]-p1[0]-1):
                     pp1 = p1
                     pp2 = [p2[0]-i,p2[1]]
                     pp3 = [p2[0]-i-1, p2[1]]
-                    #addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
-            elif p1[0] > p2[0]:
-                for i in range(p1[0]-p2[0]):
-                    pp1 = p2
-                    pp2 = [p1[0]-i-1, p1[1]]
-                    pp3 = [p1[0]-i,p1[1]]
-                    #addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
+                    print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
+                    if A[page0][getPointIdx(pp1)][0] != 0.0 and A[page0][getPointIdx(pp2)][0] != 0.0 and A[page0][getPointIdx(pp3)][0] != 0.0:
+                        addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
+            if p1[0] > p2[0] :
+                for i in range(p1[0]-p2[0]-1):
+                    pp1 = p1
+                    pp2 = [p2[0]+i+1, p2[1]]
+                    pp3 = [p2[0]+i,p2[1]]
+                    print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
+                    if A[page0][getPointIdx(pp1)][0] != 0.0 and A[page0][getPointIdx(pp2)][0] != 0.0 and A[page0][getPointIdx(pp3)][0] != 0.0:
+                        addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
         #connect mesh
         if(getDistance3D(A[page0][getPointIdx(p1)],A[page1][getPointIdx(p3)]) < getDistance3D(A[page0][getPointIdx(p2)],A[page1][getPointIdx(p4)])):
             if A[page0][getPointIdx(p1)][0] != 0.0 and A[page1][getPointIdx(p3)][0] != 0.0 and A[page1][getPointIdx(p4)][0] != 0.0:
-                if page1 == LE:
-                    print(A[page0][getPointIdx(p1)] , A[page1][getPointIdx(p3)], A[page1][getPointIdx(p4)] != 0.0)
                 addedmesh.append(makeStrMesh(getPointIdx(p1)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
             if p1[:] != p2[:]:
                 if A[page0][getPointIdx(p1)][0] != 0.0 and A[page0][getPointIdx(p2)][0] != 0.0 and A[page1][getPointIdx(p3)][0] != 0.0:
