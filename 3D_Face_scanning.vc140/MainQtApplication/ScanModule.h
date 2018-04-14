@@ -13,10 +13,10 @@
 
 
 
-#include<vtkImageData.h>
-#include<vtkDoubleArray.h>
-#include<vtkSmartPointer.h>
-#include<vtkPointData.h>
+//#include<vtkImageData.h>
+//#include<vtkDoubleArray.h>
+//#include<vtkSmartPointer.h>
+//#include<vtkPointData.h>
 class ScanModule : public QMainWindow
 {
 	Q_OBJECT

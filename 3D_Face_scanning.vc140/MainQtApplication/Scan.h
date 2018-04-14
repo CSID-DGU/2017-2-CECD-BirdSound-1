@@ -45,7 +45,11 @@
 
 #include<vector>
 #include<omp.h>
+#include<vtkFloatArray.h>
 
+
+#include<math.h>
+#include<vtkPointData.h>
 enum { color, depth };
 enum { omp, ompNsimd, serial };
 
@@ -91,56 +95,74 @@ public:
 	*/
 	void ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	{
-
-
-		/*
-		index를 기준으로 해서 Image Data를 Set하는 방법을 찾자.
-		0째 0~1280*720/2
-		이런식으로 4장의 ImageData가 Set되어야 한다. 
-		*/
 		const unsigned char* data = static_cast<const unsigned char*>(fra.get_data());
+		double dimensions[3] = { 1280, 720, 1 };//이런거 4장이다.
+			
+		pc.map_to(fra);
+		auto texCord = rsPoints.get_texture_coordinates();
+		const int nComponents = 3;
+		int nScalar = dimensions[0] * dimensions[1] * dimensions[2] * nComponents;
 
+
+		int index = 0;
+		int arrdisp[] = {	0 * 1280 * 720 / 4, 
+							1 *	1280 * 720 / 4, 
+							2 * 1280 * 720 / 4, 
+							3 * 1280 * 720 / 4 };
 		for (int i = 0; i < 4; i++)
 		{
-			double dimensions[3] = { 1280, 720/4, 1 };
-			const int nComponents = viewer->m_ImageData[i]->GetNumberOfScalarComponents();
-			int nScalar = dimensions[2] * dimensions[1] * dimensions[0] * nComponents;
-
-			viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
+			viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1]/4, dimensions[2]);
 			viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
-			//viewer->m_IsTexture[i] = 1;
 			viewer->m_ImageData[i]->Modified();
 			
-			unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0, 0, 0));
+			unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0,0,0));
 
-			int disp = i*1280 * 720/4;
-			for (int j = 0; j < nScalar; j++)
+		
+			for (int j = 0; j < 203400*3; j++)
 			{
-				scalarPointer[j] = data[disp+j];
-				
+				scalarPointer[j] = data[index++];
 			}
 
 			viewer->m_ImageData[i]->Modified();
+			
+			vtkSmartPointer<vtkFloatArray> textureCoordinates = vtkSmartPointer<vtkFloatArray>::New();
+			textureCoordinates->SetNumberOfComponents(2);
+
+			
+			for (int j = 0; j < 1280*720/4; j++)
+			{
+				float tuple[] = { texCord[arrdisp[i] + j].u, texCord[arrdisp[i] + j].v,0.0f };
+				textureCoordinates->InsertNextTuple(tuple);
+			}
+			textureCoordinates->Modified();
+
+
+
+			viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates);
+			viewer->GetTextureAt(i)->SetInputData(viewer->GetImageData(i));
+			viewer->GetTextureAt(i)->Modified();
+			viewer->GetActorAt(i)->SetTexture(viewer->GetTextureAt(i));
+			viewer->GetTextureAt(i)->Update();
+			viewer->GetRenderWindow()->Modified();
 		}
 
 
-		//vtkRenderer *rend = vtkRenderer::New();
-		//vtkImageActor *act = vtkImageActor::New();
-		//act->SetInputData(viewer->m_ImageData[1]);
-		//act->Update();
-		//
-		//vtkRenderWindow *win = vtkRenderWindow::New();
-		////vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
-
-
-		//rend->ResetCamera();
-		//rend->AddActor(act);
-		//
-		//win->AddRenderer(rend);
-		//win->Start();
-		////it->SetRenderWindow(win);
-		////it->Start();
-		////viewer->m_Renderer->ResetCamera();
+		//mesh->GetRenderWindow()->Modified();
+		/*vtkRenderer *rend = vtkRenderer::New();
+		vtkImageActor *act = vtkImageActor::New();
+		act->SetInputData(viewer->m_ImageData[0]);
+		act->Update();
+		
+		vtkRenderWindow *win = vtkRenderWindow::New();
+		vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
+		rend->ResetCamera();
+		rend->AddActor(act);
+		
+		win->AddRenderer(rend);
+		win->Start();
+		it->SetRenderWindow(win);
+		it->Start();
+		viewer->m_Renderer->ResetCamera();*/
 	}
 	//void printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type);
 	void ReleaseModel()
@@ -184,6 +206,7 @@ public:
 		//viewer->GetPolyDataAt(0)->Delete();
 		//viewer->GetPolyDataAt(0) = vtkPolyData::New();
 
+		/*기존의 poly Data를 release하고 deepcopy한다.*/
 		viewer->GetMapperAt(0)->SetInputData(smoothFilter->GetOutput());
 		viewer->GetActorAt(0)->SetMapper(viewer->GetMapperAt(0));
 		viewer->GetActorAt(0)->Modified();
@@ -213,6 +236,8 @@ public:
 	//}
 	vtkPoints* GetPoints() { return points; }
 private:
+	rs2::pointcloud pc;
+	rs2::points rsPoints;
 	vtkPoints *points;
 	vtkRenderer* MeshConstruct(MeshPreview *viewer, vtkPoints *point, int saveType);
 	double getDistane(double *src, double *tar);

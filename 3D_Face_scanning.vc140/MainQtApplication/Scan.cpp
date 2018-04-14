@@ -367,8 +367,7 @@ void Scan::MeshConstruction(MeshPreview *viewer, int mode, int saveType, int Thr
 */
 void Scan::frame2Points(const rs2::frame& frame)
 {
-	rs2::pointcloud pc;
-	rs2::points rsPoints;
+	
 	rsPoints = pc.calculate(frame);
 
 
@@ -382,8 +381,12 @@ void Scan::frame2Points(const rs2::frame& frame)
 	{
 		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)
 		{
-			points->InsertNextPoint(v[i].x, v[i].y, 0);
-			//points->InsertNextPoint(0, 0, 0);
+			points->InsertNextPoint((i % 1280)/1280.0, i / 1280.0 / 720.0, 0);
+			//points->InsertNextPoint(0, 0, 0);여기서 v[i].x, v[i].y가 대략은 값을 가져야 하나...보다...
+			/*
+			x는 i%1280
+			y는 i/1280/720
+			*/
 		}
 		else
 			points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
