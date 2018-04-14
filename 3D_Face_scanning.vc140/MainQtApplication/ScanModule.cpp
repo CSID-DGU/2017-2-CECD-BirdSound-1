@@ -114,22 +114,23 @@ void ScanModule::slotCapBtn()
 		Scanner->ReleaseModel();
 	}
 
-	//m_ScannedMeshViewer->CreateTexture("", 0);
+	
 	m_ScannedMeshViewer->CreateModel("", 0);
-	//m_ScannedMeshViewer->Rendering();
 
 	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
 
 	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
 	Scanner->frame2Points(fra);
 	Scanner->MeshConstruction(m_ScannedMeshViewer,0, 4,4);
-	//Scanner->printDepthMap(m_DepthPreviewer, RealSenseD415, realsense::RS400_STREAM_DEPTH);
 
 
 	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_COLOR, realsense::R1280_720, realsense::RS_400_FORMAT::RGB8, realsense::RS_400_FPS::HZ30);
 	rs2::frame fra2 = RealSenseD415->capture(realsense::RS400_STREAM_COLOR);
 	Scanner->ScanTexture(m_ScannedMeshViewer, fra2);
 
+
+	Scanner->meshSmooth(m_ScannedMeshViewer, 0.7);
+	
 	m_ScannedMeshViewer->Rendering();
 }
 void ScanModule::slotNextBtn()

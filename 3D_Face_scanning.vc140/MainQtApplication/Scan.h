@@ -50,6 +50,7 @@
 
 #include<math.h>
 #include<vtkPointData.h>
+#include<vtkPoints.h>
 enum { color, depth };
 enum { omp, ompNsimd, serial };
 
@@ -99,56 +100,108 @@ public:
 		double dimensions[3] = { 1280, 720, 1 };//이런거 4장이다.
 			
 		pc.map_to(fra);
+		
 		auto texCord = rsPoints.get_texture_coordinates();
 		const int nComponents = 3;
 		int nScalar = dimensions[0] * dimensions[1] * dimensions[2] * nComponents;
-
 
 		int index = 0;
 		int arrdisp[] = {	0 * 1280 * 720 / 4, 
 							1 *	1280 * 720 / 4, 
 							2 * 1280 * 720 / 4, 
 							3 * 1280 * 720 / 4 };
+
+		vtkSmartPointer<vtkFloatArray> textureCoordinates[4];
 		for (int i = 0; i < 4; i++)
 		{
+			textureCoordinates[i] = vtkFloatArray::New();
 			viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1]/4, dimensions[2]);
-			viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
+			viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
 			viewer->m_ImageData[i]->Modified();
 			
-			unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0,0,0));
+			unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer());
 
-		
-			for (int j = 0; j < 203400*3; j++)
+			std::cout << index << "에서 ";
+			for (int j = 0; j < nScalar/4; j++)
 			{
 				scalarPointer[j] = data[index++];
 			}
-
+			std::cout << index << "까지\n";
 			viewer->m_ImageData[i]->Modified();
 			
-			vtkSmartPointer<vtkFloatArray> textureCoordinates = vtkSmartPointer<vtkFloatArray>::New();
-			textureCoordinates->SetNumberOfComponents(2);
+			
+			textureCoordinates[i]->SetNumberOfComponents(2);
 
+			//vtkPoints *po = viewer->GetPolyDataAt(i)->GetPoints();
 			
 			for (int j = 0; j < 1280*720/4; j++)
 			{
 				float tuple[] = { texCord[arrdisp[i] + j].u, texCord[arrdisp[i] + j].v,0.0f };
-				textureCoordinates->InsertNextTuple(tuple);
+				textureCoordinates[i]->InsertNextTuple(tuple);
 			}
-			textureCoordinates->Modified();
+			textureCoordinates[i]->Modified();
 
-
-
-			viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates);
+			viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
 			viewer->GetTextureAt(i)->SetInputData(viewer->GetImageData(i));
 			viewer->GetTextureAt(i)->Modified();
 			viewer->GetActorAt(i)->SetTexture(viewer->GetTextureAt(i));
 			viewer->GetTextureAt(i)->Update();
 			viewer->GetRenderWindow()->Modified();
+
+
+			
 		}
 
 
-		//mesh->GetRenderWindow()->Modified();
-		/*vtkRenderer *rend = vtkRenderer::New();
+
+		//boundary actor
+		/*viewer->m_ImageData[4]->SetDimensions(dimensions[0], 6, dimensions[2]);
+		viewer->m_ImageData[4]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
+		viewer->m_ImageData[4]->Modified();
+
+		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[4]->GetScalarPointer());
+
+		std::cout << index << "에서 ";
+
+		int index2 = 0;
+		for (int i = 203400;i<=203400*3; i+=203400)
+		{
+			std::cout << index2 << "에서 ";
+			for (int j = 0; j < 1280 * 2*3; j++)
+			{
+				scalarPointer[index2++] = data[j+ i];
+			}
+			std::cout << index2 << "까지\n";
+		}
+		std::cout << index << "까지\n";
+		viewer->m_ImageData[4]->Modified();
+
+		vtkSmartPointer<vtkFloatArray> textureCoordinates = vtkSmartPointer<vtkFloatArray>::New();
+		textureCoordinates->SetNumberOfComponents(2);
+
+		for (int i = 203400; i <= 203400 * 3; i += 203400)
+		{
+			
+			for (int j = 0; j < 1280 * 2; j++)
+			{
+				float tuple[] = { texCord[j + i].u, texCord[j + i].v,0.0f };
+				textureCoordinates->InsertNextTuple(tuple);
+			}
+		
+		}
+		textureCoordinates->Modified();
+
+		viewer->GetPolyDataAt(4)->GetPointData()->SetTCoords(textureCoordinates);
+		viewer->GetTextureAt(4)->SetInputData(viewer->GetImageData(4));
+		viewer->GetTextureAt(4)->Modified();
+		viewer->GetActorAt(4)->SetTexture(viewer->GetTextureAt(4));
+		viewer->GetTextureAt(4)->Update();
+		viewer->GetRenderWindow()->Modified();*/
+
+	
+
+
+		vtkRenderer *rend = vtkRenderer::New();
 		vtkImageActor *act = vtkImageActor::New();
 		act->SetInputData(viewer->m_ImageData[0]);
 		act->Update();
@@ -162,7 +215,7 @@ public:
 		win->Start();
 		it->SetRenderWindow(win);
 		it->Start();
-		viewer->m_Renderer->ResetCamera();*/
+		viewer->m_Renderer->ResetCamera();
 	}
 	//void printDepthMap(DepthMapPreviewer *viewer, realsense::Device* device, realsense::RS_400_STREAM_TYPE type);
 	void ReleaseModel()
@@ -185,33 +238,42 @@ public:
 		frames.clear();
 	}
 
+	/*poly data 이렇게 그냥 두면 메모리 세지 않나?*/
 	void meshSmooth(MeshPreview *viewer, double Relaxation)
 	{
-		vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();
-		smoothFilter->SetInputData(viewer->GetPolyDataAt(0));
-		smoothFilter->SetNumberOfIterations(100);
-		smoothFilter->SetRelaxationFactor(Relaxation);
-		smoothFilter->FeatureEdgeSmoothingOff();
-		smoothFilter->BoundarySmoothingOn();
-		smoothFilter->Update();
+		for (int i = 0; i < 4; i++) 
+		{
+			std::cout << i << " ";
+			vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();
+			smoothFilter->SetInputData(viewer->GetPolyDataAt(i));
+			smoothFilter->SetNumberOfIterations(5);
+			smoothFilter->SetRelaxationFactor(Relaxation);
+			smoothFilter->FeatureEdgeSmoothingOff();
+			smoothFilter->BoundarySmoothingOn();
+			smoothFilter->Update();
 
-		//viewer->GetRenderer()->RemoveActor(viewer->GetActorAt(0));
-		//viewer->GetActorAt(0)->Delete();
-		//viewer->GetActorAt(0) = vtkActor::New();
+			//viewer->GetRenderer()->RemoveActor(viewer->GetActorAt(0));
+			//viewer->GetActorAt(0)->Delete();
+			//viewer->GetActorAt(0) = vtkActor::New();
 
-		//viewer->GetMapperAt(0)->Delete();
-		//viewer->GetMapperAt(0) = vtkPolyDataMapper::New();
+			//viewer->GetMapperAt(0)->Delete();
+			//viewer->GetMapperAt(0) = vtkPolyDataMapper::New();
 
-		//viewer->GetPolyDataAt(0)->ReleaseData();
-		//viewer->GetPolyDataAt(0)->Delete();
-		//viewer->GetPolyDataAt(0) = vtkPolyData::New();
+			/*viewer->GetPolyDataAt(i)->ReleaseData();
+			viewer->GetPolyDataAt(i)->Delete();
+			viewer->m_PolyData[i] = vtkPolyData::New();*/
+			viewer->m_PolyData[i]->DeepCopy(smoothFilter->GetOutput());
+			viewer->m_PolyData[i]->Modified();
 
+			viewer->GetMapperAt(i)->SetInputData(viewer->m_PolyData[i]);
+			viewer->GetMapperAt(i)->Modified();
+		}
 		/*기존의 poly Data를 release하고 deepcopy한다.*/
-		viewer->GetMapperAt(0)->SetInputData(smoothFilter->GetOutput());
+	/*	viewer->GetMapperAt(0)->SetInputData(smoothFilter->GetOutput());
 		viewer->GetActorAt(0)->SetMapper(viewer->GetMapperAt(0));
 		viewer->GetActorAt(0)->Modified();
 		viewer->GetRenderWindow()->Modified();
-		viewer->Rendering();
+		viewer->Rendering();*/
 	}
 	//void upDataPoint(DepthMapPreviewer *viewer)
 	//{
