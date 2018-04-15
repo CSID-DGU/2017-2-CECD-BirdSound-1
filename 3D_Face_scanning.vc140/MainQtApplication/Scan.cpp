@@ -14,16 +14,11 @@ void  Scan::cellInsert(vtkCellArray *cell, int number, long long index1, long lo
 {
 	cell->InsertNextCell(number);
 	cell->InsertCellPoint(index1 + disp); cell->InsertCellPoint(index2 + disp); cell->InsertCellPoint(index3 + disp);
-
 }
-
-
 void Scan::frames2PointsCutOutlier()
 {
 	if (points == nullptr)
-	{
 		points = vtkPoints::New();
-	}
 
 	rs2::pointcloud pc;
 	rs2::points rsPoints;
@@ -41,14 +36,11 @@ void Scan::frames2PointsCutOutlier()
 		for (int i = 0; i < frames.size(); i++)
 		{
 			if (ver[i][j].z != 0 && ver[i][j].z < 1 && ver[i][j].z > -1)
-			{
 				Z.push_back(ver[i][j].z);
-			}
 		}
 
-		double _Z;
-		_Z = 0;
-
+		double _Z = 0;
+		
 		std::sort(Z.begin(), Z.end());
 
 		int cnt = 0;
@@ -71,6 +63,174 @@ void Scan::frames2PointsCutOutlier()
 	ver.clear();
 	frames.clear();
 
+}
+
+void Scan::meshSmooth(MeshPreview *viewer, double Relaxation)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << i << " ";
+		vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();
+		smoothFilter->SetInputData(viewer->GetPolyDataAt(i));
+		smoothFilter->SetNumberOfIterations(5);
+		smoothFilter->SetRelaxationFactor(Relaxation);
+		smoothFilter->FeatureEdgeSmoothingOff();
+		smoothFilter->BoundarySmoothingOn();
+		smoothFilter->Update();
+
+		//viewer->GetRenderer()->RemoveActor(viewer->GetActorAt(0));
+		//viewer->GetActorAt(0)->Delete();
+		//viewer->GetActorAt(0) = vtkActor::New();
+
+		//viewer->GetMapperAt(0)->Delete();
+		//viewer->GetMapperAt(0) = vtkPolyDataMapper::New();
+
+		/*viewer->GetPolyDataAt(i)->ReleaseData();
+		viewer->GetPolyDataAt(i)->Delete();
+		viewer->m_PolyData[i] = vtkPolyData::New();*/
+		viewer->m_PolyData[i]->DeepCopy(smoothFilter->GetOutput());
+		viewer->m_PolyData[i]->Modified();
+
+		viewer->GetMapperAt(i)->SetInputData(viewer->m_PolyData[i]);
+		viewer->GetMapperAt(i)->Modified();
+	}
+}
+void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
+{
+	const unsigned char* data = static_cast<const unsigned char*>(fra.get_data());
+	double dimensions[3] = { 1280, 720, 1 };//이런거 4장이다.
+
+	pc.map_to(fra);
+
+	auto texCord = rsPoints.get_texture_coordinates();
+	const int nComponents = 3;
+	int nScalar = dimensions[0] * dimensions[1] * dimensions[2] * nComponents;
+
+	int index = 0;
+	int arrdisp[] = { 0 * 1280 * 720 / 4,
+		1 * 1280 * 720 / 4,
+		2 * 1280 * 720 / 4,
+		3 * 1280 * 720 / 4 };
+
+	vtkSmartPointer<vtkFloatArray> textureCoordinates[4];
+	std::ofstream of("test.txt",std::ios::app);
+	
+	for (int i = 0; i < 4; i++)
+	{
+		textureCoordinates[i] = vtkFloatArray::New();
+		viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1] / 4, dimensions[2]);
+		viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
+		viewer->m_ImageData[i]->Modified();
+
+		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer());
+
+		std::cout << index << "에서 ";
+		for (int j = 0; j < nScalar / 4; j++)
+			scalarPointer[j] = data[index++];
+		
+		std::cout << index << "까지\n";
+		viewer->m_ImageData[i]->Modified();
+
+		textureCoordinates[i]->SetNumberOfComponents(2);
+		vtkPoints *po = viewer->GetPolyDataAt(i)->GetPoints();
+
+		for (int j = 0; j < 1280 * 720 / 4; j++)
+		{
+			double tuple[3];
+			po->GetPoint(j, tuple);
+			float ttuple[] = { tuple[0],tuple[1],0.0f };
+			//float tuple[] = { texCord[arrdisp[i] + j].u, texCord[arrdisp[i] + j].v,0.0f };
+			if(texCord[arrdisp[i] + j].u!=0)
+				of << tuple[0] << " " << tuple[1] << "\t\t" << texCord[arrdisp[i] + j].u << " " << texCord[arrdisp[i] + j].v << "\n";
+			textureCoordinates[i]->InsertNextTuple(ttuple);
+		}
+		textureCoordinates[i]->Modified();
+
+		viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
+		viewer->GetTextureAt(i)->SetInputData(viewer->GetImageData(i));
+		viewer->GetTextureAt(i)->Modified();
+		viewer->GetActorAt(i)->SetTexture(viewer->GetTextureAt(i));
+		viewer->GetTextureAt(i)->Update();
+		viewer->GetRenderWindow()->Modified();
+	}
+
+	//boundary actor
+	/*viewer->m_ImageData[4]->SetDimensions(dimensions[0], 6, dimensions[2]);
+	viewer->m_ImageData[4]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
+	viewer->m_ImageData[4]->Modified();
+
+	unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[4]->GetScalarPointer());
+
+	std::cout << index << "에서 ";
+
+	int index2 = 0;
+	for (int i = 203400;i<=203400*3; i+=203400)
+	{
+	std::cout << index2 << "에서 ";
+	for (int j = 0; j < 1280 * 2*3; j++)
+	{
+	scalarPointer[index2++] = data[j+ i];
+	}
+	std::cout << index2 << "까지\n";
+	}
+	std::cout << index << "까지\n";
+	viewer->m_ImageData[4]->Modified();
+
+	vtkSmartPointer<vtkFloatArray> textureCoordinates = vtkSmartPointer<vtkFloatArray>::New();
+	textureCoordinates->SetNumberOfComponents(2);
+
+	for (int i = 203400; i <= 203400 * 3; i += 203400)
+	{
+
+	for (int j = 0; j < 1280 * 2; j++)
+	{
+	float tuple[] = { texCord[j + i].u, texCord[j + i].v,0.0f };
+	textureCoordinates->InsertNextTuple(tuple);
+	}
+
+	}
+	textureCoordinates->Modified();
+
+	viewer->GetPolyDataAt(4)->GetPointData()->SetTCoords(textureCoordinates);
+	viewer->GetTextureAt(4)->SetInputData(viewer->GetImageData(4));
+	viewer->GetTextureAt(4)->Modified();
+	viewer->GetActorAt(4)->SetTexture(viewer->GetTextureAt(4));
+	viewer->GetTextureAt(4)->Update();
+	viewer->GetRenderWindow()->Modified();*/
+
+	vtkRenderer *rend = vtkRenderer::New();
+	vtkImageActor *act = vtkImageActor::New();
+	act->SetInputData(viewer->m_ImageData[0]);
+	act->Update();
+
+	vtkRenderWindow *win = vtkRenderWindow::New();
+	vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
+	rend->ResetCamera();
+	rend->AddActor(act);
+
+	win->AddRenderer(rend);
+	win->Start();
+	it->SetRenderWindow(win);
+	it->Start();
+	viewer->m_Renderer->ResetCamera();
+}
+void Scan::ReleaseModel()
+{
+	if (points != NULL && points != nullptr)
+	{
+		points->Delete();
+		points = NULL;
+	}
+
+	points = vtkPoints::New();
+	frames.clear();
+
+}
+void Scan::Delete()
+{
+	points->Delete();
+	points = NULL;
+	frames.clear();
 }
 void Scan::frames2Points()
 {
@@ -121,10 +281,6 @@ void Scan::frames2Points()
 }
 void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int saveType, int ThreadSize)
 {
-	std::cout << " " << point->GetNumberOfPoints() << "\n";
-	std::cout << viewer->m_Actor.size() << " ";
-
-
 #pragma omp parallel num_threads(ThreadSize)		 
 	{
 		vtkPoints *threadPoint = vtkPoints::New();
@@ -246,7 +402,6 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 		}
 	}
 
-	std::cout << omp_get_num_threads() << "\n";
 	viewer->GetPolyDataAt(ThreadSize)->SetPoints(boundary);
 	viewer->GetPolyDataAt(ThreadSize)->SetPolys(cellBoundary);
 	viewer->GetPolyDataAt(ThreadSize)->Modified();
@@ -257,8 +412,6 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 	viewer->GetRenderWindow()->Modified();
 	//viewer->GetRenderWindow()->Render();
-
-	std::cout << "Done";
 }
 
 vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer, vtkPoints *point, int saveType)
@@ -290,7 +443,7 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer, vtkPoints *point, int save
 			if (right[0] != 0 && down[0] != 0)
 			{
 				if (_down < alpha)
-					cellInsert(cell, 3, i, i + 1, i + width);//down�� ����
+					cellInsert(cell, 3, i, i + 1, i + width);//down
 				if (diga[0] != 0 && _dia <alpha)
 					cellInsert(cell, 3, i + 1, i + width + 1, i + width);
 			}
@@ -307,7 +460,6 @@ vtkRenderer* Scan::MeshConstruct(MeshPreview *viewer, vtkPoints *point, int save
 			}
 		}
 	}
-
 
 	viewer->GetPolyDataAt(0)->SetPoints(point);
 	viewer->GetPolyDataAt(0)->SetPolys(cell);
@@ -347,7 +499,7 @@ void Scan::MeshConstruction(MeshPreview *viewer, int mode, int saveType, int Thr
 {
 	if (this->points == nullptr)
 	{
-		std::cout << "Points are not setted";
+		//std::cout << "Points are not setted";
 		return;
 	}
 	switch (mode)
@@ -362,37 +514,18 @@ void Scan::MeshConstruction(MeshPreview *viewer, int mode, int saveType, int Thr
 }
 
 
-/*
-�� �κ� omp�����ϴ°� �����غ� ��.
-*/
 void Scan::frame2Points(const rs2::frame& frame)
 {
-	
 	rsPoints = pc.calculate(frame);
-
-
 	if (points == nullptr)
 		points = vtkPoints::New();
 
 	auto v = rsPoints.get_vertices();
 
-	////std::ofstream str("test.txt");
 	for (auto i = 0; i < width*height; i++)
 	{
-		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)
-		{
-			points->InsertNextPoint((i % 1280)/1280.0, i / 1280.0 / 720.0, 0);
-			//points->InsertNextPoint(0, 0, 0);여기서 v[i].x, v[i].y가 대략은 값을 가져야 하나...보다...
-			/*
-			x는 i%1280
-			y는 i/1280/720
-			*/
-		}
-		else
-			points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
-		//else
-		//points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
-
+		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)points->InsertNextPoint((i % 1280)/1280.0, i / 1280.0 / 720.0, 0);
+		else points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
 	}
 
 }
