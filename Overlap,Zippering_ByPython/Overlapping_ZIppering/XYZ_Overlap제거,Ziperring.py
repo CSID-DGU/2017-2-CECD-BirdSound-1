@@ -97,7 +97,6 @@ def getGradDelPoint(P1,P3):
         lists.append([int((ele - k) / m), ele])
         lists.append([int((ele - k) / m), ele])
         lists.append([int((ele - k) / m), ele])
-    print(m)
     return lists[:]
 def getDeleteIndex2(remainPage, deletePage, D1,remaine_list):
     del_point = []
@@ -364,7 +363,9 @@ def addedMakeMesh(page0,page1,connP):
                     addedmesh.append(makeStrMesh(getPointIdx(p2)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
     return addedmesh[:]
 ''''''''''''
-
+getXYZData()
+pprint.pprint(getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1))
+exit(1)
 
 '''
 #image로 부터 점 제거
