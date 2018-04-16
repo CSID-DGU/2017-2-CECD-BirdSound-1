@@ -307,6 +307,31 @@ def addedMakeMesh(page0,page1,connP):
         p3 = connP[idx+1][1]
         p4 = connP[idx][1]
         #add spatial mesh
+
+        for s1,s2,i in list([[p1,p2,0],[p4,p3,1],[p2,p1,0],[p3,p4,1]]):
+            if i==0:
+                base = page0_base
+                page = page0
+            elif i==1:
+                base = page1_base
+                page = page1
+            if p1[0] < p2[0] :
+                for i in range(s2[0]-s1[0]-1):
+                    pp1 = s1
+                    pp2 = [s2[0]-i,s2[1]]
+                    pp3 = [s2[0]-i-1, s2[1]]
+                    print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
+                    if A[page][getPointIdx(pp1)][0] != 0.0 and A[page][getPointIdx(pp2)][0] != 0.0 and A[page][getPointIdx(pp3)][0] != 0.0:
+                        addedmesh.append(makeStrMesh(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base))
+            if s1[0] > s2[0] :
+                for i in range(s1[0]-s2[0]-1):
+                    pp1 = s1
+                    pp2 = [s2[0]+i+1, s2[1]]
+                    pp3 = [s2[0]+i,s2[1]]
+                    print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
+                    if A[page][getPointIdx(pp1)][0] != 0.0 and A[page][getPointIdx(pp2)][0] != 0.0 and A[page][getPointIdx(pp3)][0] != 0.0:
+                        addedmesh.append(makeStrMesh(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base))
+        print('\n')
         if page0 == RI:    #메시 중
             if p1[0] < p2[0] :
                 for i in range(p2[0]-p1[0]-1):

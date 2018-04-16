@@ -246,3 +246,5 @@ ModelManifest.xml
 # Overlapping, Zippering Data
 /Overlap,Zippering_ByPython/Align,RegistrationPreprocessing/result*.*
 /Overlap,Zippering_ByPython/Overlapping_ZIppering/result*.*
+/3D_Face_scanning.vc140/OverlappingZipperingModule/result*.*
+/Overlap,Zippering_ByPython/Overlapping_ZIppering/preDate.*
