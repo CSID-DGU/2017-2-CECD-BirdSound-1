@@ -242,3 +242,7 @@ ModelManifest.xml
 .fake/
 /3D_Face_scanning.vc140/pcd_viewer
 /3D_Face_scanning.vc140/scan_depth/test.vtk
+
+# Overlapping, Zippering Data
+/Overlap,Zippering_ByPython/Align,RegistrationPreprocessing/result*.*
+/Overlap,Zippering_ByPython/Overlapping_ZIppering/result*.*
