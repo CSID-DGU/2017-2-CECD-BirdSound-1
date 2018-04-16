@@ -129,7 +129,7 @@ void ScanModule::slotCapBtn()
 	Scanner->ScanTexture(m_ScannedMeshViewer, fra2);
 
 
-	Scanner->meshSmooth(m_ScannedMeshViewer, 0.7);
+	//Scanner->meshSmooth(m_ScannedMeshViewer, 0.7);
 	
 	m_ScannedMeshViewer->Rendering();
 }
@@ -174,6 +174,7 @@ void Copy(MeshPreview* src, MeshPreview* des)
 	for (int i = 0; i < 5; i++)
 	{
 		des->m_PolyData[i]->DeepCopy(src->GetPolyDataAt(i));
+		des->m_ImageData[i]->DeepCopy(src->m_ImageData[i]);//<-- 이 부분도 테스팅 안함.
 		//des->m_PolyData[i]->ShallowCopy(src->GetPolyDataAt(i));
 		//des->m_Mapper[i]->ShallowCopy(src->GetMapperAt(i));
 		//des->m_Actor[i]->ShallowCopy(src->GetActorAt(i));

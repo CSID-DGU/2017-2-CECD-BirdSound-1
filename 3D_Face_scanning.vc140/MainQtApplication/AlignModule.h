@@ -28,7 +28,7 @@
 #include"vtkTransformPolyDataFilter.h"
 #include"vtkIterativeClosestPointTransform.h"
 #include"vtkMatrix4x4.h"
-
+#include"vtkTransform.h"
 
 #include"vtkOBJExporter.h"
 enum { LEFT, FRONT, RIGHT };
@@ -62,11 +62,11 @@ public:
 	void InitializeVariables();
 	int DestroyVariables();
 	void InitializeUi();
-	void registration(vtkPoints *left, vtkPoints *leftFront, vtkPoints* rightFront, vtkPoints* front);
+	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
 	int getIndex(vtkPolyData *poly, double *pos);
 
 private:
-	vtkPolyData* point2mesh(vtkPoints *pts);
+	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 public slots:
 	void slotAlign();
 	void slotLanMarkLeft();

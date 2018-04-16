@@ -107,42 +107,29 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	int nScalar = dimensions[0] * dimensions[1] * dimensions[2] * nComponents;
 
 	int index = 0;
-	int arrdisp[] = { 0 * 1280 * 720 / 4,
-		1 * 1280 * 720 / 4,
-		2 * 1280 * 720 / 4,
-		3 * 1280 * 720 / 4 };
 
-	vtkSmartPointer<vtkFloatArray> textureCoordinates[4];
-	std::ofstream of("test.txt",std::ios::app);
+	vtkSmartPointer<vtkFloatArray> textureCoordinates[5];
 	
 	for (int i = 0; i < 4; i++)
 	{
+		const int disp = 1280 * 720/4*i;
 		textureCoordinates[i] = vtkFloatArray::New();
 		viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1] / 4, dimensions[2]);
 		viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
 		viewer->m_ImageData[i]->Modified();
 
 		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer());
-
-		std::cout << index << "에서 ";
 		for (int j = 0; j < nScalar / 4; j++)
 			scalarPointer[j] = data[index++];
-		
-		std::cout << index << "까지\n";
+	
 		viewer->m_ImageData[i]->Modified();
 
 		textureCoordinates[i]->SetNumberOfComponents(2);
-		vtkPoints *po = viewer->GetPolyDataAt(i)->GetPoints();
-
+		
 		for (int j = 0; j < 1280 * 720 / 4; j++)
 		{
-			double tuple[3];
-			po->GetPoint(j, tuple);
-			float ttuple[] = { tuple[0],tuple[1],0.0f };
-			//float tuple[] = { texCord[arrdisp[i] + j].u, texCord[arrdisp[i] + j].v,0.0f };
-			if(texCord[arrdisp[i] + j].u!=0)
-				of << tuple[0] << " " << tuple[1] << "\t\t" << texCord[arrdisp[i] + j].u << " " << texCord[arrdisp[i] + j].v << "\n";
-			textureCoordinates[i]->InsertNextTuple(ttuple);
+			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*4,0.0f };
+			textureCoordinates[i]->InsertNextTuple(tuple);
 		}
 		textureCoordinates[i]->Modified();
 
@@ -151,56 +138,49 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		viewer->GetTextureAt(i)->Modified();
 		viewer->GetActorAt(i)->SetTexture(viewer->GetTextureAt(i));
 		viewer->GetTextureAt(i)->Update();
-		viewer->GetRenderWindow()->Modified();
+		
 	}
 
-	//boundary actor
-	/*viewer->m_ImageData[4]->SetDimensions(dimensions[0], 6, dimensions[2]);
+
+	/*이 이하 테스팅 안함*/
+	textureCoordinates[4] = vtkFloatArray::New();
+	viewer->m_ImageData[4]->SetDimensions(dimensions[0], dimensions[1] / 120, dimensions[2]);
 	viewer->m_ImageData[4]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
 	viewer->m_ImageData[4]->Modified();
 
 	unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[4]->GetScalarPointer());
 
-	std::cout << index << "에서 ";
-
-	int index2 = 0;
-	for (int i = 203400;i<=203400*3; i+=203400)
+	for (int i = 1280*720; i<=1280 * 720*3; i+= 1280 * 720)
 	{
-	std::cout << index2 << "에서 ";
-	for (int j = 0; j < 1280 * 2*3; j++)
-	{
-	scalarPointer[index2++] = data[j+ i];
+		for (int j = 0; j < 1280*2; j++)
+			scalarPointer[j] = data[i+j];
 	}
-	std::cout << index2 << "까지\n";
-	}
-	std::cout << index << "까지\n";
 	viewer->m_ImageData[4]->Modified();
+	textureCoordinates[4]->SetNumberOfComponents(2);
 
-	vtkSmartPointer<vtkFloatArray> textureCoordinates = vtkSmartPointer<vtkFloatArray>::New();
-	textureCoordinates->SetNumberOfComponents(2);
-
-	for (int i = 203400; i <= 203400 * 3; i += 203400)
+	for (int i = 1280 * 720; i <= 1280 * 720 * 3; i += 1280 * 720)
 	{
-
-	for (int j = 0; j < 1280 * 2; j++)
-	{
-	float tuple[] = { texCord[j + i].u, texCord[j + i].v,0.0f };
-	textureCoordinates->InsertNextTuple(tuple);
+		for (int j = 0; j < 1280 * 2; j++)
+		{
+			float tuple[] = { texCord[i + j].u, texCord[i + j].v * 120,0.0f };
+			textureCoordinates[4]->InsertNextTuple(tuple);
+		}
 	}
 
-	}
-	textureCoordinates->Modified();
-
-	viewer->GetPolyDataAt(4)->GetPointData()->SetTCoords(textureCoordinates);
+	textureCoordinates[4]->Modified();
+	viewer->GetPolyDataAt(4)->GetPointData()->SetTCoords(textureCoordinates[4]);
 	viewer->GetTextureAt(4)->SetInputData(viewer->GetImageData(4));
 	viewer->GetTextureAt(4)->Modified();
 	viewer->GetActorAt(4)->SetTexture(viewer->GetTextureAt(4));
 	viewer->GetTextureAt(4)->Update();
-	viewer->GetRenderWindow()->Modified();*/
 
+
+
+	viewer->GetRenderWindow()->Modified();
+	/*
 	vtkRenderer *rend = vtkRenderer::New();
 	vtkImageActor *act = vtkImageActor::New();
-	act->SetInputData(viewer->m_ImageData[0]);
+	act->SetInputData(viewer->m_ImageData[4]);
 	act->Update();
 
 	vtkRenderWindow *win = vtkRenderWindow::New();
@@ -212,7 +192,7 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	win->Start();
 	it->SetRenderWindow(win);
 	it->Start();
-	viewer->m_Renderer->ResetCamera();
+	viewer->m_Renderer->ResetCamera();*/
 }
 void Scan::ReleaseModel()
 {
