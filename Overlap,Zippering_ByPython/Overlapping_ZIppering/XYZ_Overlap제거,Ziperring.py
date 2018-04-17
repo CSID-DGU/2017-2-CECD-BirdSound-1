@@ -111,6 +111,7 @@ def getDeleteIndex2(remainPage, deletePage, D1,remaine_list):
             if min > tmp :      #최소인 점 min에 대해
                 min = tmp
                 min_idx = d_idx
+        print(min)
         d_nxt = getNextWorkingSetIndex(d_nxt,min_idx)
         del_point.append([r_nxt,d_nxt]) #그리고 해당점은 제거할 리스트에 넣는다.
 
@@ -387,6 +388,7 @@ part_del_point_frle_FR = getDeletePoint(frle_point_page_FR, del_tmp_point_frle, 
 part_del_point_frle_LE = getDeletePoint(frle_point_page_LE, del_tmp_point_frle,"deleteNagative")  #deleteNagative / deletePositive
 
 pprint.pprint(del_tmp_point_frle)
+exit(1)
 '''
 
 #del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex(FR,RI,F_R1,F_R3,R1,R3)
