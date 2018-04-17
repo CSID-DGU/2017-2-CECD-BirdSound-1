@@ -258,6 +258,7 @@ def confirmMeshNumber(A):
                 if(A[i+1][0] !=0 and A[i+WIDTH+1][0] !=0 and A[i][0] != 0):
                     ct+=1
     return ct
+
 #Mesh 만들기
 def makeStrMesh(p1,p2,p3):
     return "3 "+str(p1)+" "+str(p2)+" "+str(p3)
@@ -363,16 +364,12 @@ def addedMakeMesh(page0,page1,connP):
                     addedmesh.append(makeStrMesh(getPointIdx(p2)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
     return addedmesh[:]
 ''''''''''''
-getXYZData()
-pprint.pprint(getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1))
-exit(1)
 
 '''
 #image로 부터 점 제거
 delPointFromTexture(F_L1,FR,"LEFT")
 delPointFromTexture(F_R1,FR,"RIGHT")
 delPointFromTexture(L2,LE,"RIGHT")
-'''
 '''
 getXYZData()
 
@@ -389,6 +386,8 @@ del_tmp_point_frle,frle_point_page_FR,frle_point_page_LE = getDeleteIndex2(FR,LE
 part_del_point_frle_FR = getDeletePoint(frle_point_page_FR, del_tmp_point_frle, "deletePositive")
 part_del_point_frle_LE = getDeletePoint(frle_point_page_LE, del_tmp_point_frle,"deleteNagative")  #deleteNagative / deletePositive
 
+pprint.pprint(del_tmp_point_frle)
+'''
 
 #del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex(FR,RI,F_R1,F_R3,R1,R3)
 del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex2(FR,RI,[R1[0]+30,R1[1]-100],F_RL)
