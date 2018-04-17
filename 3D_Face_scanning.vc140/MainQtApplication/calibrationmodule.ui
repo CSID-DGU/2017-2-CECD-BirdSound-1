@@ -45,19 +45,6 @@
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="rightStart">
-   <property name="geometry">
-    <rect>
-     <x>810</x>
-     <y>690</y>
-     <width>101</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start Detection</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="allStart">
    <property name="geometry">
     <rect>
@@ -430,19 +417,6 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="rightCapture">
-   <property name="geometry">
-    <rect>
-     <x>990</x>
-     <y>690</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Capture</string>
-   </property>
-  </widget>
   <widget class="QListWidget" name="ir2CaptureList">
    <property name="geometry">
     <rect>
@@ -464,19 +438,6 @@
    </property>
    <property name="text">
     <string>message!</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="rightStop">
-   <property name="geometry">
-    <rect>
-     <x>920</x>
-     <y>690</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Stop</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">
@@ -534,7 +495,6 @@
   <zorder>ir2CaptureList</zorder>
   <zorder>irRightLabel</zorder>
   <zorder>serialNum</zorder>
-  <zorder>rightStart</zorder>
   <zorder>allStart</zorder>
   <zorder>rgbStart</zorder>
   <zorder>label_2</zorder>
@@ -559,9 +519,7 @@
   <zorder>deviceFirmware</zorder>
   <zorder>rgbLabel</zorder>
   <zorder>rightCount</zorder>
-  <zorder>rightCapture</zorder>
   <zorder>message</zorder>
-  <zorder>rightStop</zorder>
   <zorder>label_5</zorder>
   <zorder>asdasd</zorder>
   <zorder>ir2Count</zorder>

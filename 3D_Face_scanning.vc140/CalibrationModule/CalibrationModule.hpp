@@ -22,6 +22,7 @@ public:
 	CalibrationModule(QWidget *parent = Q_NULLPTR);
 	void startDetection();
 	void startDetection(RS_400_STREAM_TYPE stream);
+	void sycCam();
 	void stopDetection() {
 		stopDetection(RS400_STREAM_COLOR);
 		stopDetection(RS400_STREAM_INFRARED1);
@@ -73,6 +74,7 @@ void updateCaptureNum(int captureNum, RS_400_STREAM_TYPE m_stream);
 void flagCalibration(std::vector<std::vector<cv::Point3f>> object_points, std::vector<std::vector<cv::Point2f>> image_points, RS_400_STREAM_TYPE m_stream);
 
 signals:
+void syncLeft();
 void startColorDetect();
 void startIR1Detect();
 void startIR2Detect();

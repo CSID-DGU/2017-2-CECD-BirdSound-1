@@ -43,6 +43,7 @@ public:
 		void run() override;
 
 public slots:
+	
 	void setDetection() {
 		isSetDetect = true;
 	}
@@ -65,6 +66,7 @@ public slots:
 			object_points.push_back(obj);
 			m_captureNum++;
 			emit updateCapture(m_captureNum, m_stream);
+			emit syncIRCam();
 			if (m_captureNum == 20) {
 				m_threadLife = false;
 				wait(500);
@@ -83,8 +85,14 @@ public slots:
 			}
 		}	
 	}
+	
+	void sync() {
+		emit updateCapture(m_captureNum, m_stream);
+		capture();
+	}
 
 signals:
+void syncIRCam();
 void updateColorPixmap(QPixmap pixmap);
 void updateIR1Pixmap(QPixmap pixmap);
 void updateIR2Pixmap(QPixmap pixmap);
