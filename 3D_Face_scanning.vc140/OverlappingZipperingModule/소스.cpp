@@ -104,6 +104,7 @@ public:
 				data.push_back(Pos3D(tmp1, tmp2, tmp3));
 			}
 			A.push_back(data);
+			data.clear();
 		}
 		std::cout << "End load daata\n";
 		fin.close();
@@ -222,12 +223,14 @@ public:
 			r_nxt = remaine_list[i];
 			for (int d_idx = 0; d_idx < WS_d->size(); d_idx++) {
 				tmp = getDistance3D(A[remainPage][getPointIdx(r_nxt)],(*WS_d)[d_idx]);
+
+				//std::cout << A[remainPage][getPointIdx(r_nxt)][0] << ", " << A[remainPage][getPointIdx(r_nxt)][1] << ", " << A[remainPage][getPointIdx(r_nxt)][2] << "\n";
+				//std::cout << (*WS_d)[d_idx][0]<<", "<< (*WS_d)[d_idx][1]<<", "<< (*WS_d)[d_idx][2] << "\n";
 				if (min > tmp) {	//      #최소인 점 min에 대해
 					min = tmp;
 					min_idx = d_idx;
 				}
 			}
-			std::cout << min << "\n";
 			d_nxt = getNextWorkingSetIndex(d_nxt, min_idx);
 			del_point->push_back(PosSet(r_nxt, d_nxt)); //#그리고 해당점은 제거할 리스트에 넣는다.
 
@@ -249,8 +252,7 @@ int main() {
 
 	std::cout << "\tget \t\tOverlap Point " << "\n";
 	p.del_tmp_point_frle = p.getDeleteIndex2(FR, LE, Pos(p.L1[0] - 30, p.L1[1] - 100), *F_LL);
-	
-	for (auto i = p.del_tmp_point_frle->cbegin(); i != p.del_tmp_point_frle->cend(); i++) { 
-		std::cout <<"["<< (*(i->posset))[0][0] <<", "<< (*(i->posset))[0][1]<<"], ["<< (*(i->posset))[1][0] << ", " << (*(i->posset))[1][1] << "]\n"; }
+
+	for (auto i = p.del_tmp_point_frle->cbegin(); i != p.del_tmp_point_frle->cend(); i++) { std::cout <<"["<< (*(i->posset))[0][0] <<", "<< (*(i->posset))[0][1]<<"], ["<< (*(i->posset))[1][0] << ", " << (*(i->posset))[1][1] << "]\n"; }
 
 }

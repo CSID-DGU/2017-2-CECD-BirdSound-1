@@ -108,6 +108,7 @@ def getDeleteIndex2(remainPage, deletePage, D1,remaine_list):
         min = 99999.0
         for d_idx in range(len(WS_d)):
             tmp = getDistance3D(A[remainPage][getPointIdx(r_nxt)],WS_d[d_idx])    #주변 점들의 거리를 계산하고
+
             if min > tmp :      #최소인 점 min에 대해
                 min = tmp
                 min_idx = d_idx
@@ -159,6 +160,7 @@ def getDeleteIndex(remainPage, deletePage,remain_land_eye,remain_land_mouse,dele
         for r_idx in range(len(WS_r)):
             for d_idx in range(len(WS_d)):
                 tmp = getDistance3D(WS_r[r_idx],WS_d[d_idx])    #주변 점들의 거리를 계산하고 
+
                 if min > tmp :      #최소인 점 min에 대해 
                     min = tmp
                     min_idx = [r_idx,d_idx]
@@ -377,7 +379,6 @@ getXYZData()
 #FR 이미지의 포인트 구하기
 F_LL = getGradDelPoint([F_L1[0]-30,F_L1[1]-100],F_L1)+getGradDelPoint(F_L1,F_L3)+getGradDelPoint(F_L3,[F_L3[0]+10,HEIGHT])
 F_RL = getGradDelPoint([F_R1[0]+30,F_R1[1]-100],F_R1)+getGradDelPoint(F_R1,F_R3)+getGradDelPoint(F_R3,[F_R3[0]+200,HEIGHT])
-#pprint.pprint(getDeleteIndex2(FR,LE,F_L1,F_L3,L1,L3,F_LL))
 #FR 기준에서 가장 가까운점 구하기
 
 #중첩된점 구하기
@@ -388,6 +389,7 @@ part_del_point_frle_FR = getDeletePoint(frle_point_page_FR, del_tmp_point_frle, 
 part_del_point_frle_LE = getDeletePoint(frle_point_page_LE, del_tmp_point_frle,"deleteNagative")  #deleteNagative / deletePositive
 
 pprint.pprint(del_tmp_point_frle)
+
 exit(1)
 '''
 
