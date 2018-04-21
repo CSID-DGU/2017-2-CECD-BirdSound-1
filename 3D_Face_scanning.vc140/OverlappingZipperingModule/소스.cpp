@@ -4,6 +4,7 @@
 #include <math.h>
 #include <forward_list>
 #include <vector>
+#include <Map>
 #define WIDTH 1280
 #define HEIGHT 720
 #define POINTS 921600
@@ -12,6 +13,7 @@
 #define LE 2
 #define PAGE 3
 #define FILENAME "resulttmp"
+using namespace std;
 //"# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " +str(POINTS*PageNum)+" float\n"
 class Pos3D {
 public:
@@ -28,6 +30,11 @@ public:
 	}
 	double operator[](int ix) {
 		return (*pos3d)[ix];
+	}
+
+	friend std::ostream& operator<< (std::ostream & os, const Pos3D& p) {
+		os << "[" << (*(p.pos3d))[0] << ", " << (*(p.pos3d))[1] << ", " << (*(p.pos3d))[2]<<"]";
+		return os;
 	}
 };
 class Pos {
@@ -48,6 +55,10 @@ public:
 	int operator[](int ix) {
 		return (*pos)[ix];
 	}
+	friend std::ostream& operator<< (std::ostream & os,const Pos& p) {
+		os << "[" << (*(p.pos))[0] << ", " << (*(p.pos))[1] << "]";
+		return os;
+	}
 };
 class PosSet {
 public:
@@ -65,7 +76,9 @@ public:
 	Pos operator[](int ix) {
 		return (*posset)[ix];
 	}
-	std::string operator<<(const std::string& s ) {
+	friend std::ostream& operator<< (std::ostream & os, const PosSet& p) {
+		os << "[" << (*(p.posset))[0] << ", " << (*(p.posset))[1] << "]";
+		return os;
 	}
 };
 class Points {
@@ -89,6 +102,12 @@ public:
 	int frri_point_page_RI = 1;
 	std::vector<PosSet>* del_tmp_point_frri;
 	std::vector<PosSet>* del_tmp_point_frle;
+
+	std::vector<Pos>* part_del_point_frle_FR;
+	std::vector<Pos>* part_del_point_frle_LE;
+	std::vector<Pos>* part_del_point_frri_FR;
+	std::vector<Pos>* part_del_point_frri_RI;
+
 	std::ifstream fin; // 클래스 객체
 	std::vector<Pos3D> data;
 	std::vector<std::vector<Pos3D>> A;
@@ -100,7 +119,7 @@ public:
 		double tmp1, tmp2, tmp3;
 		for (int k = 0; k < PAGE; k++) {
 			for (int i = 0; i < POINTS; i++) {
-				fin >> tmp1>> tmp2>> tmp3;
+				fin >> tmp1 >> tmp2 >> tmp3;
 				data.push_back(Pos3D(tmp1, tmp2, tmp3));
 			}
 			A.push_back(data);
@@ -186,7 +205,7 @@ public:
 	}
 
 	std::vector<Pos3D>* getWorkingSet(int page, Pos P) {
-		std::vector<Pos3D>* tmp= new std::vector<Pos3D>;
+		std::vector<Pos3D>* tmp = new std::vector<Pos3D>;
 		int	P_idx = getPointIdx(P);
 
 		tmp->push_back(A[page][P_idx - 1]);
@@ -222,10 +241,7 @@ public:
 			min = 99999.0;
 			r_nxt = remaine_list[i];
 			for (int d_idx = 0; d_idx < WS_d->size(); d_idx++) {
-				tmp = getDistance3D(A[remainPage][getPointIdx(r_nxt)],(*WS_d)[d_idx]);
-
-				//std::cout << A[remainPage][getPointIdx(r_nxt)][0] << ", " << A[remainPage][getPointIdx(r_nxt)][1] << ", " << A[remainPage][getPointIdx(r_nxt)][2] << "\n";
-				//std::cout << (*WS_d)[d_idx][0]<<", "<< (*WS_d)[d_idx][1]<<", "<< (*WS_d)[d_idx][2] << "\n";
+				tmp = getDistance3D(A[remainPage][getPointIdx(r_nxt)], (*WS_d)[d_idx]);
 				if (min > tmp) {	//      #최소인 점 min에 대해
 					min = tmp;
 					min_idx = d_idx;
@@ -240,6 +256,31 @@ public:
 		}
 		return del_point;
 	}
+	std::vector<Pos>* getDeletePoint(int page, std::vector<PosSet> del_point, const char *direction) {
+		std::map<int, int> part_dic_del_point;
+		for (int idx = 0; idx < del_point.size(); idx++) {
+			if (strcmp(direction, "deleteNagative") == 0) {
+				part_dic_del_point.insert(std::pair<int, int>(del_point[idx][page][1], WIDTH));
+				if (part_dic_del_point[del_point[idx][page][1]] > del_point[idx][page][0])
+					part_dic_del_point[del_point[idx][page][1]] = del_point[idx][page][0];
+			}
+			else if (strcmp(direction, "deletePositive") == 0) {
+				part_dic_del_point.insert(std::pair<int, int>(del_point[idx][page][1], 0));
+				if (part_dic_del_point[del_point[idx][page][1]] < del_point[idx][page][0])
+					part_dic_del_point[del_point[idx][page][1]] = del_point[idx][page][0];
+			}
+		}
+
+		std::vector<Pos> *del_point_list = new std::vector<Pos>;
+		std::vector<int> part_list_x_del_point;
+		for (auto i = part_dic_del_point.cbegin(); i != part_dic_del_point.cend(); i++)
+			part_list_x_del_point.push_back(part_dic_del_point[(*i).first]);
+
+		int j = 0;
+		for (auto i = part_dic_del_point.cbegin(); i != part_dic_del_point.cend(); i++,j++)
+			del_point_list->push_back(Pos(part_list_x_del_point[j], (*i).first));
+		return del_point_list;
+	}
 };
 int main() {
 	Points p;
@@ -248,11 +289,24 @@ int main() {
 	std::vector<Pos>* F_LL = p.getF_LL();
 	std::vector<Pos>* F_RL = p.getF_RL();
 
-	//for (auto i = F_LL->cbegin(); i != F_LL->cend(); i++) { std::cout << (*(i->pos))[0] << "\n"; }
+	//for (auto i = F_LL->cbegin(); i != F_LL->cend(); i++) { std::cout << (*i) << "\n"; }
 
 	std::cout << "\tget \t\tOverlap Point " << "\n";
 	p.del_tmp_point_frle = p.getDeleteIndex2(FR, LE, Pos(p.L1[0] - 30, p.L1[1] - 100), *F_LL);
+	p.del_tmp_point_frri = p.getDeleteIndex2(FR, RI, Pos(p.L1[0] + 30, p.L1[1] - 100), *F_RL);
 
-	for (auto i = p.del_tmp_point_frle->cbegin(); i != p.del_tmp_point_frle->cend(); i++) { std::cout <<"["<< (*(i->posset))[0][0] <<", "<< (*(i->posset))[0][1]<<"], ["<< (*(i->posset))[1][0] << ", " << (*(i->posset))[1][1] << "]\n"; }
+	//for (auto i = p.del_tmp_point_frle->cbegin(); i != p.del_tmp_point_frle->cend(); i++) {	std::cout << *i << "\n";}
+
+	p.part_del_point_frle_FR = p.getDeletePoint(p.frle_point_page_FR, *p.del_tmp_point_frle, "deletePositive");
+	p.part_del_point_frle_LE = p.getDeletePoint(p.frle_point_page_LE, *p.del_tmp_point_frle, "deleteNagative");//  #deleteNagative / deletePositive
+	
+	p.part_del_point_frri_FR = p.getDeletePoint(p.frri_point_page_FR, *p.del_tmp_point_frri, "deleteNagative");
+	p.part_del_point_frri_RI = p.getDeletePoint(p.frri_point_page_RI, *p.del_tmp_point_frri, "deletePositive");//  #deleteNagative / deletePositive
+
+    //for (auto i = p.part_del_point_frle_FR->cbegin(); i != p.part_del_point_frle_FR->cend(); i++) { std::cout <<*i<<"\n"; }
+
+	std::cout << "\tdelete \t\tOverlap Point \n";
+	//	deletePoint(FR, "deleteNagative", part_del_point_frle_FR)
+	//	deletePoint(LE, "deletePositive", part_del_point_frle_LE)
 
 }

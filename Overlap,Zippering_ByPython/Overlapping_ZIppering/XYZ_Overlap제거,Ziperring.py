@@ -112,7 +112,6 @@ def getDeleteIndex2(remainPage, deletePage, D1,remaine_list):
             if min > tmp :      #최소인 점 min에 대해
                 min = tmp
                 min_idx = d_idx
-        print(min)
         d_nxt = getNextWorkingSetIndex(d_nxt,min_idx)
         del_point.append([r_nxt,d_nxt]) #그리고 해당점은 제거할 리스트에 넣는다.
 
@@ -205,8 +204,6 @@ def getDeletePoint(page, del_point,direction):
     part_list_y_del_point = sorted(part_dic_del_point.keys())
     for item in part_list_y_del_point:
         part_list_x_del_point.append(part_dic_del_point[item])
-
-
     for j in range(len(part_list_y_del_point)):
         del_point.append([part_list_x_del_point[j],part_list_y_del_point[j]])
 
@@ -388,16 +385,15 @@ del_tmp_point_frle,frle_point_page_FR,frle_point_page_LE = getDeleteIndex2(FR,LE
 part_del_point_frle_FR = getDeletePoint(frle_point_page_FR, del_tmp_point_frle, "deletePositive")
 part_del_point_frle_LE = getDeletePoint(frle_point_page_LE, del_tmp_point_frle,"deleteNagative")  #deleteNagative / deletePositive
 
-pprint.pprint(del_tmp_point_frle)
-
-exit(1)
-'''
-
 #del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex(FR,RI,F_R1,F_R3,R1,R3)
 del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex2(FR,RI,[R1[0]+30,R1[1]-100],F_RL)
 part_del_point_frri_FR = getDeletePoint(frri_point_page_FR, del_tmp_point_frri, "deleteNagative")
 part_del_point_frri_RI = getDeletePoint(frri_point_page_RI,del_tmp_point_frri,"deletePositive")  #deleteNagative / deletePositive
 
+
+
+
+'''
 #중첩된 점 제거
 print("\tdelete \t\tOverlap Point ")
 deletePoint(FR,"deleteNagative",part_del_point_frle_FR)
