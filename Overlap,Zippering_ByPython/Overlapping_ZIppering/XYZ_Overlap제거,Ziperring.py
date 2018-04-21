@@ -371,6 +371,9 @@ delPointFromTexture(F_L1,FR,"LEFT")
 delPointFromTexture(F_R1,FR,"RIGHT")
 delPointFromTexture(L2,LE,"RIGHT")
 '''
+
+'''
+
 getXYZData()
 
 #FR 이미지의 포인트 구하기
@@ -393,7 +396,6 @@ part_del_point_frri_RI = getDeletePoint(frri_point_page_RI,del_tmp_point_frri,"d
 
 
 
-'''
 #중첩된 점 제거
 print("\tdelete \t\tOverlap Point ")
 deletePoint(FR,"deleteNagative",part_del_point_frle_FR)

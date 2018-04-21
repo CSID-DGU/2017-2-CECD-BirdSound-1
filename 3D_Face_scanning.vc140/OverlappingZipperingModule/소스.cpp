@@ -28,7 +28,7 @@ public:
 		pos3d->push_back(b);
 		pos3d->push_back(c);
 	}
-	double operator[](int ix) {
+	double& operator[](int ix) {
 		return (*pos3d)[ix];
 	}
 
@@ -52,7 +52,7 @@ public:
 	std::vector<int>* get() {
 		return pos;
 	}
-	int operator[](int ix) {
+	int& operator[](int ix) {
 		return (*pos)[ix];
 	}
 	friend std::ostream& operator<< (std::ostream & os,const Pos& p) {
@@ -125,7 +125,7 @@ public:
 			A.push_back(data);
 			data.clear();
 		}
-		std::cout << "End load daata\n";
+		std::cout << "End load data\n";
 		fin.close();
 	}
 	int getPointIdx(Pos A) {
@@ -154,7 +154,6 @@ public:
 			lists->push_back(tmp);
 			lists->push_back(tmp);
 		}
-		std::cout << "End gradient points\n";
 		return lists;
 	}
 
@@ -281,6 +280,32 @@ public:
 			del_point_list->push_back(Pos(part_list_x_del_point[j], (*i).first));
 		return del_point_list;
 	}
+	void deletePoint(int page, char * direction, std::vector<Pos> &part_del_point) {
+		int st_0;
+		for (int idx = 0; idx < part_del_point.size(); idx++) {
+			st_0 = getPointIdx(part_del_point[idx]);
+			if (strcmp(direction, "deletePositive") == 0) {
+				part_del_point[idx][0] = part_del_point[idx][0] - 1;
+				for (int ix = st_0; ix < st_0 + WIDTH; ix++) {
+					if ((ix % WIDTH) == 0)
+						break;
+					else
+						for (int i = 0; i < 3; i++)
+							A[page][ix][i] = 0.0;
+				}
+			}
+			else if (strcmp(direction, "deleteNagative") == 0) {
+				part_del_point[idx][0] = part_del_point[idx][0] + 1;
+				for (int ix = st_0; ix < st_0 - WIDTH; ix--) {
+					if ((ix % WIDTH) == 0)
+						break;
+					else
+						for (int i = 0; i < 3; i++)
+							A[page][ix][i] = 0.0;
+				}
+			}
+		}
+	}
 };
 int main() {
 	Points p;
@@ -306,7 +331,19 @@ int main() {
     //for (auto i = p.part_del_point_frle_FR->cbegin(); i != p.part_del_point_frle_FR->cend(); i++) { std::cout <<*i<<"\n"; }
 
 	std::cout << "\tdelete \t\tOverlap Point \n";
-	//	deletePoint(FR, "deleteNagative", part_del_point_frle_FR)
-	//	deletePoint(LE, "deletePositive", part_del_point_frle_LE)
+	p.deletePoint(FR, "deleteNagative", *(p.part_del_point_frle_FR));
+	p.deletePoint(LE, "deletePositive", *(p.part_del_point_frle_LE));
 
+	p.deletePoint(FR, "deletePositive", *(p.part_del_point_frri_FR));
+	p.deletePoint(RI, "deleteNagative", *(p.part_del_point_frri_RI));
+
+	//str 생성 
+
+	//매쉬 개수 구하기
+
+	//Mesh에 연결할 폴리곤 구하기
+	
+	//폴리곤 출력
+
+	//나머지 Mesh 만들면서 저장 
 }
