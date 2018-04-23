@@ -339,6 +339,9 @@ public:
 		}
 		return connPoint;
 	}
+	 addedMakeMesh(page0, page1, connP) {
+
+	}
 };
 int main() {
 	Points p;
@@ -376,7 +379,7 @@ int main() {
 	p.connPoint_frri = p.getMeshLine(*p.part_del_point_frri_RI, *p.part_del_point_frri_FR, RI, FR);
 	//for (auto i = p.connPoint_frle->cbegin(); i != p.connPoint_frle->cend(); i++) { std::cout <<*i<<"\n"; }
 
-
+	p.addedMakeMesh(FR, LE, p.connPoint_frle)
 
 	//str »ı¼º 
 
