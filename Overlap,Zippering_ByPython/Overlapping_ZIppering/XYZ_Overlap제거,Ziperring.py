@@ -439,6 +439,8 @@ print('*** Finished Shelf File ***\n')
 print("\tget \t\tMesh Polygon")
 connPoint_frle = getMeshLine(part_del_point_frle_FR, part_del_point_frle_LE,FR,LE)
 addedmesh_frle = addedMakeMesh(FR,LE, connPoint_frle)
+pprint.pprint(addedmesh_frle)
+exit(1)
 print("\t\tconnect \tPoint Length(frle) : ", len(connPoint_frle))
 
 connPoint_frri = getMeshLine(part_del_point_frri_RI,part_del_point_frri_FR,RI,FR)

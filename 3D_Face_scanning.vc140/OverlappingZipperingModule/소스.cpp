@@ -81,6 +81,19 @@ public:
 		return os;
 	}
 };
+class PosPolyInt {
+public:
+	int pospolyint[3];
+	PosPolyInt(int a, int b, int c) {
+		pospolyint[0] = a;
+		pospolyint[1] = b;
+		pospolyint[2] = c;
+	}
+	friend std::ostream& operator<< (std::ostream & os, const PosPolyInt& p) {
+		os << "[" << p.pospolyint[0] << ", " << p.pospolyint[1] << ", " << p.pospolyint[2] << "]";
+		return os;
+	}
+};
 class Points {
 public:
 	Pos L1 = Pos(710, 340);
@@ -106,6 +119,9 @@ public:
 
 	std::vector<PosSet>* connPoint_frle;
 	std::vector<PosSet>* connPoint_frri;
+
+	std::vector<PosPolyInt>* addedmesh_frle;
+	std::vector<PosPolyInt>* addedmesh_frri;
 
 	std::vector<Pos>* part_del_point_frle_FR;
 	std::vector<Pos>* part_del_point_frle_LE;
@@ -339,8 +355,98 @@ public:
 		}
 		return connPoint;
 	}
-	 addedMakeMesh(page0, page1, connP) {
+	std::vector<PosPolyInt>* addedMakeMesh(int page0, int page1, std::vector<PosSet>& connP) {
+		std::vector<PosPolyInt>* addedmesh = new std::vector<PosPolyInt>;
+		int page0_base = page0*POINTS;
+		int page1_base = page1*POINTS;
+		int base, page;
+		Pos s1, s2;
+		Pos p1, p2, p3, p4, pp1, pp2, pp3;
+		std::vector<PosSet> ps;
+		for (int idx = 0; idx < connP.size() - 1; idx++) {
+			p1 = connP[idx][0];
+			p2 = connP[idx + 1][0];
+			p3 = connP[idx + 1][1];
+			p4 = connP[idx][1];
+			//#add spatial mesh
 
+			ps.push_back(PosSet(p1, p2));
+			ps.push_back(PosSet(p4, p3));
+			ps.push_back(PosSet(p2, p1));
+			ps.push_back(PosSet(p3, p4));
+			for (int idx = 0; idx < ps.size(); idx++) {
+				s1 = ps[idx][0];
+				s2 = ps[idx][1];
+				if (idx % 2 == 0) {
+					base = page0_base;
+					page = page0;
+				}
+				else {
+					base = page1_base;
+					page = page1;
+				}
+				if (p1[0] < p2[0]) {
+					for (int i = 0; i < s2[0] - s1[0] - 1; i++) {
+						pp1 = s1;
+						pp2 = Pos(s2[0] - i, s2[1]);
+						pp3 = Pos(s2[0] - i - 1, s2[1]);
+						//print(A[page][getPointIdx(pp1)][0], A[page][getPointIdx(pp2)][0], A[page][getPointIdx(pp3)][0])
+						if (A[page][getPointIdx(pp1)][0] != 0.0 && A[page][getPointIdx(pp2)][0] != 0.0 && A[page][getPointIdx(pp3)][0] != 0.0)
+							addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base));
+					}
+				}
+				if (s1[0] > s2[0]) {
+					for (int i = 0; i < s1[0] - s2[0] - 1; i++) {
+						pp1 = s1;
+						pp2 = Pos(s2[0] + i + 1, s2[1]);
+						pp3 = Pos(s2[0] + i, s2[1]);
+						//print(A[page][getPointIdx(pp1)][0], A[page][getPointIdx(pp2)][0], A[page][getPointIdx(pp3)][0])
+						if (A[page][getPointIdx(pp1)][0] != 0.0 && A[page][getPointIdx(pp2)][0] != 0.0 && A[page][getPointIdx(pp3)][0] != 0.0)
+							addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base));
+					}
+				}
+				//print('\n')
+
+				if (page0 == RI) {
+					if (p1[0] < p2[0]) {
+						for (int i = 0; i < p2[0] - p1[0] - 1; i++) {
+							pp1 = p1;
+							pp2 = Pos(p2[0] - i, p2[1]);
+							pp3 = Pos(p2[0] - i - 1, p2[1]);
+							//print(A[page0][getPointIdx(pp1)][0], A[page0][getPointIdx(pp2)][0], A[page0][getPointIdx(pp3)][0])
+							if (A[page0][getPointIdx(pp1)][0] != 0.0 && A[page0][getPointIdx(pp2)][0] != 0.0 && A[page0][getPointIdx(pp3)][0] != 0.0)
+								addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base));
+						}
+					}
+					if (p1[0] > p2[0]) {
+						for (int i = 0; i < p1[0] - p2[0] - 1; i++) {
+							pp1 = p1;
+							pp2 = Pos(p2[0] + i + 1, p2[1]);
+							pp3 = Pos(p2[0] + i, p2[1]);
+							//print(A[page0][getPointIdx(pp1)][0], A[page0][getPointIdx(pp2)][0], A[page0][getPointIdx(pp3)][0])
+							if (A[page0][getPointIdx(pp1)][0] != 0.0 && A[page0][getPointIdx(pp2)][0] != 0.0 && A[page0][getPointIdx(pp3)][0] != 0.0)
+								addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base));
+						}
+					}
+				}
+				//connect mesh
+				if (getDistance3D(A[page0][getPointIdx(p1)], A[page1][getPointIdx(p3)]) < getDistance3D(A[page0][getPointIdx(p2)], A[page1][getPointIdx(p4)])) {
+					if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0)
+						addedmesh->push_back(PosPolyInt(getPointIdx(p1) + page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4) + page1_base));
+					if (p1[0] != p2[0] && p1[1] != p2[1])
+						if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0)
+							addedmesh->push_back(PosPolyInt(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base));
+				}
+				else {
+					if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0)
+						addedmesh->push_back(PosPolyInt(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p4) + page1_base));
+					if (p3[0] != p4[0] && p3[1] != p4[1])
+						if (A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0)
+							addedmesh->push_back(PosPolyInt(getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4) + page1_base));
+				}
+			}
+		}
+		return addedmesh;
 	}
 };
 int main() {
@@ -379,7 +485,8 @@ int main() {
 	p.connPoint_frri = p.getMeshLine(*p.part_del_point_frri_RI, *p.part_del_point_frri_FR, RI, FR);
 	//for (auto i = p.connPoint_frle->cbegin(); i != p.connPoint_frle->cend(); i++) { std::cout <<*i<<"\n"; }
 
-	p.addedMakeMesh(FR, LE, p.connPoint_frle)
+	p.addedmesh_frle = p.addedMakeMesh(FR, LE, *p.connPoint_frle);
+	for (auto i = p.addedmesh_frle->cbegin(); i != p.addedmesh_frle->cend(); i++) { std::cout <<*i<<"\n"; }
 
 	//str »ý¼º 
 
