@@ -291,6 +291,7 @@ def getMeshLine(part_del_point_0,part_del_point_1,page0,page1):
                     min_idx = j
                     min = tmp
             if now_ptr_s !=0 and min_idx <= now_ptr_s:
+                print(connPoint[len(connPoint)-1][1])
                 connPoint.append([part_del_point_0[i], connPoint[len(connPoint)-1][1]])
             else:
                 for idx in range(now_ptr_s,min_idx+1):
@@ -434,6 +435,17 @@ part_del_point_frri_FR = sF['part_del_point_frri_FR']
 part_del_point_frri_RI = sF['part_del_point_frri_RI']
 print('*** Finished Shelf File ***\n')
 
+#Mesh 연결할 Polygon 구하기
+print("\tget \t\tMesh Polygon")
+connPoint_frle = getMeshLine(part_del_point_frle_FR, part_del_point_frle_LE,FR,LE)
+addedmesh_frle = addedMakeMesh(FR,LE, connPoint_frle)
+print("\t\tconnect \tPoint Length(frle) : ", len(connPoint_frle))
+
+connPoint_frri = getMeshLine(part_del_point_frri_RI,part_del_point_frri_FR,RI,FR)
+addedmesh_frri = addedMakeMesh(RI,FR, connPoint_frri)
+print("\t\tconnect \tPoint Length(frri) : ", len(connPoint_frri))
+
+
 #만들어질 Mesh 갯수 구하기
 print("Get \tMesh")
 A_ct = confirmMeshNumber(A[RI])
@@ -445,16 +457,6 @@ B_ct_list = makeMesh(A[FR],POINTS*FR)
 C_ct = confirmMeshNumber(A[LE])
 C_ct_list = makeMesh(A[LE],POINTS*LE)
 
-
-#Mesh 연결할 Polygon 구하기
-print("\tget \t\tMesh Polygon")
-connPoint_frle = getMeshLine(part_del_point_frle_FR, part_del_point_frle_LE,FR,LE)
-addedmesh_frle = addedMakeMesh(FR,LE, connPoint_frle)
-print("\t\tconnect \tPoint Length(frle) : ", len(connPoint_frle))
-
-connPoint_frri = getMeshLine(part_del_point_frri_RI,part_del_point_frri_FR,RI,FR)
-addedmesh_frri = addedMakeMesh(RI,FR, connPoint_frri)
-print("\t\tconnect \tPoint Length(frri) : ", len(connPoint_frri))
 
 #Polygon 출력하기
 print(" ")

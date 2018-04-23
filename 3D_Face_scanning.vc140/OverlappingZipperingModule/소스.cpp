@@ -73,7 +73,7 @@ public:
 		posset->push_back(a);
 		posset->push_back(b);
 	}
-	Pos operator[](int ix) {
+	Pos& operator[](int ix) {
 		return (*posset)[ix];
 	}
 	friend std::ostream& operator<< (std::ostream & os, const PosSet& p) {
@@ -102,6 +102,10 @@ public:
 	int frri_point_page_RI = 1;
 	std::vector<PosSet>* del_tmp_point_frri;
 	std::vector<PosSet>* del_tmp_point_frle;
+
+
+	std::vector<PosSet>* connPoint_frle;
+	std::vector<PosSet>* connPoint_frri;
 
 	std::vector<Pos>* part_del_point_frle_FR;
 	std::vector<Pos>* part_del_point_frle_LE;
@@ -306,6 +310,35 @@ public:
 			}
 		}
 	}
+	std::vector<PosSet>* getMeshLine(std::vector<Pos>& part_del_point_0, std::vector<Pos>& part_del_point_1, int page0, int page1) {
+		int now_ptr_s = 0;
+		double min, tmp;
+		int min_idx;
+		std::vector<PosSet>* connPoint = new std::vector<PosSet>;
+		for (int i = 0; i < part_del_point_0.size(); i++) {
+			min = 100.0;
+			min_idx = -1;
+			if (A[page0][getPointIdx(part_del_point_0[i])][0] != 0.0) {
+				for (int j = 0; j < part_del_point_1.size(); j++) {
+					tmp = getDistance3D(A[page0][getPointIdx(part_del_point_0[i])], A[page1][getPointIdx(part_del_point_1[j])]);
+					if (min > tmp) {
+						min_idx = j;
+						min = tmp;
+					}
+				}
+				if (now_ptr_s != 0 && min_idx <= now_ptr_s) {
+					connPoint->push_back(PosSet(part_del_point_0[i], (*connPoint)[connPoint->size() - 1][1]));
+				}
+				else {
+					for (int idx = now_ptr_s; idx < min_idx + 1; idx++) {
+						connPoint->push_back(PosSet(part_del_point_0[i], part_del_point_1[idx]));
+					}
+					now_ptr_s = min_idx + 1;
+				}
+			}
+		}
+		return connPoint;
+	}
 };
 int main() {
 	Points p;
@@ -337,9 +370,15 @@ int main() {
 	p.deletePoint(FR, "deletePositive", *(p.part_del_point_frri_FR));
 	p.deletePoint(RI, "deleteNagative", *(p.part_del_point_frri_RI));
 
-	//str 생성 
-
 	//매쉬 개수 구하기
+	std::cout << "Get \tMesh\n";
+	p.connPoint_frle = p.getMeshLine(*p.part_del_point_frle_FR, *p.part_del_point_frle_LE, FR, LE);
+	p.connPoint_frri = p.getMeshLine(*p.part_del_point_frri_RI, *p.part_del_point_frri_FR, RI, FR);
+	//for (auto i = p.connPoint_frle->cbegin(); i != p.connPoint_frle->cend(); i++) { std::cout <<*i<<"\n"; }
+
+
+
+	//str 생성 
 
 	//Mesh에 연결할 폴리곤 구하기
 	
