@@ -291,7 +291,7 @@ def getMeshLine(part_del_point_0,part_del_point_1,page0,page1):
                     min_idx = j
                     min = tmp
             if now_ptr_s !=0 and min_idx <= now_ptr_s:
-                print(connPoint[len(connPoint)-1][1])
+                #print(connPoint[len(connPoint)-1][1])
                 connPoint.append([part_del_point_0[i], connPoint[len(connPoint)-1][1]])
             else:
                 for idx in range(now_ptr_s,min_idx+1):
@@ -321,7 +321,7 @@ def addedMakeMesh(page0,page1,connP):
                     pp1 = s1
                     pp2 = [s2[0]-i,s2[1]]
                     pp3 = [s2[0]-i-1, s2[1]]
-                    print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
+                    #print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
                     if A[page][getPointIdx(pp1)][0] != 0.0 and A[page][getPointIdx(pp2)][0] != 0.0 and A[page][getPointIdx(pp3)][0] != 0.0:
                         addedmesh.append(makeStrMesh(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base))
             if s1[0] > s2[0] :
@@ -329,17 +329,17 @@ def addedMakeMesh(page0,page1,connP):
                     pp1 = s1
                     pp2 = [s2[0]+i+1, s2[1]]
                     pp3 = [s2[0]+i,s2[1]]
-                    print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
+                    #print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
                     if A[page][getPointIdx(pp1)][0] != 0.0 and A[page][getPointIdx(pp2)][0] != 0.0 and A[page][getPointIdx(pp3)][0] != 0.0:
                         addedmesh.append(makeStrMesh(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base))
-        print('\n')
+        #print('\n')
         if page0 == RI:    #메시 중
             if p1[0] < p2[0] :
                 for i in range(p2[0]-p1[0]-1):
                     pp1 = p1
                     pp2 = [p2[0]-i,p2[1]]
                     pp3 = [p2[0]-i-1, p2[1]]
-                    print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
+                    #print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
                     if A[page0][getPointIdx(pp1)][0] != 0.0 and A[page0][getPointIdx(pp2)][0] != 0.0 and A[page0][getPointIdx(pp3)][0] != 0.0:
                         addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
             if p1[0] > p2[0] :
@@ -347,7 +347,7 @@ def addedMakeMesh(page0,page1,connP):
                     pp1 = p1
                     pp2 = [p2[0]+i+1, p2[1]]
                     pp3 = [p2[0]+i,p2[1]]
-                    print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
+                    #print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
                     if A[page0][getPointIdx(pp1)][0] != 0.0 and A[page0][getPointIdx(pp2)][0] != 0.0 and A[page0][getPointIdx(pp3)][0] != 0.0:
                         addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
         #connect mesh
