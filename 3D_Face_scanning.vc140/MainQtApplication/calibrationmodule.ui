@@ -6,31 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1312</width>
-    <height>687</height>
+    <width>1083</width>
+    <height>743</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>1070</x>
-     <y>520</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>IR CAM 2 (RIGHT)</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="irRightLabel">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>360</y>
+     <x>550</x>
+     <y>400</y>
      <width>512</width>
      <height>288</height>
     </rect>
@@ -48,8 +35,8 @@
   <widget class="QLabel" name="serialNum">
    <property name="geometry">
     <rect>
-     <x>1160</x>
-     <y>60</y>
+     <x>660</x>
+     <y>70</y>
      <width>141</width>
      <height>21</height>
     </rect>
@@ -58,111 +45,53 @@
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="rightStart">
+  <widget class="QPushButton" name="allStart">
    <property name="geometry">
     <rect>
-     <x>830</x>
-     <y>650</y>
-     <width>61</width>
-     <height>21</height>
+     <x>560</x>
+     <y>120</y>
+     <width>121</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_6">
-   <property name="geometry">
-    <rect>
-     <x>1070</x>
-     <y>220</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>RGB CAM</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="startStreaming">
-   <property name="geometry">
-    <rect>
-     <x>1060</x>
-     <y>110</y>
-     <width>91</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Start</string>
+    <string>All Start Detection</string>
    </property>
   </widget>
   <widget class="QPushButton" name="rgbStart">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>270</x>
      <y>330</y>
-     <width>61</width>
-     <height>21</height>
+     <width>101</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start</string>
+    <string>Start Detection</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>650</y>
-     <width>111</width>
-     <height>16</height>
+     <y>690</y>
+     <width>241</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>↑IR CAM 1(LEFT)</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="depthLabel">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>40</y>
-     <width>512</width>
-     <height>288</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"> border-radius: 25px; background: white;</string>
-   </property>
-   <property name="text">
-    <string>DEPTH</string>
-   </property>
-   <property name="textFormat">
-    <enum>Qt::AutoText</enum>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="rgbCaptureList">
-   <property name="geometry">
-    <rect>
-     <x>1070</x>
-     <y>240</y>
-     <width>221</width>
-     <height>121</height>
-    </rect>
+    <string>ir2Status</string>
    </property>
   </widget>
   <widget class="QLabel" name="irLeftLabel">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>360</y>
+     <y>400</y>
      <width>512</width>
      <height>288</height>
     </rect>
@@ -183,7 +112,7 @@
      <x>450</x>
      <y>330</y>
      <width>61</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -193,8 +122,8 @@
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>1060</x>
-     <y>180</y>
+     <x>560</x>
+     <y>300</y>
      <width>61</width>
      <height>21</height>
     </rect>
@@ -206,23 +135,23 @@
   <widget class="QPushButton" name="leftStart">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>650</y>
-     <width>61</width>
-     <height>21</height>
+     <x>270</x>
+     <y>690</y>
+     <width>101</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start</string>
+    <string>Start Detection</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="captrueImage">
+  <widget class="QPushButton" name="allCapture">
    <property name="geometry">
     <rect>
-     <x>1060</x>
-     <y>140</y>
-     <width>91</width>
-     <height>23</height>
+     <x>560</x>
+     <y>160</y>
+     <width>121</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -232,8 +161,8 @@
   <widget class="QLabel" name="deviceFirmware_2">
    <property name="geometry">
     <rect>
-     <x>1060</x>
-     <y>60</y>
+     <x>560</x>
+     <y>70</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -251,13 +180,13 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="startCalibration">
+  <widget class="QPushButton" name="startCalibrate">
    <property name="geometry">
     <rect>
-     <x>1160</x>
-     <y>140</y>
-     <width>91</width>
-     <height>23</height>
+     <x>690</x>
+     <y>160</y>
+     <width>121</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -270,47 +199,34 @@
      <x>380</x>
      <y>330</y>
      <width>61</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>Stop</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_8">
+  <widget class="QLabel" name="ir1Status">
    <property name="geometry">
     <rect>
-     <x>1070</x>
-     <y>370</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>IR CAM 1 (LEFT)</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>650</y>
-     <width>111</width>
-     <height>16</height>
+     <x>560</x>
+     <y>690</y>
+     <width>241</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>↑IR CAM 2(RIGHT)</string>
+    <string>status</string>
    </property>
   </widget>
   <widget class="QLabel" name="camName">
    <property name="geometry">
     <rect>
-     <x>1160</x>
-     <y>40</y>
+     <x>660</x>
+     <y>50</y>
      <width>141</width>
      <height>21</height>
     </rect>
@@ -319,29 +235,29 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="rgbStatus">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>330</y>
-     <width>71</width>
-     <height>16</height>
+     <width>241</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>↑RGB CAM</string>
+    <string>status</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="stopStreaming">
+  <widget class="QPushButton" name="allStop">
    <property name="geometry">
     <rect>
-     <x>1160</x>
-     <y>110</y>
-     <width>91</width>
-     <height>23</height>
+     <x>690</x>
+     <y>120</y>
+     <width>121</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -351,8 +267,8 @@
   <widget class="QLabel" name="deviceName">
    <property name="geometry">
     <rect>
-     <x>1060</x>
-     <y>40</y>
+     <x>560</x>
+     <y>50</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -370,29 +286,13 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>330</y>
-     <width>81</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>↑DEPRH MAP</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="leftStop">
    <property name="geometry">
     <rect>
      <x>380</x>
-     <y>650</y>
+     <y>690</y>
      <width>61</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -402,10 +302,10 @@
   <widget class="QLabel" name="rgbCount">
    <property name="geometry">
     <rect>
-     <x>1210</x>
-     <y>220</y>
-     <width>81</width>
-     <height>21</height>
+     <x>470</x>
+     <y>10</y>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -418,8 +318,8 @@
   <widget class="QLabel" name="firmwareVer">
    <property name="geometry">
     <rect>
-     <x>1160</x>
-     <y>80</y>
+     <x>660</x>
+     <y>90</y>
      <width>141</width>
      <height>21</height>
     </rect>
@@ -431,10 +331,10 @@
   <widget class="QLabel" name="leftCount">
    <property name="geometry">
     <rect>
-     <x>1210</x>
+     <x>470</x>
      <y>370</y>
-     <width>81</width>
-     <height>21</height>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -448,9 +348,9 @@
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>650</y>
+     <y>690</y>
      <width>61</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -460,8 +360,8 @@
   <widget class="QLabel" name="deviceFirmware">
    <property name="geometry">
     <rect>
-     <x>1060</x>
-     <y>80</y>
+     <x>560</x>
+     <y>90</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -504,10 +404,10 @@
   <widget class="QLabel" name="rightCount">
    <property name="geometry">
     <rect>
-     <x>1210</x>
-     <y>520</y>
-     <width>81</width>
-     <height>21</height>
+     <x>1010</x>
+     <y>370</y>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -517,64 +417,22 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>1060</x>
-     <y>210</y>
-     <width>241</width>
-     <height>461</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-radius: 4px;
-border: 2px solid gray;
-background-image: url(:/myImage.png);
-</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="ir1CaptureList">
-   <property name="geometry">
-    <rect>
-     <x>1070</x>
-     <y>390</y>
-     <width>221</width>
-     <height>121</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="rightCapture">
-   <property name="geometry">
-    <rect>
-     <x>970</x>
-     <y>650</y>
-     <width>61</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Capture</string>
-   </property>
-  </widget>
   <widget class="QListWidget" name="ir2CaptureList">
    <property name="geometry">
     <rect>
-     <x>1070</x>
-     <y>540</y>
-     <width>221</width>
-     <height>121</height>
+     <x>550</x>
+     <y>40</y>
+     <width>511</width>
+     <height>291</height>
     </rect>
    </property>
   </widget>
   <widget class="QLabel" name="message">
    <property name="geometry">
     <rect>
-     <x>1120</x>
-     <y>180</y>
-     <width>161</width>
+     <x>620</x>
+     <y>300</y>
+     <width>431</width>
      <height>21</height>
     </rect>
    </property>
@@ -582,19 +440,90 @@ background-image: url(:/myImage.png);
     <string>message!</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="rightStop">
+  <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>900</x>
-     <y>650</y>
-     <width>61</width>
-     <height>21</height>
+     <x>10</x>
+     <y>20</y>
+     <width>511</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Stop</string>
+    <string>RGB Camera</string>
    </property>
   </widget>
+  <widget class="QLabel" name="asdasd">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>380</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>IR Camera Left</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ir2Count">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>380</y>
+     <width>511</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>IR Camera Right</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>20</y>
+     <width>511</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Calibration Info</string>
+   </property>
+  </widget>
+  <zorder>ir2CaptureList</zorder>
+  <zorder>irRightLabel</zorder>
+  <zorder>serialNum</zorder>
+  <zorder>allStart</zorder>
+  <zorder>rgbStart</zorder>
+  <zorder>label_2</zorder>
+  <zorder>irLeftLabel</zorder>
+  <zorder>rgbCapture</zorder>
+  <zorder>label_7</zorder>
+  <zorder>leftStart</zorder>
+  <zorder>allCapture</zorder>
+  <zorder>deviceFirmware_2</zorder>
+  <zorder>startCalibrate</zorder>
+  <zorder>rgbStop</zorder>
+  <zorder>ir1Status</zorder>
+  <zorder>camName</zorder>
+  <zorder>rgbStatus</zorder>
+  <zorder>allStop</zorder>
+  <zorder>deviceName</zorder>
+  <zorder>leftStop</zorder>
+  <zorder>rgbCount</zorder>
+  <zorder>firmwareVer</zorder>
+  <zorder>leftCount</zorder>
+  <zorder>leftCapture</zorder>
+  <zorder>deviceFirmware</zorder>
+  <zorder>rgbLabel</zorder>
+  <zorder>rightCount</zorder>
+  <zorder>message</zorder>
+  <zorder>label_5</zorder>
+  <zorder>asdasd</zorder>
+  <zorder>ir2Count</zorder>
+  <zorder>label_9</zorder>
  </widget>
  <resources/>
  <connections/>
