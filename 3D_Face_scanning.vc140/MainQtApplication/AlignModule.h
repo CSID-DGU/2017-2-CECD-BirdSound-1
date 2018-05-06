@@ -31,6 +31,9 @@
 #include"vtkTransform.h"
 
 #include"vtkOBJExporter.h"
+#include"vtkPointData.h"
+#include"vtkTransformTextureCoords.h"
+#include"vtkImageAppend.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -63,10 +66,13 @@ public:
 	int DestroyVariables();
 	void InitializeUi();
 	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
-	int getIndex(vtkPolyData *poly, double *pos);
+
 
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
+	void Copy(MeshPreview* src, MeshPreview* des);
+	void setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
+
 public slots:
 	void slotAlign();
 	void slotLanMarkLeft();

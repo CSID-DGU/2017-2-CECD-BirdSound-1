@@ -98,7 +98,7 @@ void Scan::meshSmooth(MeshPreview *viewer, double Relaxation)
 void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 {
 	const unsigned char* data = static_cast<const unsigned char*>(fra.get_data());
-	double dimensions[3] = { 1280, 720, 1 };//이런거 4장이다.
+	double dimensions[3] = { 1280, 180, 1 };//이런거 4장이다.
 
 	pc.map_to(fra);
 
@@ -109,28 +109,45 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	int index = 0;
 
 	vtkSmartPointer<vtkFloatArray> textureCoordinates[5];
-	
+
 	for (int i = 0; i < 4; i++)
 	{
-		const int disp = 1280 * 720/4*i;
+		std::cout << viewer->GetPolyDataAt(i)->GetNumberOfPoints() << "\n";
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		const int disp = 1280 * 180 *i;
 		textureCoordinates[i] = vtkFloatArray::New();
-		viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1] / 4, dimensions[2]);
+	
+		viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
 		viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
 		viewer->m_ImageData[i]->Modified();
+		
+		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0,0,0));
+			
+		/*nScalar은 3차원이라서 1280 * 720/4  *3 */
+		//for (int j = 0 ; j < nScalar;j++)
+		for (int j = 0 ;j < nScalar; j++)
+		{	
+			scalarPointer[j] = data[disp * 3 + j];			
+		}
 
-		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer());
-		for (int j = 0; j < nScalar / 4; j++)
-			scalarPointer[j] = data[index++];
-	
 		viewer->m_ImageData[i]->Modified();
-
 		textureCoordinates[i]->SetNumberOfComponents(2);
 		
-		for (int j = 0; j < 1280 * 720 / 4; j++)
+		int qwe = 0;
+
+		if (i == 3)qwe = 0;
+		else qwe = 1280;
+
+		for (int j = 0; j < nScalar/3+ qwe; j++)
 		{
-			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*4,0.0f };
+			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*4 };	
 			textureCoordinates[i]->InsertNextTuple(tuple);
 		}
+
+	
 		textureCoordinates[i]->Modified();
 
 		viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
@@ -138,33 +155,48 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		viewer->GetTextureAt(i)->Modified();
 		viewer->GetActorAt(i)->SetTexture(viewer->GetTextureAt(i));
 		viewer->GetTextureAt(i)->Update();
-		
 	}
 
 
-	/*이 이하 테스팅 안함*/
+
 	textureCoordinates[4] = vtkFloatArray::New();
-	viewer->m_ImageData[4]->SetDimensions(dimensions[0], dimensions[1] / 120, dimensions[2]);
+	viewer->m_ImageData[4]->SetDimensions(dimensions[0], 6, dimensions[2]);
 	viewer->m_ImageData[4]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
 	viewer->m_ImageData[4]->Modified();
 
 	unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[4]->GetScalarPointer());
-
-	for (int i = 1280*720; i<=1280 * 720*3; i+= 1280 * 720)
+	
+	index = 0;
+	for (int i = 0; i<3; i++)
 	{
-		for (int j = 0; j < 1280*2; j++)
-			scalarPointer[j] = data[i+j];
+		const int disp = 1280 * 180 * 3*(i+1);
+		std::cout << disp << "에서 ";
+		for (int j = 1; j <= 1280 * 2; j++)
+		{
+			scalarPointer[index++] = 255;
+			scalarPointer[index++] = 0;
+			scalarPointer[index++] = 0;
+			/*scalarPointer[index++] = 0;
+			scalarPointer[index++] = 255;
+			scalarPointer[index++] = 0;*/
+		}
+		std::cout << disp + 1280*2*3 << "까지\n";
 	}
 	viewer->m_ImageData[4]->Modified();
 	textureCoordinates[4]->SetNumberOfComponents(2);
 
-	for (int i = 1280 * 720; i <= 1280 * 720 * 3; i += 1280 * 720)
+	std::cout << std::endl;
+	for (int i = 0; i < 3; i++)
 	{
+		const int disp = 1280 * 180 * (i+1);
+		std::cout << disp << "에서 ";
 		for (int j = 0; j < 1280 * 2; j++)
 		{
-			float tuple[] = { texCord[i + j].u, texCord[i + j].v * 120,0.0f };
+			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*120.0 };
 			textureCoordinates[4]->InsertNextTuple(tuple);
 		}
+		
+		std::cout << disp + 1280 * 2<< "까지\n";
 	}
 
 	textureCoordinates[4]->Modified();
@@ -177,22 +209,33 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 
 
 	viewer->GetRenderWindow()->Modified();
-	/*
-	vtkRenderer *rend = vtkRenderer::New();
-	vtkImageActor *act = vtkImageActor::New();
-	act->SetInputData(viewer->m_ImageData[4]);
-	act->Update();
+	//
+	//vtkSTLWriter *stl = vtkSTLWriter::New();
+	//stl->SetFileName("temp.stl");
+	//stl->SetInputData(viewer->GetPolyDataAt(1));
+	//stl->Update();
 
-	vtkRenderWindow *win = vtkRenderWindow::New();
-	vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
-	rend->ResetCamera();
-	rend->AddActor(act);
+	//vtkPNGWriter *png = vtkPNGWriter::New();
+	//png->SetInputData(viewer->m_ImageData[1]);
+	//png->SetFileName("ptemp.png");
+	//png->Update();
 
-	win->AddRenderer(rend);
-	win->Start();
-	it->SetRenderWindow(win);
-	it->Start();
-	viewer->m_Renderer->ResetCamera();*/
+
+	//vtkRenderer *rend = vtkRenderer::New();
+	//vtkImageActor *act = vtkImageActor::New();
+	//act->SetInputData(viewer->m_ImageData[4]);
+	//act->Update();
+
+	//vtkRenderWindow *win = vtkRenderWindow::New();
+	//vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
+	//rend->ResetCamera();
+	//rend->AddActor(act);
+
+	//win->AddRenderer(rend);
+	//win->Start();
+	//it->SetRenderWindow(win);
+	//it->Start();
+	viewer->m_Renderer->ResetCamera();
 }
 void Scan::ReleaseModel()
 {
@@ -201,7 +244,7 @@ void Scan::ReleaseModel()
 		points->Delete();
 		points = NULL;
 	}
-
+	
 	points = vtkPoints::New();
 	frames.clear();
 
@@ -323,9 +366,12 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 		#pragma omp critical
 		{
-			viewer->GetPolyDataAt(omp_get_thread_num())->SetPoints(threadPoint);
-			viewer->GetPolyDataAt(omp_get_thread_num())->SetPolys(threadCell);
-			viewer->GetPolyDataAt(omp_get_thread_num())->Modified();	
+			//if (omp_get_thread_num() == 0 || omp_get_thread_num() == 1)
+			{
+				viewer->GetPolyDataAt(omp_get_thread_num())->SetPoints(threadPoint);
+				viewer->GetPolyDataAt(omp_get_thread_num())->SetPolys(threadCell);
+				viewer->GetPolyDataAt(omp_get_thread_num())->Modified();
+			}
 		}
 	}
 

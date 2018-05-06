@@ -172,56 +172,56 @@ vtkSmartPointer<vtkPolyData> AlignModule::point2mesh(vtkPoints *pts, vtkMatrix4x
 }
 void AlignModule::registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right)
 {
-	const int alpha = 10;//If alpha big -> too slow
-	vtkSmartPointer<vtkIterativeClosestPointTransform> IcpleftFront =vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
-	IcpleftFront->SetSource(left);
-	IcpleftFront->SetTarget(leftFront);
-	IcpleftFront->GetLandmarkTransform()->SetModeToRigidBody();
-	IcpleftFront->SetMaximumNumberOfIterations(alpha);
-	//icp->StartByMatchingCentroidsOn();
-	IcpleftFront->Modified();
-	IcpleftFront->Update();
+	//const int alpha = 10;//If alpha big -> too slow
+	//vtkSmartPointer<vtkIterativeClosestPointTransform> IcpleftFront =vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
+	//IcpleftFront->SetSource(left);
+	//IcpleftFront->SetTarget(leftFront);
+	//IcpleftFront->GetLandmarkTransform()->SetModeToRigidBody();
+	//IcpleftFront->SetMaximumNumberOfIterations(alpha);
+	////icp->StartByMatchingCentroidsOn();
+	//IcpleftFront->Modified();
+	//IcpleftFront->Update();
 
-	vtkSmartPointer<vtkIterativeClosestPointTransform> IcprightFront = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
-	IcprightFront->SetSource(right);
-	IcprightFront->SetTarget(rightFront);
-	IcprightFront->GetLandmarkTransform()->SetModeToRigidBody();
-	IcprightFront->SetMaximumNumberOfIterations(alpha);
-	//icp->StartByMatchingCentroidsOn();
-	IcprightFront->Modified();
-	IcprightFront->Update();
-
-
-	// Transform the source points by the ICP solution
-	vtkSmartPointer<vtkTransformPolyDataFilter> leftFrontFilter =vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-
-	leftFrontFilter->SetInputData(resultMesh->GetPolyDataAt(0));
-	leftFrontFilter->SetTransform(IcpleftFront);
-	leftFrontFilter->Update();
-
-	vtkSmartPointer<vtkTransformPolyDataFilter> rightFrontFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-
-	rightFrontFilter->SetInputData(resultMesh->GetPolyDataAt(2));
-	rightFrontFilter->SetTransform(IcprightFront);
-	rightFrontFilter->Update();
+	//vtkSmartPointer<vtkIterativeClosestPointTransform> IcprightFront = vtkSmartPointer<vtkIterativeClosestPointTransform>::New();
+	//IcprightFront->SetSource(right);
+	//IcprightFront->SetTarget(rightFront);
+	//IcprightFront->GetLandmarkTransform()->SetModeToRigidBody();
+	//IcprightFront->SetMaximumNumberOfIterations(alpha);
+	////icp->StartByMatchingCentroidsOn();
+	//IcprightFront->Modified();
+	//IcprightFront->Update();
 
 
+	//// Transform the source points by the ICP solution
+	//vtkSmartPointer<vtkTransformPolyDataFilter> leftFrontFilter =vtkSmartPointer<vtkTransformPolyDataFilter>::New();
 
-	resultMesh->GetPolyDataAt(2)->ReleaseData();
-	resultMesh->GetPolyDataAt(2)->Delete();
-	resultMesh->m_PolyData[2] = vtkPolyData::New();
-	resultMesh->GetPolyDataAt(2)->DeepCopy(leftFrontFilter->GetOutput());
-	resultMesh->GetMapperAt(2)->SetInputData(resultMesh->m_PolyData[2]);
-	resultMesh->GetActorAt(2)->Modified();
+	//leftFrontFilter->SetInputData(resultMesh->GetPolyDataAt(0));
+	//leftFrontFilter->SetTransform(IcpleftFront);
+	//leftFrontFilter->Update();
+
+	//vtkSmartPointer<vtkTransformPolyDataFilter> rightFrontFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+
+	//rightFrontFilter->SetInputData(resultMesh->GetPolyDataAt(2));
+	//rightFrontFilter->SetTransform(IcprightFront);
+	//rightFrontFilter->Update();
 
 
-	resultMesh->GetPolyDataAt(0)->ReleaseData();
-	resultMesh->GetPolyDataAt(0)->Delete();
-	resultMesh->m_PolyData[0] = vtkPolyData::New();
-	resultMesh->GetPolyDataAt(0)->DeepCopy(rightFrontFilter->GetOutput());
-	resultMesh->GetMapperAt(0)->SetInputData(resultMesh->m_PolyData[0]);
-	resultMesh->GetActorAt(0)->Modified();
-	
+
+	//resultMesh->GetPolyDataAt(2)->ReleaseData();
+	//resultMesh->GetPolyDataAt(2)->Delete();
+	//resultMesh->m_PolyData[2] = vtkPolyData::New();
+	//resultMesh->GetPolyDataAt(2)->DeepCopy(leftFrontFilter->GetOutput());
+	//resultMesh->GetMapperAt(2)->SetInputData(resultMesh->m_PolyData[2]);
+	//resultMesh->GetActorAt(2)->Modified();
+
+
+	//resultMesh->GetPolyDataAt(0)->ReleaseData();
+	//resultMesh->GetPolyDataAt(0)->Delete();
+	//resultMesh->m_PolyData[0] = vtkPolyData::New();
+	//resultMesh->GetPolyDataAt(0)->DeepCopy(rightFrontFilter->GetOutput());
+	//resultMesh->GetMapperAt(0)->SetInputData(resultMesh->m_PolyData[0]);
+	//resultMesh->GetActorAt(0)->Modified();
+	//
 
 
 	resultMesh->GetRenderWindow()->Render();
@@ -229,12 +229,6 @@ void AlignModule::registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPol
 
 }
 
-int AlignModule::getIndex(vtkPolyData *poly, double *pos)
-{
-	
-	return poly->FindPoint(pos);
-
-}
 void AlignModule::slotAlign()
 {
 	if (left == nullptr || front == nullptr || right == nullptr)
@@ -274,25 +268,39 @@ void AlignModule::slotAlign()
 			rightPts->InsertNextPoint(rightMark[i].X, rightMark[i].Y, rightMark[i].Z);
 		
 
-		vtkLandmarkTransform* left2front = vtkLandmarkTransform::New();
+		vtkSmartPointer<vtkLandmarkTransform>left2front = vtkSmartPointer<vtkLandmarkTransform>::New();
 		left2front->SetSourceLandmarks(leftPts);
 		left2front->SetTargetLandmarks(frontNleft);
 		left2front->SetModeToRigidBody();
 		left2front->Update(); //should this be here?
 
 
-		vtkLandmarkTransform*right2front = vtkLandmarkTransform::New();
+		vtkSmartPointer<vtkLandmarkTransform>right2front = vtkSmartPointer<vtkLandmarkTransform>::New();
 		right2front->SetSourceLandmarks(rightPts);
 		right2front->SetTargetLandmarks(frontNright);
 		right2front->SetModeToRigidBody();
 		right2front->Update(); //should this be here?
-
-
-		vtkAppendPolyData *leftpoly = vtkAppendPolyData::New();
-		vtkAppendPolyData *frontpoly = vtkAppendPolyData::New();
-		vtkAppendPolyData *rightpoly = vtkAppendPolyData::New();
-
 		
+
+		vtkSmartPointer<vtkAppendPolyData>leftpoly = vtkSmartPointer<vtkAppendPolyData>::New();
+		vtkSmartPointer<vtkAppendPolyData>frontpoly = vtkSmartPointer<vtkAppendPolyData>::New();
+		vtkSmartPointer<vtkAppendPolyData>rightpoly = vtkSmartPointer<vtkAppendPolyData>::New();
+		
+
+		vtkSmartPointer<vtkImageAppend>leftImage= vtkSmartPointer<vtkImageAppend>::New();
+		vtkSmartPointer<vtkImageAppend>frontImage = vtkSmartPointer<vtkImageAppend>::New();
+		vtkSmartPointer<vtkImageAppend>rightImage = vtkSmartPointer<vtkImageAppend>::New();
+
+		for (int i = 0; i < 5; i++)leftImage->AddInputData(left->GetImageData(i));
+		for (int i = 0; i < 5; i++)frontImage->AddInputData(front->GetImageData(i));
+		for (int i = 0; i < 5; i++)rightImage->AddInputData(right->GetImageData(i));
+
+
+		//for (int i = 0; i < 5; i++)setTransformedCord(left->GetPolyDataAt(i), left2front);
+		//for (int i = 0; i < 5; i++)setTransformedCord(right->GetPolyDataAt(i), right2front);
+
+
+
 		for (int i = 0; i < 5; i++)leftpoly->AddInputData(left->GetPolyDataAt(i));
 		for (int i = 0; i < 5; i++)frontpoly->AddInputData(front->GetPolyDataAt(i));
 		for (int i = 0; i < 5; i++)rightpoly->AddInputData(right->GetPolyDataAt(i));
@@ -302,12 +310,13 @@ void AlignModule::slotAlign()
 		rightpoly->Update();
 		leftpoly->Update();
 		
-		vtkTransformPolyDataFilter *leftFilt = vtkTransformPolyDataFilter::New();
+		vtkSmartPointer<vtkTransformPolyDataFilter> leftFilt = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
 		leftFilt->SetInputData(leftpoly->GetOutput());
 		leftFilt->SetTransform(left2front);
 		leftFilt->Update();
 		
-		vtkTransformPolyDataFilter *rightFilt = vtkTransformPolyDataFilter::New();
+
+		vtkSmartPointer<vtkTransformPolyDataFilter>rightFilt = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
 		rightFilt->SetInputData(rightpoly->GetOutput());
 		rightFilt->SetTransform(right2front);
 		rightFilt->Update();
@@ -317,32 +326,40 @@ void AlignModule::slotAlign()
 		resultMesh->GetPolyDataAt(1)->DeepCopy(frontpoly->GetOutput());
 		resultMesh->GetPolyDataAt(2)->DeepCopy(rightFilt->GetOutput());
 
+		//resultMesh->m_ImageData[0]->DeepCopy(leftImage->GetOutput());
+		//resultMesh->m_ImageData[0]->Modified();
+		//resultMesh->m_ImageData[1]->DeepCopy(frontImage->GetOutput());
+		//resultMesh->m_ImageData[1]->Modified();
+		//resultMesh->m_ImageData[2]->DeepCopy(rightImage->GetOutput());
+		//resultMesh->m_ImageData[2]->Modified();
 
-		vtkSmartPointer<vtkPolyData>le=  point2mesh(leftPts, left2front->GetMatrix());
-		vtkSmartPointer<vtkPolyData>lefo = point2mesh(frontNleft, left2front->GetMatrix());
-		vtkSmartPointer<vtkPolyData>rifo = point2mesh(frontNright, left2front->GetMatrix());
-		vtkSmartPointer<vtkPolyData>ri = point2mesh(rightPts, left2front->GetMatrix());
+		//
+		//for(int i=0;i<3;i++)
+		//	resultMesh->m_Texture[i]->SetInputData(resultMesh->m_ImageData[i]);
 
-		registration(le, lefo, rifo, ri);
-
-		rightFilt->Delete();
-		leftFilt->Delete();
-		leftpoly->Delete();
-		frontpoly->Delete();
-		rightpoly->Delete();
-		right2front->Delete();
-		leftPts->Delete();
-		rightPts->Delete();
-		frontNleft->Delete();
-		frontNright->Delete();
-		left2front->Delete();
-		leftMark.clear(); 
-		frontMark.clear();
-		rightMark.clear();
-
-	
+		resultMesh->GetRenderWindow()->Render();
+		resultMesh->GetRenderWindow()->Start();
 	}
 }
+
+void AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *land)
+{
+	if (land != nullptr) {
+		vtkSmartPointer<vtkTransform>trans = vtkSmartPointer<vtkTransform>::New();
+		trans->SetMatrix(land->GetMatrix());
+
+		double *rotate = trans->GetOrientation();
+		std::cout << rotate[0] << " " << rotate[1] << " " << rotate[2];
+
+
+		vtkSmartPointer<vtkTransformTextureCoords> transCoord = vtkSmartPointer<vtkTransformTextureCoords>::New();
+		transCoord->SetInputData(poly);
+
+		transCoord->SetPosition(rotate);
+		transCoord->Update();
+	}
+}
+
 
 std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 {
@@ -358,10 +375,7 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 		
 		if (i >= 5)//나머지 0~4는 그림임 그림
 		{
-
 			double *pos = nextActor->GetCenter();
-			std::cout << "찍은거 읽어서 "<<pos[0] << " " << pos[1] << " " << pos[2] << "\n";
-
 			vec.push_back(double3(pos[0], pos[1], pos[2]));
 		}
 	}
@@ -371,18 +385,26 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 }
 
 
-void Copy1(MeshPreview* src, MeshPreview* des)
+void AlignModule::Copy(MeshPreview* src, MeshPreview* des)
 {
 	if (des != NULL)
 	{
 		des->ReleaseModel();
 	}
 
+	//des->CreateTexture("", 0);
 	des->CreateModel("", 0);
 
+	
 	for (int i = 0; i < 5; i++)
 	{
 		des->m_PolyData[i]->DeepCopy(src->GetPolyDataAt(i));
+		des->m_ImageData[i]->DeepCopy(src->m_ImageData[i]);
+		des->m_ImageData[i]->Modified();
+		des->m_Texture[i]->SetInputData(des->m_ImageData[i]);
+		des->GetActorAt(i)->SetTexture(des->m_Texture[i]);
+		des->GetTextureAt(i)->Update(); 
+		des->GetActorAt(i)->Modified();
 	}
 
 	des->GetRenderer()->Modified();
@@ -392,7 +414,7 @@ void Copy1(MeshPreview* src, MeshPreview* des)
 
 void AlignModule::setRight(MeshPreview *rend)
 {
-	Copy1(rend, right);
+	Copy(rend, right);
 	rightStyle->setRadis(right->GetActorAt(0));
 }
 
@@ -400,7 +422,7 @@ void AlignModule::setLeft(MeshPreview *rend)
 {
 	//front = rend;
 	//left = rend;
-	Copy1(rend, left);
+	Copy(rend, left);
 	leftStyle->setRadis(left->GetActorAt(0));
 }
 
@@ -409,6 +431,6 @@ void AlignModule::setFront(MeshPreview *rend)
 	//front = rend;
 	//left = rend;
 	//frontStyle->setRadis(rend->GetActorAt(0));
-	Copy1(rend, front);
+	Copy(rend, front);
 	frontStyle->setRadis(front->GetActorAt(0));
 }

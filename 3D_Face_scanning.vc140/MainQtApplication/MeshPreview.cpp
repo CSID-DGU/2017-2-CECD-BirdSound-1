@@ -65,10 +65,13 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 		m_Actor[0]->SetMapper(m_Mapper[0]);//actor에 mapper을 set함. 
 
 		if (m_IsTexture)
+		{
 			m_Actor[0]->SetTexture(m_Texture[0]);
-		m_Actor[0]->GetProperty()->SetInterpolationToGouraud();
-		m_Actor[0]->GetProperty()->SetColor(1.0, 1.0, 1.0);
-		m_Actor[0]->GetProperty()->BackfaceCullingOn();
+		}
+			m_Actor[0]->GetProperty()->SetInterpolationToGouraud();
+			m_Actor[0]->GetProperty()->SetColor(1.0, 1.0, 1.0);
+			m_Actor[0]->GetProperty()->BackfaceCullingOn();
+		
 
 
 		m_Actor[0]->Modified();
@@ -86,32 +89,18 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 		for (int i = 0; i < m_Actor.size(); i++)
 		{
 			if (!m_PolyData[i])
-			{
 				return 0;
-			}
 
-			//	m_MeshIO->ImportMesh(extType, meshPath, m_PolyData[i]);
 			m_PolyData[i]->Modified();
 
-			//int n = m_PolyData[0]->GetNumberOfPoints();
+
 
 			m_Mapper[i]->SetInputData(m_PolyData[i]);
 			m_Mapper[i]->Update();
 			m_Actor[i]->SetMapper(m_Mapper[i]);
 			m_Renderer->AddActor(m_Actor[i]);
-
-			if (m_IsTexture)
-			{
-				m_Actor[i]->SetTexture(m_Texture[i]);
-				m_Actor[i]->GetProperty()->SetInterpolationToGouraud();
-				m_Actor[i]->GetProperty()->SetColor(1.0, 1.0, 1.0);
-				m_Actor[i]->GetProperty()->BackfaceCullingOn();
-				m_Actor[i]->Modified();
-			}
 		}
 
-
-		std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")!�� \n";
 		m_Renderer->ResetCamera();
 		m_Renderer->Modified();
 
@@ -121,10 +110,7 @@ int MeshPreview::CreateModel(std::string meshPath, int extType)
 
 int MeshPreview::CreateTexture(std::string imgPath, int extType)
 {
-	//m_ImageIO->ImportImage(extType, imgPath, m_ImageData);
-	if (imgPath == ""){}
-	
-	else 
+	if (imgPath == "")
 	{
 		for (int i = 0; i < m_ImageData.size(); i++)
 		{
@@ -134,20 +120,18 @@ int MeshPreview::CreateTexture(std::string imgPath, int extType)
 		}
 	}
 	
-
+	else
+	{
+		m_ImageIO->ImportImage(extType, imgPath, m_ImageData[0]);
+	}
 	m_IsTexture = 1;
-
 	return 1;
 }
 
 int MeshPreview::ReleaseModel()
 {
-	std::cout << " (" << m_Renderer->GetActors()->GetNumberOfItems() << ")�� \n";
-
 	for (int i = 0; i < m_Actor.size(); i++)
 	{
-		std::cout << "i 째 : " << i << "\n";
-
 		m_Renderer->RemoveActor(m_Actor[i]);
 
 		if (m_Actor[i])
@@ -178,16 +162,14 @@ int MeshPreview::ReleaseModel()
 			m_IsTexture = 0;
 		}
 
-	}
+		if (m_ImageData[i])
+		{
+			m_ImageData[i]->ReleaseData();
+			m_ImageData[i] = NULL;
+			m_ImageData[i] = vtkImageData::New();
+		}
 
-	
-	/*if (m_ImageData)
-	{
-	m_ImageData->ReleaseData();
-	m_ImageData->Delete();
-	m_ImageData = NULL;
-	m_ImageData = vtkImageData::New();
-	}*/
+	}
 
 	return 1;
 }

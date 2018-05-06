@@ -108,7 +108,7 @@ void ScanModule::InitializeUi()
 
 void ScanModule::slotCapBtn()
 {
-	if (m_ScannedMeshViewer)
+	if (m_IsScannedMeshViewer)
 	{
 		m_ScannedMeshViewer->ReleaseModel();
 		Scanner->ReleaseModel();
@@ -116,7 +116,7 @@ void ScanModule::slotCapBtn()
 
 	
 	m_ScannedMeshViewer->CreateModel("", 0);
-
+	
 	RealSenseD415->selectSensorAndStreamProps(realsense::RS400_STREAM_DEPTH, realsense::R1280_720, realsense::RS_400_FORMAT::Z16, realsense::RS_400_FPS::HZ30);
 
 	rs2::frame fra = RealSenseD415->capture(realsense::RS400_STREAM_DEPTH);
@@ -140,12 +140,8 @@ void ScanModule::slotNextBtn()
 	qwe->setFront(m_MiniMeshPreviewer[1]);
 	qwe->setRight(m_MiniMeshPreviewer[2]);
 
-
-
-	//m_MiniMeshPreviewer
 	qwe->Rendering();
 	qwe->show();
-	//qwe->align();
 }
 void ScanModule::slotLeftSaveBtn()
 {
@@ -161,23 +157,25 @@ void ScanModule::slotFrontSaveBtn()
 }
 
 
-void Copy(MeshPreview* src, MeshPreview* des)
+void ScanModule::Copy(MeshPreview* src, MeshPreview* des)
 {	
 	if (des != NULL)
 	{
 		des->ReleaseModel();
 	}
 
-	des->CreateTexture("", 0);
+	//des->CreateTexture("", 0);
 	des->CreateModel("",0);
 
 	for (int i = 0; i < 5; i++)
 	{
 		des->m_PolyData[i]->DeepCopy(src->GetPolyDataAt(i));
 		des->m_ImageData[i]->DeepCopy(src->m_ImageData[i]);//<-- 이 부분도 테스팅 안함.
-		//des->m_PolyData[i]->ShallowCopy(src->GetPolyDataAt(i));
-		//des->m_Mapper[i]->ShallowCopy(src->GetMapperAt(i));
-		//des->m_Actor[i]->ShallowCopy(src->GetActorAt(i));
+		des->m_ImageData[i]->Modified();
+		des->m_Texture[i]->SetInputData(des->m_ImageData[i]);
+		des->GetActorAt(i)->SetTexture(des->m_Texture[i]);
+		des->GetTextureAt(i)->Update();
+		des->GetActorAt(i)->Modified();
 	}
 
 	des->GetRenderer()->Modified();

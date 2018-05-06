@@ -48,9 +48,10 @@
 #include<vtkFloatArray.h>
 
 
-#include<math.h>
 #include<vtkPointData.h>
 #include<vtkPoints.h>
+
+#include"vtkPNGWriter.h"
 enum { color, depth };
 enum { omp, ompNsimd, serial };
 

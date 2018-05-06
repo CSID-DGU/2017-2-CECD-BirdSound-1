@@ -5,18 +5,11 @@
 #include "ui_scanmoduleqt.h"
 #include"MeshPreview.h"
 #include"ImagePreview.h"
-//#include"RealSensePreviewer.h"
 #include"Scan.h"
 #include"MeshIO.h"
 #include"AlignModule.h"
 
 
-
-
-//#include<vtkImageData.h>
-//#include<vtkDoubleArray.h>
-//#include<vtkSmartPointer.h>
-//#include<vtkPointData.h>
 class ScanModule : public QMainWindow
 {
 	Q_OBJECT
@@ -36,6 +29,7 @@ public:
 	//int										m_IsImageViewer;
 
 	void InitializeUi();
+	void Copy(MeshPreview* src, MeshPreview* des);
 public slots:
 	void slotCapBtn();
 	void slotNextBtn();
