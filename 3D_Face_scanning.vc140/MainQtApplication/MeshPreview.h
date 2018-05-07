@@ -60,6 +60,8 @@ public:
 	vtkInteractorStyleTrackballCamera*				m_3DStyle;
 	vtkInteractorStyleTrackballCamera* Get3DStyle() { return m_3DStyle; }
 
+
+	int size = 0;
 	void setStyle(vtkInteractorStyle *_style);
 	int InitializeVariables();
 	int DestroyVariables();

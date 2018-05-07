@@ -77,8 +77,7 @@ public:
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 	void Copy(MeshPreview* src, MeshPreview* des);
-	void setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
-	void qweqwe(MeshPreview *test, int index);
+	vtkSmartPointer<vtkDataArray> setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
 
 
 public slots:

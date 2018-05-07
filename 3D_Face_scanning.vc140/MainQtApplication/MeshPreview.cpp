@@ -2,28 +2,31 @@
 #include "MeshIO.h"
 #include "ImageIO.h"
 
-MeshPreview::MeshPreview(int size)
+MeshPreview::MeshPreview(int _size)
 {
-	setSize(size);
+	setSize(_size);
 	InitializeVariables();
+	size = _size;
 }
 
 MeshPreview::MeshPreview()
 {
 	setSize(1);
 	InitializeVariables();
+	size = 1;
 }
-void MeshPreview::setSize(int size)
+void MeshPreview::setSize(int _size)
 {
 	/*m_PolyData.clear();
 	m_Actor.clear();
 	m_Mapper.clear();*/
 
-	m_PolyData.resize(size);
-	m_Actor.resize(size);
-	m_Mapper.resize(size);
-	m_Texture.resize(size);
-	m_ImageData.resize(size);
+	m_PolyData.resize(_size);
+	m_Actor.resize(_size);
+	m_Mapper.resize(_size);
+	m_Texture.resize(_size);
+	m_ImageData.resize(_size);
+	size = _size;
 
 }
 MeshPreview::~MeshPreview()
