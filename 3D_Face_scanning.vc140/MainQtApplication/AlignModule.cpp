@@ -291,13 +291,20 @@ void AlignModule::slotAlign()
 		vtkSmartPointer<vtkImageAppend>frontImage = vtkSmartPointer<vtkImageAppend>::New();
 		vtkSmartPointer<vtkImageAppend>rightImage = vtkSmartPointer<vtkImageAppend>::New();
 
+
+		leftImage->SetAppendAxis(1);
+		frontImage->SetAppendAxis(1);
+		rightImage->SetAppendAxis(1);
 		for (int i = 0; i < 5; i++)leftImage->AddInputData(left->GetImageData(i));
 		for (int i = 0; i < 5; i++)frontImage->AddInputData(front->GetImageData(i));
 		for (int i = 0; i < 5; i++)rightImage->AddInputData(right->GetImageData(i));
+		leftImage->Update();
+		frontImage->Update();
+		rightImage->Update();
 
-
-		//for (int i = 0; i < 5; i++)setTransformedCord(left->GetPolyDataAt(i), left2front);
-		//for (int i = 0; i < 5; i++)setTransformedCord(right->GetPolyDataAt(i), right2front);
+		for (int i = 0; i < 5; i++)setTransformedCord(left->GetPolyDataAt(i), left2front);
+		for (int i = 0; i < 5; i++)setTransformedCord(front->GetPolyDataAt(i), nullptr);
+		for (int i = 0; i < 5; i++)setTransformedCord(right->GetPolyDataAt(i), right2front);
 
 
 
@@ -326,21 +333,96 @@ void AlignModule::slotAlign()
 		resultMesh->GetPolyDataAt(1)->DeepCopy(frontpoly->GetOutput());
 		resultMesh->GetPolyDataAt(2)->DeepCopy(rightFilt->GetOutput());
 
-		//resultMesh->m_ImageData[0]->DeepCopy(leftImage->GetOutput());
-		//resultMesh->m_ImageData[0]->Modified();
-		//resultMesh->m_ImageData[1]->DeepCopy(frontImage->GetOutput());
-		//resultMesh->m_ImageData[1]->Modified();
+		
+		std::cout << *left2front->GetMatrix();
+		/////////////////////////////////////////////////////////
+		/*resultMesh->m_ImageData[0]->DeepCopy(leftImage->GetOutput());
+		resultMesh->m_ImageData[0]->Modified();*/
+
+	/*	vtkRenderer *rend = vtkRenderer::New();
+		vtkImageActor *act = vtkImageActor::New();
+		act->SetInputData(resultMesh->m_ImageData[0]);
+		act->Update();
+
+		vtkRenderWindow *win = vtkRenderWindow::New();
+		vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
+		rend->ResetCamera();
+		rend->AddActor(act);
+
+		win->AddRenderer(rend);
+		win->Start();
+		it->SetRenderWindow(win);
+		it->Start();*/
+		////////////////////////////////////////////////
+
+		//for (int i = 0; i < 5; i++)setTransformedCord(left->GetPolyDataAt(i), left2front);
+		//for (int i = 0; i < 5; i++)setTransformedCord(right->GetPolyDataAt(i), right2front);
+
+
+
+		resultMesh->m_ImageData[0]->DeepCopy(leftImage->GetOutput());
+		resultMesh->m_ImageData[0]->Modified();
+		resultMesh->m_ImageData[1]->DeepCopy(frontImage->GetOutput());
+		resultMesh->m_ImageData[1]->Modified();
 		//resultMesh->m_ImageData[2]->DeepCopy(rightImage->GetOutput());
 		//resultMesh->m_ImageData[2]->Modified();
 
-		//
-		//for(int i=0;i<3;i++)
-		//	resultMesh->m_Texture[i]->SetInputData(resultMesh->m_ImageData[i]);
+		
+		qweqwe(resultMesh, 0);
+		qweqwe(resultMesh, 1);
+
+		for (int i = 0; i < 2; i++)
+		{
+			resultMesh->GetTextureAt(i)->SetInputData(resultMesh->m_ImageData[i]);
+			resultMesh->GetTextureAt(i)->Modified();
+			resultMesh->GetActorAt(i)->SetTexture(resultMesh->GetTextureAt(i));
+			resultMesh->GetActorAt(i)->Modified();
+		}
 
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 	}
 }
+
+void AlignModule::qweqwe(MeshPreview *test, int index)
+{
+	if (index != 5)
+	{
+		vtkSmartPointer<vtkFloatArray>coord = vtkSmartPointer<vtkFloatArray>::New();
+		test->GetPolyDataAt(index)->GetPointData()->GetTCoords();
+		coord->SetNumberOfComponents(2);
+
+		const int SIZE = test->GetPolyDataAt(index)->GetPointData()->GetTCoords()->GetNumberOfTuples();
+		for (int i = 0; i < SIZE; i++)
+		{
+			double tuple[3];
+			tuple[0] = test->GetPolyDataAt(0)->GetPointData()->GetTCoords()->GetComponent(i, 0);
+			tuple[1] = test->GetPolyDataAt(0)->GetPointData()->GetTCoords()->GetComponent(i, 1);
+			tuple[2] = 0.0;
+			tuple[1] = tuple[1] * 0.25;
+
+			if (i < 2 * SIZE / 4)
+				tuple[1] += 0.25;
+			else if (i < 3 * SIZE / 4)
+				tuple[1] += 0.50;
+			else //if (i < 4 * SIZE / 4)
+				tuple[1] += 0.75;
+
+			coord->InsertNextTuple(tuple);
+		}
+
+		coord->Modified();
+		test->GetPolyDataAt(index)->GetPointData()->SetTCoords(coord);;
+	}
+
+
+	else
+	{
+		
+
+	}
+}
+
 
 void AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *land)
 {
@@ -348,15 +430,16 @@ void AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *la
 		vtkSmartPointer<vtkTransform>trans = vtkSmartPointer<vtkTransform>::New();
 		trans->SetMatrix(land->GetMatrix());
 
-		double *rotate = trans->GetOrientation();
-		std::cout << rotate[0] << " " << rotate[1] << " " << rotate[2];
-
-
+	
 		vtkSmartPointer<vtkTransformTextureCoords> transCoord = vtkSmartPointer<vtkTransformTextureCoords>::New();
 		transCoord->SetInputData(poly);
 
-		transCoord->SetPosition(rotate);
+		transCoord->SetPosition(trans->GetOrientation());
 		transCoord->Update();
+
+		poly->DeepCopy(transCoord->GetOutput());
+		//<--여기서 coord * 4해야되나
+		//poly->GetPointData()->SetTCoords(transCoord->GetPolyDataOutput()->GetPointData()->GetTCoords());
 	}
 }
 

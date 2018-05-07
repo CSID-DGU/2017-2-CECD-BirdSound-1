@@ -34,6 +34,12 @@
 #include"vtkPointData.h"
 #include"vtkTransformTextureCoords.h"
 #include"vtkImageAppend.h"
+
+
+
+//이 이하 include는 test용임. 삭제할 것.
+#include"vtkImageActor.h"
+#include"vtkFloatArray.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -72,6 +78,8 @@ private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 	void Copy(MeshPreview* src, MeshPreview* des);
 	void setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
+	void qweqwe(MeshPreview *test, int index);
+
 
 public slots:
 	void slotAlign();
