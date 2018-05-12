@@ -302,13 +302,14 @@ def addedMakeMesh(page0,page1,connP):
     addedmesh = []
     page0_base = page0*POINTS
     page1_base = page1*POINTS
+    count =0 ;
     for idx in range(len(connP)-1):
         p1 = connP[idx][0]
         p2 = connP[idx+1][0]
         p3 = connP[idx+1][1]
         p4 = connP[idx][1]
         #add spatial mesh
-
+        '''
         for s1,s2,i in list([[p1,p2,0],[p4,p3,1],[p2,p1,0],[p3,p4,1]]):
             if i==0:
                 base = page0_base
@@ -332,6 +333,7 @@ def addedMakeMesh(page0,page1,connP):
                     #print(A[page][getPointIdx(pp1)][0] ,A[page][getPointIdx(pp2)][0] , A[page][getPointIdx(pp3)][0])
                     if A[page][getPointIdx(pp1)][0] != 0.0 and A[page][getPointIdx(pp2)][0] != 0.0 and A[page][getPointIdx(pp3)][0] != 0.0:
                         addedmesh.append(makeStrMesh(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base))
+'''
         #print('\n')
         if page0 == RI:    #메시 중
             if p1[0] < p2[0] :
@@ -349,6 +351,8 @@ def addedMakeMesh(page0,page1,connP):
                     pp3 = [p2[0]+i,p2[1]]
                     #print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0] , A[page0][getPointIdx(pp3)][0])
                     if A[page0][getPointIdx(pp1)][0] != 0.0 and A[page0][getPointIdx(pp2)][0] != 0.0 and A[page0][getPointIdx(pp3)][0] != 0.0:
+                        #print(A[page0][getPointIdx(pp1)][0] ,A[page0][getPointIdx(pp2)][0],A[page0][getPointIdx(pp3)][0])
+                        #count+=1
                         addedmesh.append(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base))
         #connect mesh
         if(getDistance3D(A[page0][getPointIdx(p1)],A[page1][getPointIdx(p3)]) < getDistance3D(A[page0][getPointIdx(p2)],A[page1][getPointIdx(p4)])):
@@ -363,6 +367,8 @@ def addedMakeMesh(page0,page1,connP):
             if p3[:] != p4[:]:
                 if A[page0][getPointIdx(p2)][0] != 0.0 and A[page1][getPointIdx(p3)][0] != 0.0 and A[page1][getPointIdx(p4)][0] != 0.0:
                     addedmesh.append(makeStrMesh(getPointIdx(p2)+page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4)+page1_base))
+
+    #print("\t\t\t\t\t\t[",count,"]");
     return addedmesh[:]
 ''''''''''''
 
@@ -394,7 +400,8 @@ del_tmp_point_frri,frri_point_page_FR,frri_point_page_RI = getDeleteIndex2(FR,RI
 part_del_point_frri_FR = getDeletePoint(frri_point_page_FR, del_tmp_point_frri, "deleteNagative")
 part_del_point_frri_RI = getDeletePoint(frri_point_page_RI,del_tmp_point_frri,"deletePositive")  #deleteNagative / deletePositive
 
-
+print(len(part_del_point_frle_FR), len(part_del_point_frle_LE))
+print(len(part_del_point_frri_FR), len(part_del_point_frri_RI))
 
 
 #중첩된 점 제거
@@ -440,10 +447,11 @@ print("\tget \t\tMesh Polygon")
 connPoint_frle = getMeshLine(part_del_point_frle_FR, part_del_point_frle_LE,FR,LE)
 addedmesh_frle = addedMakeMesh(FR,LE, connPoint_frle)
 print("\t\tconnect \tPoint Length(frle) : ", len(connPoint_frle))
-
+print("\t\t\t",len(addedmesh_frle))
 connPoint_frri = getMeshLine(part_del_point_frri_RI,part_del_point_frri_FR,RI,FR)
 addedmesh_frri = addedMakeMesh(RI,FR, connPoint_frri)
 print("\t\tconnect \tPoint Length(frri) : ", len(connPoint_frri))
+print("\t\t\t",len(addedmesh_frri))
 
 
 #만들어질 Mesh 갯수 구하기

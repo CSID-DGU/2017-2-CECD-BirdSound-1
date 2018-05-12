@@ -13,8 +13,11 @@
 #define LE 2
 #define PAGE 3
 #define FILENAME "resulttmp"
+/**
+TODO
+1. addedMakeMesh 수정하기 
+*/
 using namespace std;
-//"# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " +str(POINTS*PageNum)+" float\n"
 class Pos3D {
 public:
 	std::vector<double>* pos3d;
@@ -33,7 +36,7 @@ public:
 	}
 
 	friend std::ostream& operator<< (std::ostream & os, const Pos3D& p) {
-		os << "[" << (*(p.pos3d))[0] << ", " << (*(p.pos3d))[1] << ", " << (*(p.pos3d))[2]<<"]";
+		os << "[" << (*(p.pos3d))[0] << ", " << (*(p.pos3d))[1] << ", " << (*(p.pos3d))[2] << "]";
 		return os;
 	}
 };
@@ -55,7 +58,7 @@ public:
 	int& operator[](int ix) {
 		return (*pos)[ix];
 	}
-	friend std::ostream& operator<< (std::ostream & os,const Pos& p) {
+	friend std::ostream& operator<< (std::ostream & os, const Pos& p) {
 		os << "[" << (*(p.pos))[0] << ", " << (*(p.pos))[1] << "]";
 		return os;
 	}
@@ -120,17 +123,19 @@ public:
 	std::vector<PosSet>* connPoint_frle;
 	std::vector<PosSet>* connPoint_frri;
 
-	std::vector<PosPolyInt>* addedmesh_frle;
-	std::vector<PosPolyInt>* addedmesh_frri;
+	std::vector<std::string*>* addedmesh_frle;
+	std::vector<std::string*>* addedmesh_frri;
 
 	std::vector<Pos>* part_del_point_frle_FR;
 	std::vector<Pos>* part_del_point_frle_LE;
 	std::vector<Pos>* part_del_point_frri_FR;
 	std::vector<Pos>* part_del_point_frri_RI;
 
-	std::ifstream fin; // 클래스 객체
 	std::vector<Pos3D> data;
 	std::vector<std::vector<Pos3D>> A;
+
+	std::ofstream fout;
+	std::ifstream fin;
 public:
 	Points() {
 	}
@@ -296,7 +301,7 @@ public:
 			part_list_x_del_point.push_back(part_dic_del_point[(*i).first]);
 
 		int j = 0;
-		for (auto i = part_dic_del_point.cbegin(); i != part_dic_del_point.cend(); i++,j++)
+		for (auto i = part_dic_del_point.cbegin(); i != part_dic_del_point.cend(); i++, j++)
 			del_point_list->push_back(Pos(part_list_x_del_point[j], (*i).first));
 		return del_point_list;
 	}
@@ -310,18 +315,20 @@ public:
 					if ((ix % WIDTH) == 0)
 						break;
 					else
-						for (int i = 0; i < 3; i++)
-							A[page][ix][i] = 0.0;
+						for (int i = 0; i < 3; i++) {
+							this->A[page][ix][i] = 0.0;
+						}
 				}
 			}
 			else if (strcmp(direction, "deleteNagative") == 0) {
 				part_del_point[idx][0] = part_del_point[idx][0] + 1;
-				for (int ix = st_0; ix < st_0 - WIDTH; ix--) {
+				for (int ix = st_0; ix > st_0 - WIDTH; ix--) {
 					if ((ix % WIDTH) == 0)
 						break;
 					else
-						for (int i = 0; i < 3; i++)
-							A[page][ix][i] = 0.0;
+						for (int i = 0; i < 3; i++) {
+							this->A[page][ix][i] = 0.0;
+						}
 				}
 			}
 		}
@@ -355,68 +362,68 @@ public:
 		}
 		return connPoint;
 	}
-	std::vector<PosPolyInt>* addedMakeMesh(int page0, int page1, std::vector<PosSet>& connP) {
-		std::vector<PosPolyInt>* addedmesh = new std::vector<PosPolyInt>;
+	std::vector<std::string*>* addedMakeMesh(int page0, int page1, std::vector<PosSet>& connP) {
+		std::vector<std::string*>* addedmesh = new std::vector<std::string*>;
 		int page0_base = page0*POINTS;
 		int page1_base = page1*POINTS;
-		int base, page;
 		Pos s1, s2;
 		Pos p1, p2, p3, p4, pp1, pp2, pp3;
 		std::vector<PosSet> ps;
+		int count = 0;
 		for (int idx = 0; idx < connP.size() - 1; idx++) {
 			p1 = connP[idx][0];
 			p2 = connP[idx + 1][0];
 			p3 = connP[idx + 1][1];
 			p4 = connP[idx][1];
 			//#add spatial mesh
+			//ps.push_back(PosSet(p1, p2));
+			//ps.push_back(PosSet(p4, p3));
+			//ps.push_back(PosSet(p2, p1));
+			//ps.push_back(PosSet(p3, p4));
+			//for (int idx = 0; idx < ps.size(); idx++) {
+			//	s1 = ps[idx][0];
+			//	s2 = ps[idx][1];
+			//	if (idx % 2 == 0) {
+			//		base = page0_base;
+			//		page = page0;
+			//	}
+			//	else {
+			//		base = page1_base;
+			//		page = page1;
+			//	}
+			//	/*
+			//	if (p1[0] < p2[0]) {
+			//		for (int i = 0; i < s2[0] - s1[0] - 1; i++) {
+			//			pp1 = s1;
+			//			pp2 = Pos(s2[0] - i, s2[1]);
+			//			pp3 = Pos(s2[0] - i - 1, s2[1]);
+			//			//print(A[page][getPointIdx(pp1)][0], A[page][getPointIdx(pp2)][0], A[page][getPointIdx(pp3)][0])
+			//			if (A[page][getPointIdx(pp1)][0] != 0.0 && A[page][getPointIdx(pp2)][0] != 0.0 && A[page][getPointIdx(pp3)][0] != 0.0)
+			//				addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base));
+			//		}
+			//	}
+			//	if (s1[0] > s2[0]) {
+			//		for (int i = 0; i < s1[0] - s2[0] - 1; i++) {
+			//			pp1 = s1;
+			//			pp2 = Pos(s2[0] + i + 1, s2[1]);
+			//			pp3 = Pos(s2[0] + i, s2[1]);
+			//			//print(A[page][getPointIdx(pp1)][0], A[page][getPointIdx(pp2)][0], A[page][getPointIdx(pp3)][0])
+			//			if (A[page][getPointIdx(pp1)][0] != 0.0 && A[page][getPointIdx(pp2)][0] != 0.0 && A[page][getPointIdx(pp3)][0] != 0.0)
+			//				addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base));
+			//		}
+			//	}*/
+			//	//print('\n')
+			//}
 
-			ps.push_back(PosSet(p1, p2));
-			ps.push_back(PosSet(p4, p3));
-			ps.push_back(PosSet(p2, p1));
-			ps.push_back(PosSet(p3, p4));
-			for (int idx = 0; idx < ps.size(); idx++) {
-				s1 = ps[idx][0];
-				s2 = ps[idx][1];
-				if (idx % 2 == 0) {
-					base = page0_base;
-					page = page0;
-				}
-				else {
-					base = page1_base;
-					page = page1;
-				}
-				/*
-				if (p1[0] < p2[0]) {
-					for (int i = 0; i < s2[0] - s1[0] - 1; i++) {
-						pp1 = s1;
-						pp2 = Pos(s2[0] - i, s2[1]);
-						pp3 = Pos(s2[0] - i - 1, s2[1]);
-						//print(A[page][getPointIdx(pp1)][0], A[page][getPointIdx(pp2)][0], A[page][getPointIdx(pp3)][0])
-						if (A[page][getPointIdx(pp1)][0] != 0.0 && A[page][getPointIdx(pp2)][0] != 0.0 && A[page][getPointIdx(pp3)][0] != 0.0)
-							addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base));
-					}
-				}
-				if (s1[0] > s2[0]) {
-					for (int i = 0; i < s1[0] - s2[0] - 1; i++) {
-						pp1 = s1;
-						pp2 = Pos(s2[0] + i + 1, s2[1]);
-						pp3 = Pos(s2[0] + i, s2[1]);
-						//print(A[page][getPointIdx(pp1)][0], A[page][getPointIdx(pp2)][0], A[page][getPointIdx(pp3)][0])
-						if (A[page][getPointIdx(pp1)][0] != 0.0 && A[page][getPointIdx(pp2)][0] != 0.0 && A[page][getPointIdx(pp3)][0] != 0.0)
-							addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + base, getPointIdx(pp2) + base, getPointIdx(pp3) + base));
-					}
-				}*/
-				//print('\n')
-			}
 			if (page0 == RI) {
 				if (p1[0] < p2[0]) {
 					for (int i = 0; i < p2[0] - p1[0] - 1; i++) {
 						pp1 = p1;
 						pp2 = Pos(p2[0] - i, p2[1]);
 						pp3 = Pos(p2[0] - i - 1, p2[1]);
-						//print(A[page0][getPointIdx(pp1)][0], A[page0][getPointIdx(pp2)][0], A[page0][getPointIdx(pp3)][0])
+						//std::cout << A[page0][getPointIdx(pp1)][0]<<" "<<A[page0][getPointIdx(pp2)][0] <<" "<<A[page0][getPointIdx(pp3)][0]<<"\n";
 						if (A[page0][getPointIdx(pp1)][0] != 0.0 && A[page0][getPointIdx(pp2)][0] != 0.0 && A[page0][getPointIdx(pp3)][0] != 0.0)
-							addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base));
+							addedmesh->push_back(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base));
 					}
 				}
 				if (p1[0] > p2[0]) {
@@ -425,31 +432,86 @@ public:
 						pp2 = Pos(p2[0] + i + 1, p2[1]);
 						pp3 = Pos(p2[0] + i, p2[1]);
 						//print(A[page0][getPointIdx(pp1)][0], A[page0][getPointIdx(pp2)][0], A[page0][getPointIdx(pp3)][0])
-						if (A[page0][getPointIdx(pp1)][0] != 0.0 && A[page0][getPointIdx(pp2)][0] != 0.0 && A[page0][getPointIdx(pp3)][0] != 0.0)
-							addedmesh->push_back(PosPolyInt(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base));
+						if (A[page0][getPointIdx(pp1)][0] != 0.0 && A[page0][getPointIdx(pp2)][0] != 0.0 && A[page0][getPointIdx(pp3)][0] != 0.0) {
+							//std::cout<<A[page0][getPointIdx(pp1)][0] <<"\t"<< A[page0][getPointIdx(pp2)][0] <<"\t"<< A[page0][getPointIdx(pp3)][0] <<"\n";
+							addedmesh->push_back(makeStrMesh(getPointIdx(pp1) + page0_base, getPointIdx(pp2) + page0_base, getPointIdx(pp3) + page0_base));
+						}
 					}
 				}
 			}
 			//connect mesh
 			if (getDistance3D(A[page0][getPointIdx(p1)], A[page1][getPointIdx(p3)]) < getDistance3D(A[page0][getPointIdx(p2)], A[page1][getPointIdx(p4)])) {
-				if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0)
-					addedmesh->push_back(PosPolyInt(getPointIdx(p1) + page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4) + page1_base));
-				if (p1[0] != p2[0] && p1[1] != p2[1])
-					if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0)
-						addedmesh->push_back(PosPolyInt(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base));
+				if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0) {
+					addedmesh->push_back(makeStrMesh(getPointIdx(p1) + page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4) + page1_base));
+				}
+				if (p1[0] != p2[0] || p1[1] != p2[1])
+					if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0) {
+						
+						addedmesh->push_back(makeStrMesh(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base));
+					}
 			}
 			else {
-				if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0)
-					addedmesh->push_back(PosPolyInt(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p4) + page1_base));
-				if (p3[0] != p4[0] && p3[1] != p4[1])
-					if (A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0)
-						addedmesh->push_back(PosPolyInt(getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4) + page1_base));
+				if (A[page0][getPointIdx(p1)][0] != 0.0 && A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0) {
+					addedmesh->push_back(makeStrMesh(getPointIdx(p1) + page0_base, getPointIdx(p2) + page0_base, getPointIdx(p4) + page1_base));
+				}
+				if (p3[0] != p4[0] || p3[1] != p4[1])
+					if (A[page0][getPointIdx(p2)][0] != 0.0 && A[page1][getPointIdx(p3)][0] != 0.0 && A[page1][getPointIdx(p4)][0] != 0.0) {
+						addedmesh->push_back(makeStrMesh(getPointIdx(p2) + page0_base, getPointIdx(p3) + page1_base, getPointIdx(p4) + page1_base));
+					}
 			}
 		}
+		//printf("\t\t\t\t\t\t[%d]\n", count);
 		return addedmesh;
+	}
+	int confirmMeshNumber(std::vector<Pos3D> P) {
+		int ct = 0;
+		for (int i = 0; i < POINTS; i++) {
+			if ((i + WIDTH + 1) < POINTS && (i + 1) % WIDTH != 0) {
+				if (abs(P[i][2] - P[i + WIDTH + 1][2]) > abs(P[i + 1][2] - P[i + WIDTH][2])) {
+					if ((P[i][0] != 0 && P[i + WIDTH][0] != 0 && P[i + 1][0] != 0))
+						ct += 1;
+					if ((P[i + WIDTH][0] != 0 && P[i + 1][0] != 0 && P[i + WIDTH + 1][0] != 0))
+						ct += 1;
+				}
+				else {
+					if (P[i][0] != 0 && P[i + WIDTH][0] != 0 && P[i + WIDTH + 1][0] != 0)
+						ct += 1;
+					if (P[i + 1][0] != 0 && P[i + WIDTH + 1][0] != 0 && P[i][0] != 0)
+						ct += 1;
+				}
+			}
+		}
+		return ct;
+	}
+	std::string* makeStrMesh(int p1, int p2, int p3) {
+		std::string *s = new std::string("3 " + std::to_string(p1) + " " + std::to_string(p2) + " " + std::to_string(p3));
+		return s;
+	}
+	std::vector<std::string*>* makeMesh(std::vector<Pos3D> A, int base) {
+		std::vector<std::string*>* ct_list = new std::vector<std::string*>;
+		for (int i = 0; i < POINTS; i++) {
+			if ((i + WIDTH + 1) < POINTS && (i + 1) % WIDTH != 0) {
+				if (abs(A[i][2] - A[i + WIDTH + 1][2]) > abs(A[i + 1][2] - A[i + WIDTH][2])) {
+					if (A[i][0] != 0 && A[i + WIDTH][0] != 0 && A[i + 1][0] != 0)
+						ct_list->push_back(makeStrMesh(base + i + 1, base + i + WIDTH, base + i));
+					if (A[i + WIDTH][0] != 0 && A[i + 1][0] != 0 && A[i + WIDTH + 1][0] != 0)
+						ct_list->push_back(makeStrMesh(base + i + WIDTH, base + i + 1, base + i + WIDTH + 1));
+
+				}
+				else {
+					if (A[i][0] != 0 && A[i + WIDTH][0] != 0 && A[i + WIDTH + 1][0] != 0)
+						ct_list->push_back(makeStrMesh(base + i + WIDTH + 1, base + i + WIDTH, base + i));
+					if (A[i + 1][0] != 0 && A[i + WIDTH + 1][0] != 0 && A[i][0] != 0)
+						ct_list->push_back(makeStrMesh(base + i + 1, base + i + WIDTH + 1, base + i));
+
+				}
+			}
+		}
+		return ct_list;
 	}
 };
 int main() {
+
 	Points p;
 	p.getXYZPoints(FILENAME);
 
@@ -466,11 +528,13 @@ int main() {
 
 	p.part_del_point_frle_FR = p.getDeletePoint(p.frle_point_page_FR, *p.del_tmp_point_frle, "deletePositive");
 	p.part_del_point_frle_LE = p.getDeletePoint(p.frle_point_page_LE, *p.del_tmp_point_frle, "deleteNagative");//  #deleteNagative / deletePositive
-	
+
 	p.part_del_point_frri_FR = p.getDeletePoint(p.frri_point_page_FR, *p.del_tmp_point_frri, "deleteNagative");
 	p.part_del_point_frri_RI = p.getDeletePoint(p.frri_point_page_RI, *p.del_tmp_point_frri, "deletePositive");//  #deleteNagative / deletePositive
 
-    //for (auto i = p.part_del_point_frle_FR->cbegin(); i != p.part_del_point_frle_FR->cend(); i++) { std::cout <<*i<<"\n"; }
+	std::cout << p.part_del_point_frle_FR->size() << " " << p.part_del_point_frle_LE->size() << "\n";
+	std::cout << p.part_del_point_frri_FR->size() << " " << p.part_del_point_frri_RI->size() << "\n";
+	//for (auto i = p.part_del_point_frle_FR->cbegin(); i != p.part_del_point_frle_FR->cend(); i++) { std::cout <<*i<<"\n"; }
 
 	std::cout << "\tdelete \t\tOverlap Point \n";
 	p.deletePoint(FR, "deleteNagative", *(p.part_del_point_frle_FR));
@@ -481,21 +545,62 @@ int main() {
 
 	//매쉬 개수 구하기
 	std::cout << "Get \tMesh\n";
+
 	p.connPoint_frle = p.getMeshLine(*p.part_del_point_frle_FR, *p.part_del_point_frle_LE, FR, LE);
 	p.connPoint_frri = p.getMeshLine(*p.part_del_point_frri_RI, *p.part_del_point_frri_FR, RI, FR);
+	std::cout << "\t\tconnect \tPoint Length(frle) : " << p.connPoint_frle->size() << "\n";
+	std::cout << "\t\tconnect \tPoint Length(frri) : " << p.connPoint_frri->size() << "\n";
 	//for (auto i = p.connPoint_frle->cbegin(); i != p.connPoint_frle->cend(); i++) { std::cout <<*i<<"\n"; }
 
 	p.addedmesh_frle = p.addedMakeMesh(FR, LE, *p.connPoint_frle);
-	p.addedmesh_frri = p.addedMakeMesh(FR, LE, *p.connPoint_frri);
-	std::cout << "\t\tconnect \tPoint Length(frle) : " << p.connPoint_frle->size() << "\n";
-	std::cout << "\t\tconnect \tPoint Length(frri) : " << p.connPoint_frri->size() << "\n";
+	p.addedmesh_frri = p.addedMakeMesh(RI, FR, *p.connPoint_frri);
+	std::cout << "\t\t\t\t" << p.addedmesh_frle->size() << "\n";
+	std::cout << "\t\t\t\t" << p.addedmesh_frri->size() << "\n";
 	//for (auto i = p.addedmesh_frle->cbegin(); i != p.addedmesh_frle->cend(); i++) { std::cout <<*i<<"\n"; }
 
-	//str 생성 
+	std::cout << "Get \tMesh\n";
+	int A_ct = p.confirmMeshNumber(p.A[RI]);
+	int B_ct = p.confirmMeshNumber(p.A[FR]);
+	int C_ct = p.confirmMeshNumber(p.A[LE]);
 
+
+	std::vector<std::string*>* A_ct_list = p.makeMesh(p.A[RI], POINTS*RI);
+	std::vector<std::string*>* B_ct_list = p.makeMesh(p.A[FR], POINTS*FR);
+	std::vector<std::string*>* C_ct_list = p.makeMesh(p.A[LE], POINTS*LE);
+
+	std::cout << ("Ready for writting Mesh Polygon\n");
+	//str 생성 
+	p.fout.open("resulttmp.vtk");
+	p.fout << "# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " << POINTS*PAGE << " float\n";
+	std::cout << "\ttranslate points to string\n";
+	for (int j = 0; j < PAGE; j++) {
+		for (int i = 0; i < POINTS; i++) {
+			p.fout << p.A[j][i][0] << " " << p.A[j][i][1] << " " << p.A[j][i][2] << "\n";
+		}
+	}
+
+
+	int ct = A_ct + B_ct + C_ct; + p.addedmesh_frle->size() + p.addedmesh_frri->size();
+	p.fout << "\n\nPOLYGONS " + std::to_string(ct) + " " + std::to_string(ct * 4) + "\n";
+	for (int i = 0; i < A_ct_list->size(); i++) {
+		p.fout << (*(*A_ct_list)[i]) << "\n";
+	}
+	for (int i = 0; i < B_ct_list->size(); i++) {
+		p.fout << (*(*B_ct_list)[i]) << "\n";
+	}
+	for (int i = 0; i < C_ct_list->size(); i++) {
+		p.fout << (*(*C_ct_list)[i]) << "\n";
+	}
+	for (int i = 0; i < p.addedmesh_frle->size(); i++) {
+		p.fout << (*(*p.addedmesh_frle)[i]) << "\n";
+	}
+
+	for (int i = 0; i < p.addedmesh_frri->size(); i++) {
+		p.fout << (*(*p.addedmesh_frri)[i]) << "\n";
+	}
 
 	//Mesh에 연결할 폴리곤 구하기
-	
+
 	//폴리곤 출력
 
 	//나머지 Mesh 만들면서 저장 
