@@ -126,7 +126,7 @@ void LandMarkInteractorStyle::OnLeftButtonDown()
 	{
 		
 		pointPicker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
-		pos = pointPicker->GetPickPosition();
+		pos = picker->GetPickPosition();
 
 		vtkSphereSource *sp = vtkSphereSource::New();
 		sp->SetCenter(pos[0], pos[1], pos[2]);
