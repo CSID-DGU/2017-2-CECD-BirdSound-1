@@ -84,7 +84,7 @@ void LandMarkInteractorStyle::initialize()
 {
 	LastPickedActor = NULL;
 	LastPickedProperty = vtkProperty::New();
-	pointPicker->SetTolerance(0.01);
+	//pointPicker->SetTolerance(0.01);
 }
 
 void LandMarkInteractorStyle::OnLeftButtonDown()

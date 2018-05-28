@@ -390,9 +390,7 @@ void AlignModule::Copy(MeshPreview* src, MeshPreview* des)
 		des->ReleaseModel();
 	}
 
-	//des->CreateTexture("", 0);
 	des->CreateModel("", 0);
-
 	
 	for (int i = 0; i < 5; i++)
 	{

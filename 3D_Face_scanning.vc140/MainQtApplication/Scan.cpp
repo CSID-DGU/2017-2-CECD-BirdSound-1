@@ -126,7 +126,7 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		
 		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0,0,0));
 			
-		/*nScalar은 3차원이라서 1280 * 720/4  *3 */
+		/*nScalar은 3차원이라서 1280 * 720/4 *3 */
 		//for (int j = 0 ; j < nScalar;j++)
 		for (int j = 0 ;j < nScalar; j++)
 		{	
