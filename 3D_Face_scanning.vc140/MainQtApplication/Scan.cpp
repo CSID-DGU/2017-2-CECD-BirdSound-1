@@ -115,39 +115,60 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		std::cout << viewer->GetPolyDataAt(i)->GetNumberOfPoints() << "\n";
 	}
 
+
+	//std::ofstream of("ot.txt");
+
 	for (int i = 0; i < 4; i++)
 	{
-		const int disp = 1280 * 180 *i;
+		const int disp = 1280 * 180 * i;
 		textureCoordinates[i] = vtkFloatArray::New();
-	
+
 		viewer->m_ImageData[i]->SetDimensions(dimensions[0], dimensions[1], dimensions[2]);
 		viewer->m_ImageData[i]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
 		viewer->m_ImageData[i]->Modified();
-		
-		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0,0,0));
-			
+
+		unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[i]->GetScalarPointer(0, 0, 0));
+
 		/*nScalar은 3차원이라서 1280 * 720/4 *3 */
 		//for (int j = 0 ; j < nScalar;j++)
-		for (int j = 0 ;j < nScalar; j++)
-		{	
-			scalarPointer[j] = data[disp * 3 + j];			
+		for (int j = 0; j < nScalar; j++)
+		{
+			scalarPointer[j] = data[disp * 3 + j];
 		}
 
 		viewer->m_ImageData[i]->Modified();
 		textureCoordinates[i]->SetNumberOfComponents(2);
-		
+
 		int qwe = 0;
 
 		if (i == 3)qwe = 0;
 		else qwe = 1280;
 
-		for (int j = 0; j < nScalar/3+ qwe; j++)
+		float normal = 0;//이게 0.26이라고 생각.
+
+
+		for (int j = 0; j < nScalar / 3 + qwe; j++)
 		{
-			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*4 };	
-			textureCoordinates[i]->InsertNextTuple(tuple);
+			if (normal <= texCord[disp + j].v)
+			//if(texCord[disp + j].v!=0)
+			{
+				//std::cout << texCord[disp + j].v << "!!\n";
+				normal = texCord[disp + j].v;
+			}
 		}
 
-	
+		normal -= 0.25*i;
+		std::cout << normal << "!!!!\n";
+
+		if (normal < 0.25)
+			normal = 0.25;
+
+		for (int j = 0; j < nScalar/3+ qwe; j++)
+		{
+			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v/normal};
+			textureCoordinates[i]->InsertNextTuple(tuple);
+			
+		}
 		textureCoordinates[i]->Modified();
 
 		viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
@@ -193,9 +214,11 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		for (int j = 0; j < 1280 * 2; j++)
 		{
 			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*120.0 };
+			
+
 			textureCoordinates[4]->InsertNextTuple(tuple);
 		}
-		
+
 		std::cout << disp + 1280 * 2<< "까지\n";
 	}
 

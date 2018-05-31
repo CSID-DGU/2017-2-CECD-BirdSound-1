@@ -70,7 +70,7 @@ private:
 
 	vtkProperty*			LastPickedProperty = NULL;
 	vtkCellPicker *picker = vtkCellPicker::New();
-	vtkSmartPointer<vtkPointPicker> pointPicker = vtkSmartPointer<vtkPointPicker>::New();
+	vtkSmartPointer<vtkPropPicker> pointPicker = vtkSmartPointer<vtkPropPicker>::New();
 	double					radius;
 };
 #endif
