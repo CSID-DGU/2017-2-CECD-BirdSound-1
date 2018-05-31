@@ -170,6 +170,18 @@
     <ClCompile Include="Scan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_WorkerThread.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_WorkerThread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibrationModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="iomodule.h">
@@ -199,9 +211,6 @@
     <CustomBuild Include="scanmodule.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\CalibrationModule\CalibrationModule.hpp">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="ScanModule.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -215,6 +224,12 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="scanmoduleqt.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="WorkerThread.hpp">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CalibrationModule.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
