@@ -125,12 +125,6 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_CalibrationModule.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\CalibrationModule\CalibrationModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationModule.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\DepthModule\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -181,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="CalibrationModule.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationModule.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

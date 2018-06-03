@@ -15,7 +15,7 @@ using namespace realsense;
 
 class CalibrationModule : public QWidget
 {
-	Q_OBJECT
+	Q_OBJECT 
 		enum class streamType { infrared_left, infrared_right, color };
 public:
 	QString toQstr(std::string);
