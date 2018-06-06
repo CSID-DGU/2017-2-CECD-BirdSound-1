@@ -24,7 +24,7 @@ public:
 	void startDetection();
 	void startDetection(RS_400_STREAM_TYPE stream);
 	void sycCam();
-	void stopDetection();;
+	void stopDetection();
 	void stopDetection(RS_400_STREAM_TYPE stream) {
 		if (stream == RS400_STREAM_COLOR) {
 			ui.rgbStart->setEnabled(true);
