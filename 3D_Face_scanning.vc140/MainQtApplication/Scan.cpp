@@ -115,11 +115,6 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		std::cout << viewer->GetPolyDataAt(i)->GetNumberOfPoints() << "\n";
 	}
 
-
-	std::ofstream of("ot.txt");
-	
-	float beforeMax = 0;;
-	float beforeMin = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		const int disp = 1280 * 180 * i;
@@ -141,10 +136,6 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		viewer->m_ImageData[i]->Modified();
 		textureCoordinates[i]->SetNumberOfComponents(2);
 
-		int qwe = 0;
-
-		if (i == 3)qwe = 0;
-		else qwe = 1280;
 		float max = 0;//이게 0.26이라고 생각.
 		float min = 999;
 		
@@ -155,24 +146,14 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 			if (min > texCord[disp + j].v && texCord[disp + j].v>0)
 				min = texCord[disp + j].v;
 		}
-
-		//max -= beforeMin;
-		//min -= beforeMin;
-		//if (now < 0.25)
-			//now = 0.25;
-
 		std::cout << max<<" "<<min << "\n";
 		
 		for (int j = 0; j < nScalar / 3; j++)
 		{
 			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v-min)/(max-min)};
-			//if (i == 0 || i == 1)
-			//of << tuple[1] << " "<< texCord[disp + j].v<<" "<<max<<"\n";
 			textureCoordinates[i]->InsertNextTuple(tuple);	
 		}
-		
-		beforeMax = max;
-		of << "\n";
+	
 		textureCoordinates[i]->Modified();
 
 		viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
@@ -184,6 +165,7 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 
 
 
+	/*붉은선 부분*/
 	textureCoordinates[4] = vtkFloatArray::New();
 	viewer->m_ImageData[4]->SetDimensions(dimensions[0], 6, dimensions[2]);
 	viewer->m_ImageData[4]->AllocateScalars(VTK_UNSIGNED_CHAR, nComponents);
@@ -195,35 +177,38 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	for (int i = 0; i<3; i++)
 	{
 		const int disp = 1280 * 180 * 3*(i+1);
-		std::cout << disp << "에서 ";
-		for (int j = 1; j <= 1280 * 2; j++)
-		{
-			scalarPointer[index++] = 255;
-			scalarPointer[index++] = 0;
-			scalarPointer[index++] = 0;
-			/*scalarPointer[index++] = 0;
-			scalarPointer[index++] = 255;
-			scalarPointer[index++] = 0;*/
-		}
-		std::cout << disp + 1280*2*3 << "까지\n";
+		for (int j = 0; j < 1280 * 2*3; j++)
+			scalarPointer[index++] = data[disp + j];
 	}
+
 	viewer->m_ImageData[4]->Modified();
 	textureCoordinates[4]->SetNumberOfComponents(2);
 
-	std::cout << std::endl;
+	float max = 0;
+	float min = 9999;
+	std::ofstream of("ot.txt"); 
+	for (int i = 0; i < 3; i++) 
+	{
+		const int disp = 1280 * 180 * (i + 1);
+		for (int j = 0; j < 1280 * 2; j++)
+		{
+			if (max < texCord[disp + j].v)
+				max = texCord[disp + j].v;
+			if (min > texCord[disp + j].v && texCord[disp + j].v > 0)
+				min = texCord[disp + j].v;
+		}
+	}
+
+	std::cout << max << " " << min << "\n";
 	for (int i = 0; i < 3; i++)
 	{
 		const int disp = 1280 * 180 * (i+1);
-		std::cout << disp << "에서 ";
 		for (int j = 0; j < 1280 * 2; j++)
 		{
-			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v*120.0 };
-			
-
+			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v-min)/(max-min) };
 			textureCoordinates[4]->InsertNextTuple(tuple);
+			of << texCord[disp + j].v<<" "<<tuple[1] << max<<" "<<min<<"\n";
 		}
-
-		std::cout << disp + 1280 * 2<< "까지\n";
 	}
 
 	textureCoordinates[4]->Modified();
@@ -247,21 +232,20 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	//png->SetFileName("ptemp.png");
 	//png->Update();
 
+	/*vtkRenderer *rend = vtkRenderer::New();
+	vtkImageActor *act = vtkImageActor::New();
+	act->SetInputData(viewer->m_ImageData[4]);
+	act->Update();
 
-	//vtkRenderer *rend = vtkRenderer::New();
-	//vtkImageActor *act = vtkImageActor::New();
-	//act->SetInputData(viewer->m_ImageData[4]);
-	//act->Update();
+	vtkRenderWindow *win = vtkRenderWindow::New();
+	vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
+	rend->ResetCamera();
+	rend->AddActor(act);
 
-	//vtkRenderWindow *win = vtkRenderWindow::New();
-	//vtkRenderWindowInteractor *it = vtkRenderWindowInteractor::New();
-	//rend->ResetCamera();
-	//rend->AddActor(act);
-
-	//win->AddRenderer(rend);
-	//win->Start();
-	//it->SetRenderWindow(win);
-	//it->Start();
+	win->AddRenderer(rend);
+	win->Start();
+	it->SetRenderWindow(win);
+	it->Start();*/
 	viewer->m_Renderer->ResetCamera();
 }
 void Scan::ReleaseModel()
