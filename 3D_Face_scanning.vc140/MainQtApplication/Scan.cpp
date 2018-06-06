@@ -116,8 +116,10 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	}
 
 
-	//std::ofstream of("ot.txt");
-
+	std::ofstream of("ot.txt");
+	
+	float beforeMax = 0;;
+	float beforeMin = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		const int disp = 1280 * 180 * i;
@@ -133,7 +135,7 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 		//for (int j = 0 ; j < nScalar;j++)
 		for (int j = 0; j < nScalar; j++)
 		{
-			scalarPointer[j] = data[disp * 3 + j];
+			scalarPointer[j] = data[disp * 3 + j];//image를 의미함.
 		}
 
 		viewer->m_ImageData[i]->Modified();
@@ -143,32 +145,34 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 
 		if (i == 3)qwe = 0;
 		else qwe = 1280;
-
-		float normal = 0;//이게 0.26이라고 생각.
-
-
-		for (int j = 0; j < nScalar / 3 + qwe; j++)
+		float max = 0;//이게 0.26이라고 생각.
+		float min = 999;
+		
+		for (int j = 0; j < nScalar / 3; j++)
 		{
-			if (normal <= texCord[disp + j].v)
-			//if(texCord[disp + j].v!=0)
-			{
-				//std::cout << texCord[disp + j].v << "!!\n";
-				normal = texCord[disp + j].v;
-			}
+			if (max < texCord[disp + j].v)
+				max = texCord[disp + j].v;
+			if (min > texCord[disp + j].v && texCord[disp + j].v>0)
+				min = texCord[disp + j].v;
 		}
 
-		normal -= 0.25*i;
-		std::cout << normal << "!!!!\n";
+		//max -= beforeMin;
+		//min -= beforeMin;
+		//if (now < 0.25)
+			//now = 0.25;
 
-		if (normal < 0.25)
-			normal = 0.25;
-
-		for (int j = 0; j < nScalar/3+ qwe; j++)
+		std::cout << max<<" "<<min << "\n";
+		
+		for (int j = 0; j < nScalar / 3; j++)
 		{
-			float tuple[] = { texCord[disp + j].u, texCord[disp + j].v/normal};
-			textureCoordinates[i]->InsertNextTuple(tuple);
-			
+			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v-min)/(max-min)};
+			//if (i == 0 || i == 1)
+			//of << tuple[1] << " "<< texCord[disp + j].v<<" "<<max<<"\n";
+			textureCoordinates[i]->InsertNextTuple(tuple);	
 		}
+		
+		beforeMax = max;
+		of << "\n";
 		textureCoordinates[i]->Modified();
 
 		viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
