@@ -17,6 +17,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +32,6 @@ public:
     QLabel *label_2;
     QLabel *irLeftLabel;
     QPushButton *rgbCapture;
-    QLabel *label_7;
     QPushButton *leftStart;
     QPushButton *allCapture;
     QLabel *deviceFirmware_2;
@@ -51,11 +51,11 @@ public:
     QLabel *rgbLabel;
     QLabel *rightCount;
     QListWidget *ir2CaptureList;
-    QLabel *message;
     QLabel *label_5;
     QLabel *asdasd;
     QLabel *ir2Count;
     QLabel *label_9;
+    QTextEdit *message;
 
     void setupUi(QWidget *CalibrationModule)
     {
@@ -88,9 +88,6 @@ public:
         rgbCapture = new QPushButton(CalibrationModule);
         rgbCapture->setObjectName(QStringLiteral("rgbCapture"));
         rgbCapture->setGeometry(QRect(450, 330, 61, 31));
-        label_7 = new QLabel(CalibrationModule);
-        label_7->setObjectName(QStringLiteral("label_7"));
-        label_7->setGeometry(QRect(560, 300, 61, 21));
         leftStart = new QPushButton(CalibrationModule);
         leftStart->setObjectName(QStringLiteral("leftStart"));
         leftStart->setGeometry(QRect(270, 690, 101, 31));
@@ -168,9 +165,6 @@ public:
         ir2CaptureList = new QListWidget(CalibrationModule);
         ir2CaptureList->setObjectName(QStringLiteral("ir2CaptureList"));
         ir2CaptureList->setGeometry(QRect(550, 40, 511, 291));
-        message = new QLabel(CalibrationModule);
-        message->setObjectName(QStringLiteral("message"));
-        message->setGeometry(QRect(620, 300, 431, 21));
         label_5 = new QLabel(CalibrationModule);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setGeometry(QRect(10, 20, 511, 16));
@@ -183,6 +177,9 @@ public:
         label_9 = new QLabel(CalibrationModule);
         label_9->setObjectName(QStringLiteral("label_9"));
         label_9->setGeometry(QRect(550, 20, 511, 16));
+        message = new QTextEdit(CalibrationModule);
+        message->setObjectName(QStringLiteral("message"));
+        message->setGeometry(QRect(560, 210, 491, 111));
         ir2CaptureList->raise();
         irRightLabel->raise();
         serialNum->raise();
@@ -191,7 +188,6 @@ public:
         label_2->raise();
         irLeftLabel->raise();
         rgbCapture->raise();
-        label_7->raise();
         leftStart->raise();
         allCapture->raise();
         deviceFirmware_2->raise();
@@ -210,11 +206,11 @@ public:
         deviceFirmware->raise();
         rgbLabel->raise();
         rightCount->raise();
-        message->raise();
         label_5->raise();
         asdasd->raise();
         ir2Count->raise();
         label_9->raise();
+        message->raise();
 
         retranslateUi(CalibrationModule);
 
@@ -228,18 +224,17 @@ public:
         serialNum->setText(QString());
         allStart->setText(QApplication::translate("CalibrationModule", "All Start Detection", Q_NULLPTR));
         rgbStart->setText(QApplication::translate("CalibrationModule", "Start Detection", Q_NULLPTR));
-        label_2->setText(QApplication::translate("CalibrationModule", "ir2Status", Q_NULLPTR));
+        label_2->setText(QApplication::translate("CalibrationModule", "IR LEFT(1) status", Q_NULLPTR));
         irLeftLabel->setText(QApplication::translate("CalibrationModule", "IR LEFT", Q_NULLPTR));
         rgbCapture->setText(QApplication::translate("CalibrationModule", "Capture", Q_NULLPTR));
-        label_7->setText(QApplication::translate("CalibrationModule", "[System]", Q_NULLPTR));
         leftStart->setText(QApplication::translate("CalibrationModule", "Start Detection", Q_NULLPTR));
         allCapture->setText(QApplication::translate("CalibrationModule", "All Capture", Q_NULLPTR));
         deviceFirmware_2->setText(QApplication::translate("CalibrationModule", "\354\213\234\353\246\254\354\226\274 \353\204\230\353\262\204    : ", Q_NULLPTR));
         startCalibrate->setText(QApplication::translate("CalibrationModule", "Calibrate!!", Q_NULLPTR));
         rgbStop->setText(QApplication::translate("CalibrationModule", "Stop", Q_NULLPTR));
-        ir1Status->setText(QApplication::translate("CalibrationModule", "status", Q_NULLPTR));
+        ir1Status->setText(QApplication::translate("CalibrationModule", "IR RIGHT(2) status", Q_NULLPTR));
         camName->setText(QString());
-        rgbStatus->setText(QApplication::translate("CalibrationModule", "status", Q_NULLPTR));
+        rgbStatus->setText(QApplication::translate("CalibrationModule", "RGB status", Q_NULLPTR));
         allStop->setText(QApplication::translate("CalibrationModule", "All Stop", Q_NULLPTR));
         deviceName->setText(QApplication::translate("CalibrationModule", "\354\227\260\352\262\260\353\220\234 \354\236\245\354\271\230    : ", Q_NULLPTR));
         leftStop->setText(QApplication::translate("CalibrationModule", "Stop", Q_NULLPTR));
@@ -250,7 +245,6 @@ public:
         deviceFirmware->setText(QApplication::translate("CalibrationModule", "\354\271\264\353\251\224\353\235\274 \355\216\214\354\233\250\354\226\264 : ", Q_NULLPTR));
         rgbLabel->setText(QApplication::translate("CalibrationModule", "RGB", Q_NULLPTR));
         rightCount->setText(QApplication::translate("CalibrationModule", "0/20", Q_NULLPTR));
-        message->setText(QApplication::translate("CalibrationModule", "message!", Q_NULLPTR));
         label_5->setText(QApplication::translate("CalibrationModule", "RGB Camera", Q_NULLPTR));
         asdasd->setText(QApplication::translate("CalibrationModule", "IR Camera Left", Q_NULLPTR));
         ir2Count->setText(QApplication::translate("CalibrationModule", "IR Camera Right", Q_NULLPTR));

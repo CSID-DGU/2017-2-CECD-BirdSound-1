@@ -1,8 +1,9 @@
 #include "MainModule.hpp"
-#include "../../CalibrationModule/CalibrationModule.hpp"
+#include "CalibrationModule.hpp"
 #include "ScanModule.hpp"
 #include "RegistrationModule.hpp"
 #include "iomodule.h"
+#include "ApplicationConfig.hpp"
 #include <QDesktopWidget>
 
 MainModule::MainModule(QWidget *parent) : QWidget(parent) {
@@ -39,6 +40,17 @@ void MainModule::cellSelected(int nRow, int nCol)
 		" was double clicked.");
 	runViewerModule();
 }
+
+//void MainModule::loadDB() {
+//	auto app_config = Config::get_instance();
+//	ifstream file(app_config.person_db);
+//	string line;
+//	char pch;
+//
+//	
+//	file.close;
+//}
+
 void MainModule::runScanModule() {
 	Data * a = new Data();
 	a->X = 1;

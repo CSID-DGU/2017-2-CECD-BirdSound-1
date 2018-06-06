@@ -1,0 +1,9 @@
+Focal length x : 1441.93
+Focal length y : 1330.5
+Principal point x : 867.784
+Principal point y : 417.995
+Distortion Coefficient k1 : -0.0275424
+Distortion Coefficient k2 : 0.882472
+Distortion Coefficient p1 : -0.00107473
+Distortion Coefficient p2 : 0.0029324
+Distortion Coefficient k3 : -2.26288

@@ -1,0 +1,9 @@
+Right Focal length x : -1.45682e+144
+Right Focal length y : -1.45682e+144
+Right Principal point x : -1.45682e+144
+Right Principal point y : -1.45682e+144
+Right Distortion Coefficient k1 : 0
+Right Distortion Coefficient k2 : 0
+Right Distortion Coefficient p1 : 0
+Right Distortion Coefficient p2 : 0
+Right Distortion Coefficient k3 : 0

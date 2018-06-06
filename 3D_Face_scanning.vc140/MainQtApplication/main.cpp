@@ -5,25 +5,24 @@
 #include "MainModule.hpp"
 #include <QtWidgets/QApplication>
 
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
 	_CrtDumpMemoryLeaks();
-	//초기화 진행..
+	
+	//Program Init Process
 	InitializeModule i;
 	i.show();
-	MainModule m;
-	//m.setSetting(i.init());
-	i.Init();
+	/*if (i.Init() == false) {
+		exit(-1);
+	}*/
 	i.close();
-	//초기화 끝!
+
+	//Run main module after initialize
+	MainModule m;
 	m.show();
 
-
-	//메인윈도우 진행
-	//IOModule w;
-	//w.show();
-	//메인윈도우 끝
 	return a.exec();
 }
