@@ -252,6 +252,32 @@ void AlignModule::slotAlign()
 		frontMark = extractLandMark(front->GetRenderer());
 		rightMark = extractLandMark(right->GetRenderer());
 
+		////////////////////////////////////		////////////////////////////////////
+		//resultMesh->GetPolyDataAt(index)->DeepCopy(leftFilt->GetOutput());
+		//resultMesh->GetPolyDataAt(index++)->DeepCopy(front->GetPolyDataAt(i));
+		int index = 0;
+		for (int i = 0; i < 5; i++)resultMesh->GetPolyDataAt(index++)->DeepCopy(left->GetPolyDataAt(i));
+		for (int i = 0; i < 5; i++)resultMesh->GetPolyDataAt(index++)->DeepCopy(front->GetPolyDataAt(i));
+		for (int i = 0; i < 5; i++)resultMesh->GetPolyDataAt(index++)->DeepCopy(right->GetPolyDataAt(i));
+
+		Pos A(0, 0);
+		int base_front = frontMark.size() / 2;
+		Pos *tmp0;
+		Pos *tmp2;
+
+		std::cout << "\n\n";
+		////p.setXYZPoints("No Need");
+		p.setXYZPoints(*resultMesh);
+
+		p.setLandmarkLeftFront(
+			*XYZ2Index(leftMark[0], LEFT), *XYZ2Index(leftMark[2], LEFT),
+			*XYZ2Index(frontMark[0], FRONT), *XYZ2Index(frontMark[2], FRONT));
+
+		p.setLandmarkRightFront(
+			*XYZ2Index(rightMark[0], RIGHT), *XYZ2Index(rightMark[2], RIGHT),
+			*XYZ2Index(frontMark[0 + base_front], FRONT), *XYZ2Index(frontMark[2 + base_front], FRONT));
+		////////////////////////////////////		////////////////////////////////////
+
 	
 		vtkSmartPointer<vtkPoints>leftPts = vtkSmartPointer<vtkPoints>::New();
 		vtkSmartPointer<vtkPoints>rightPts = vtkSmartPointer<vtkPoints>::New();
@@ -330,7 +356,11 @@ void AlignModule::slotAlign()
 			resultMesh->GetActorAt(i)->SetTexture(resultMesh->GetTextureAt(i));
 			resultMesh->GetActorAt(i)->Modified();
 		}
-
+		//p.writePoints();
+		//std::cout << "Init Overlap,ZIppering";
+		//p.deleteOverlap();
+		//p.zipperMesh();
+		std::cout << "Saved";
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 	}
