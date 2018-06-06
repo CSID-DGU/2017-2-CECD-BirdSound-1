@@ -380,6 +380,7 @@
     <ClInclude Include="MeshPreview.h" />
     <ClInclude Include="OBJExport.h" />
     <ClInclude Include="OBJImport.h" />
+    <ClInclude Include="OverlapZippering.h" />
     <ClInclude Include="PLYExport.h" />
     <ClInclude Include="PLYImport.h" />
     <ClInclude Include="PNGExport.h" />
