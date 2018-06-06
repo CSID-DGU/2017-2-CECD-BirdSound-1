@@ -35,7 +35,7 @@
 #include"vtkTransformTextureCoords.h"
 #include"vtkImageAppend.h"
 
-
+#include "OverlapZippering.h"
 
 //이 이하 include는 test용임. 삭제할 것.
 #include"vtkImageActor.h"
@@ -48,7 +48,7 @@ private:
 	MeshPreview *left;
 	MeshPreview *front;
 	MeshPreview *right;
-
+	OverlapZippering p;
 
 	LandMarkInteractorStyle *leftStyle;
 	LandMarkInteractorStyle *frontStyle;
@@ -72,7 +72,7 @@ public:
 	int DestroyVariables();
 	void InitializeUi();
 	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
-
+	Pos* AlignModule::XYZ2Index(double3 a, int page);
 
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);

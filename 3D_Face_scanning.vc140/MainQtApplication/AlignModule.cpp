@@ -252,6 +252,32 @@ void AlignModule::slotAlign()
 		frontMark = extractLandMark(front->GetRenderer());
 		rightMark = extractLandMark(right->GetRenderer());
 
+		////////////////////////////////////		////////////////////////////////////
+		//resultMesh->GetPolyDataAt(index)->DeepCopy(leftFilt->GetOutput());
+		//resultMesh->GetPolyDataAt(index++)->DeepCopy(front->GetPolyDataAt(i));
+		int index = 0;
+		for (int i = 0; i < 5; i++)resultMesh->GetPolyDataAt(index++)->DeepCopy(left->GetPolyDataAt(i));
+		for (int i = 0; i < 5; i++)resultMesh->GetPolyDataAt(index++)->DeepCopy(front->GetPolyDataAt(i));
+		for (int i = 0; i < 5; i++)resultMesh->GetPolyDataAt(index++)->DeepCopy(right->GetPolyDataAt(i));
+
+		Pos A(0, 0);
+		int base_front = frontMark.size() / 2;
+		Pos *tmp0;
+		Pos *tmp2;
+
+		std::cout << "\n\n";
+		////p.setXYZPoints("No Need");
+		p.setXYZPoints(*resultMesh);
+
+		p.setLandmarkLeftFront(
+			*XYZ2Index(leftMark[0], LEFT), *XYZ2Index(leftMark[2], LEFT),
+			*XYZ2Index(frontMark[0], FRONT), *XYZ2Index(frontMark[2], FRONT));
+
+		p.setLandmarkRightFront(
+			*XYZ2Index(rightMark[0], RIGHT), *XYZ2Index(rightMark[2], RIGHT),
+			*XYZ2Index(frontMark[0 + base_front], FRONT), *XYZ2Index(frontMark[2 + base_front], FRONT));
+		////////////////////////////////////		////////////////////////////////////
+
 	
 		vtkSmartPointer<vtkPoints>leftPts = vtkSmartPointer<vtkPoints>::New();
 		vtkSmartPointer<vtkPoints>rightPts = vtkSmartPointer<vtkPoints>::New();
@@ -282,7 +308,7 @@ void AlignModule::slotAlign()
 		right2front->Update(); //should this be here?
 
 
-		int index = 0;
+		index = 0;
 		for (int i = 0; i < 5; i++)resultMesh->m_ImageData[index++]->DeepCopy(left->GetImageData(i));
 		for (int i = 0; i < 5; i++)resultMesh->m_ImageData[index++]->DeepCopy(front->GetImageData(i));
 		for (int i = 0; i < 5; i++)resultMesh->m_ImageData[index++]->DeepCopy(right->GetImageData(i));
@@ -330,7 +356,11 @@ void AlignModule::slotAlign()
 			resultMesh->GetActorAt(i)->SetTexture(resultMesh->GetTextureAt(i));
 			resultMesh->GetActorAt(i)->Modified();
 		}
-
+		//p.writePoints();
+		//std::cout << "Init Overlap,ZIppering";
+		//p.deleteOverlap();
+		//p.zipperMesh();
+		std::cout << "Saved";
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 	}
@@ -429,4 +459,49 @@ void AlignModule::setFront(MeshPreview *rend)
 	//frontStyle->setRadis(rend->GetActorAt(0));
 	Copy(rend, front);
 	frontStyle->setRadis(front->GetActorAt(0));
+}
+Pos* AlignModule::XYZ2Index(double3 a, int page) {
+	/*
+	RMS 를 이용하여 최솟값 찾기
+	1. PAGE에 따른 최소값 찾아보기 지금 조건문 설정안되어 있음
+
+	*/
+	double _t1, _t2, _t3;
+	double min_rms;
+	int min_rms_idx, min_rms_k;
+	double tmp_rms;
+	vtkPoints *value[4];
+	min_rms = 1.0;
+	min_rms_idx = 0;
+	int subPOINTS = 0;
+
+	for (int k = 0; k < 4; k++) {
+		value[k] = resultMesh->GetPolyDataAt(page * 5 + k)->GetPoints();
+		subPOINTS = value[k]->GetNumberOfPoints();
+		for (int j = 0; j < subPOINTS; j++)
+		{
+			_t1 = value[k]->GetPoint(j)[0];
+			_t2 = value[k]->GetPoint(j)[1];
+			_t3 = value[k]->GetPoint(j)[2];
+			tmp_rms = abs(_t1 - a.X) + abs(_t2 - a.Y) + abs(_t3 - a.Z);
+			if (tmp_rms < min_rms) {
+				min_rms = tmp_rms;
+				min_rms_k = k;
+				min_rms_idx = j;
+			}
+		}
+	}
+	//
+	_t1 = value[min_rms_k]->GetPoint(min_rms_idx)[0];
+	_t2 = value[min_rms_k]->GetPoint(min_rms_idx)[1];
+	_t3 = value[min_rms_k]->GetPoint(min_rms_idx)[2];
+	//
+	int row = (min_rms_k*subPOINTS + min_rms_idx) % WIDTH;
+	int col = (min_rms_k*subPOINTS + min_rms_idx) / WIDTH;
+	std::cout << "Find Index\t\t";
+	std::cout << "\t" << min_rms << "\n";
+	std::cout << "\t" << (_t1) << " " << (_t2) << " " << (_t3) << "\n";
+	std::cout << "\t" << (a.X) << " " << (a.Y) << " " << (a.Z) << "\n";
+	std::cout << "\n";
+	return new Pos(row, col);
 }
