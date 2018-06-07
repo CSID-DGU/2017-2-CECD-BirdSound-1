@@ -251,7 +251,7 @@ public:
 				for (int j = 0; j < subPOINTS; j++)//갯수는 세면 됨
 				{
 					for (int u = 0; u < 3; u++) {
-						t[u] = A[page][base + j][u];
+						t[u] = - A[page][base + j][u];
 					}
 					value[k]->SetPoint(j, t);
 				}
@@ -285,7 +285,7 @@ public:
 			fout << A[2][i][0] << " " << A[2][i][1] << " " << A[2][i][2] << "\n";
 		}
 		fout.close();
-		fout.open("landmark.txt");
+		fout.open("landmark.py");
 		fout << "L1 = " << L1 << "\n";
 		fout << "L3 = " << L3 << "\n\n";
 
@@ -378,20 +378,22 @@ public:
 		Pos _F_LL_tmp1(F_R1[0] - 3, F_R1[1] - 2);
 		Pos _F_LL_tmp3(F_R3[0] + 3, HEIGHT);
 
-		std::vector<Pos>* F_LL_tmp1 = getGradDelPoint(_F_LL_tmp1, F_R1);
-		std::vector<Pos>* F_LL_tmp2 = getGradDelPoint(F_R1, F_R3);
-		std::vector<Pos>* F_LL_tmp3 = getGradDelPoint(F_R3, _F_LL_tmp3);
+		//std::vector<Pos>* F_LL_tmp1 = getGradDelPoint(_F_LL_tmp1, F_R1);
+		//for (auto i = F_LL_tmp1->cbegin(); i != F_LL_tmp1->cend(); i++) {
+		//	F_LL->push_back(*i);
+		//}
 
-		for (auto i = F_LL_tmp1->cbegin(); i != F_LL_tmp1->cend(); i++) {
-			F_LL->push_back(*i);
-		}
+		std::vector<Pos>* F_LL_tmp2 = getGradDelPoint(F_R1, F_R3);
 		for (auto i = F_LL_tmp2->cbegin(); i != F_LL_tmp2->cend(); i++) {
 			F_LL->push_back(*i);
 		}
+
+		std::vector<Pos>* F_LL_tmp3 = getGradDelPoint(F_R3, _F_LL_tmp3);
 		for (auto i = F_LL_tmp3->cbegin(); i != F_LL_tmp3->cend(); i++) {
 			F_LL->push_back(*i);
 		}
-		delete F_LL_tmp1, F_LL_tmp2, F_LL_tmp3;
+
+		delete F_LL_tmp2, F_LL_tmp3;//F_LL_tmp1
 		return F_LL;
 	}
 	std::vector<Pos>* getF_RL() {
@@ -399,22 +401,23 @@ public:
 
 		Pos _F_RL_tmp1(F_L1[0] + 3, F_L1[1] - 2);
 
-		Pos _F_RL_tmp3(F_L1[0] + 3, HEIGHT);
+		Pos _F_RL_tmp3(F_L3[0] + 3, HEIGHT);
 
-		std::vector<Pos>* F_LR_tmp1 = getGradDelPoint(_F_RL_tmp1, F_L1);
-		std::vector<Pos>* F_LR_tmp2 = getGradDelPoint(F_L1, F_L1);
-		std::vector<Pos>* F_LR_tmp3 = getGradDelPoint(F_L1, _F_RL_tmp3);
+		//std::vector<Pos>* F_LR_tmp1 = getGradDelPoint(_F_RL_tmp1, F_L1);
+		//for (auto i = F_LR_tmp1->cbegin(); i != F_LR_tmp1->cend(); i++) {
+		//	F_RL->push_back(*i);
+		//}
 
-		for (auto i = F_LR_tmp1->cbegin(); i != F_LR_tmp1->cend(); i++) {
-			F_RL->push_back(*i);
-		}
+		std::vector<Pos>* F_LR_tmp2 = getGradDelPoint(F_L1, F_L3);
 		for (auto i = F_LR_tmp2->cbegin(); i != F_LR_tmp2->cend(); i++) {
 			F_RL->push_back(*i);
 		}
+
+		std::vector<Pos>* F_LR_tmp3 = getGradDelPoint(F_L3, _F_RL_tmp3);
 		for (auto i = F_LR_tmp3->cbegin(); i != F_LR_tmp3->cend(); i++) {
 			F_RL->push_back(*i);
 		}
-		delete F_LR_tmp1, F_LR_tmp2, F_LR_tmp3;
+		delete F_LR_tmp2, F_LR_tmp3; //F_LR_tmp1
 		return F_RL;
 	}
 
@@ -762,6 +765,7 @@ public:
 		//포인트 반영
 		getXYZPoints();
 		//str 생성 
+		
 		fout.open("resulttmp.vtk");
 		fout << "# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " << POINTS*PAGE << " float\n";
 		std::cout << "\ttranslate points to string\n";
@@ -791,7 +795,7 @@ public:
 		for (int i = 0; i < addedmesh_frri->size(); i++) {
 			fout << (*(*addedmesh_frri)[i]) << "\n";
 		}
-
+		
 	}
 };
 #endif

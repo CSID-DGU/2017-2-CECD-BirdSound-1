@@ -236,7 +236,6 @@ void AlignModule::slotAlign()
 		std::cout << "사진 3장 제대로 찍어요\n";
 		return;
 	}
-
 	else
 	{
 		if (!resultMesh)
@@ -266,9 +265,6 @@ void AlignModule::slotAlign()
 		Pos *tmp2;
 
 		std::cout << "\n\n";
-		////p.setXYZPoints("No Need");
-		p.setXYZPoints(*resultMesh);
-
 		p.setLandmarkLeftFront(
 			*XYZ2Index(leftMark[0], LEFT), *XYZ2Index(leftMark[2], LEFT),
 			*XYZ2Index(frontMark[0], FRONT), *XYZ2Index(frontMark[2], FRONT));
@@ -356,10 +352,11 @@ void AlignModule::slotAlign()
 			resultMesh->GetActorAt(i)->SetTexture(resultMesh->GetTextureAt(i));
 			resultMesh->GetActorAt(i)->Modified();
 		}
+		p.setXYZPoints(*resultMesh);
 		//p.writePoints();
-		//std::cout << "Init Overlap,ZIppering";
-		//p.deleteOverlap();
-		//p.zipperMesh();
+		std::cout << "Init Overlap,ZIppering";
+		p.deleteOverlap();
+		p.zipperMesh();
 		std::cout << "Saved";
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
@@ -499,7 +496,7 @@ Pos* AlignModule::XYZ2Index(double3 a, int page) {
 	int row = (min_rms_k*subPOINTS + min_rms_idx) % WIDTH;
 	int col = (min_rms_k*subPOINTS + min_rms_idx) / WIDTH;
 	std::cout << "Find Index\t\t";
-	std::cout << "\t" << min_rms << "\n";
+	std::cout << "\t Precision: " << min_rms << "\n";
 	std::cout << "\t" << (_t1) << " " << (_t2) << " " << (_t3) << "\n";
 	std::cout << "\t" << (a.X) << " " << (a.Y) << " " << (a.Z) << "\n";
 	std::cout << "\n";
