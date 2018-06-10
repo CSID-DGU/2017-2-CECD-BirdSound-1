@@ -378,9 +378,11 @@ void AlignModule::slotAlign()
 			std::cout << "후\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
 		}
 		/***************************************************/
-
+		for (int i = 0; i < 15; i++)
+			InsertCell(resultMesh->GetPolyDataAt(i),array_of_pointIndex);
 
 		std::cout << "Saved";
+		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 	}
@@ -394,6 +396,14 @@ void AlignModule::RemoveCell(vtkPolyData *poly, int CellID)
 	//std::cout << poly->GetNumberOfCells() << "<-후";
 }
 
+/*point의 index랑 polyData 입력. 삼각형임 pts index 3개 입력*/
+void AlignModule::InsertCell(vtkPolyData *poly, int triID[])
+{
+	poly->GetPolys()->InsertNextCell(3);
+	for(int i=0;i<3;i++)
+		poly->GetPolys()->InsertNextCell(triID[i]);
+	//std::cout << poly->GetNumberOfCells() << "<-후";
+}
 
 vtkSmartPointer<vtkDataArray> AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *land)
 {

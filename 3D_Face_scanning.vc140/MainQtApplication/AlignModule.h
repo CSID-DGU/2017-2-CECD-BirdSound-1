@@ -40,6 +40,7 @@
 //이 이하 include는 test용임. 삭제할 것.
 #include"vtkImageActor.h"
 #include"vtkFloatArray.h"
+#include"vtkCellArray.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -79,7 +80,7 @@ private:
 	void Copy(MeshPreview* src, MeshPreview* des);
 	vtkSmartPointer<vtkDataArray> setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
 	void RemoveCell(vtkPolyData *poly, int CellID);
-
+	void InsertCell(vtkPolyData *poly, int triID[]);
 public slots:
 	void slotAlign();
 	void slotLanMarkLeft();
