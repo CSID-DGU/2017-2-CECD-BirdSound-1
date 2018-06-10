@@ -36,7 +36,7 @@
 #include"vtkImageAppend.h"
 
 #include "OverlapZippering.h"
-
+#include"vtkIdList.h"
 //이 이하 include는 test용임. 삭제할 것.
 #include"vtkImageActor.h"
 #include"vtkFloatArray.h"
@@ -78,7 +78,7 @@ private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 	void Copy(MeshPreview* src, MeshPreview* des);
 	vtkSmartPointer<vtkDataArray> setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
-
+	void RemoveCell(vtkPolyData *poly, int CellID);
 
 public slots:
 	void slotAlign();

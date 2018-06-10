@@ -231,6 +231,7 @@ void AlignModule::registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPol
 
 void AlignModule::slotAlign()
 {
+	
 	if (left == nullptr || front == nullptr || right == nullptr)
 	{
 		std::cout << "사진 3장 제대로 찍어요\n";
@@ -239,6 +240,12 @@ void AlignModule::slotAlign()
 
 	else
 	{
+
+		vtkCellArray *aqwe = vtkCellArray::New();
+		
+		vtkIdList*id = vtkIdList::New();
+		resultMesh->GetPolyDataAt(0)->GetPolys()->GetCell(1, id);
+
 		if (!resultMesh)
 		{
 			resultMesh->ReleaseModel();
@@ -360,12 +367,32 @@ void AlignModule::slotAlign()
 		//std::cout << "Init Overlap,ZIppering";
 		//p.deleteOverlap();
 		//p.zipperMesh();
+
+		/***************************************************/
+		for (int i=0;i<15;i++)
+		{
+			std::cout << "전\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+			for (int j = 0; j < NumCellToRemove; j++)
+				RemoveCell(resultMesh->GetPolyDataAt(i), cellToRemove[j]);//ID에 지울 놈들 cell ID 넣기			
+			resultMesh->GetPolyDataAt(i)->RemoveDeletedCells();
+			std::cout << "후\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+		}
+		/***************************************************/
+
+
 		std::cout << "Saved";
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 	}
 }
 
+void AlignModule::RemoveCell(vtkPolyData *poly, int CellID)
+{
+	//std::cout << poly->GetNumberOfCells() << "<-전";
+	poly->BuildLinks();//<polyData에서 buildLink
+	poly->DeleteCell(CellID);//지울 Cell ID
+	//std::cout << poly->GetNumberOfCells() << "<-후";
+}
 
 
 vtkSmartPointer<vtkDataArray> AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *land)

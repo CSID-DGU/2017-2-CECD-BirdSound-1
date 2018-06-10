@@ -40,7 +40,7 @@ void Scan::frames2PointsCutOutlier()
 		}
 
 		double _Z = 0;
-		
+
 		std::sort(Z.begin(), Z.end());
 
 		int cnt = 0;
@@ -138,7 +138,7 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 
 		float max = 0;//이게 0.26이라고 생각.
 		float min = 999;
-		
+
 		for (int j = 0; j < nScalar / 3; j++)
 		{
 			if (max < texCord[disp + j].v)
@@ -146,14 +146,14 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 			if (min > texCord[disp + j].v && texCord[disp + j].v>0)
 				min = texCord[disp + j].v;
 		}
-		std::cout << max<<" "<<min << "\n";
-		
+		std::cout << max << " " << min << "\n";
+
 		for (int j = 0; j < nScalar / 3; j++)
 		{
-			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v-min)/(max-min)};
-			textureCoordinates[i]->InsertNextTuple(tuple);	
+			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v - min) / (max - min) };
+			textureCoordinates[i]->InsertNextTuple(tuple);
 		}
-	
+
 		textureCoordinates[i]->Modified();
 
 		viewer->GetPolyDataAt(i)->GetPointData()->SetTCoords(textureCoordinates[i]);
@@ -172,12 +172,12 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	viewer->m_ImageData[4]->Modified();
 
 	unsigned char* scalarPointer = static_cast<unsigned char*>(viewer->m_ImageData[4]->GetScalarPointer());
-	
+
 	index = 0;
 	for (int i = 0; i<3; i++)
 	{
-		const int disp = 1280 * 180 * 3*(i+1);
-		for (int j = 0; j < 1280 * 2*3; j++)
+		const int disp = 1280 * 180 * 3 * (i + 1);
+		for (int j = 0; j < 1280 * 2 * 3; j++)
 			scalarPointer[index++] = data[disp + j];
 	}
 
@@ -186,8 +186,8 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 
 	float max = 0;
 	float min = 9999;
-	std::ofstream of("ot.txt"); 
-	for (int i = 0; i < 3; i++) 
+	std::ofstream of("ot.txt");
+	for (int i = 0; i < 3; i++)
 	{
 		const int disp = 1280 * 180 * (i + 1);
 		for (int j = 0; j < 1280 * 2; j++)
@@ -202,12 +202,12 @@ void Scan::ScanTexture(MeshPreview *viewer, rs2::frame &fra)
 	std::cout << max << " " << min << "\n";
 	for (int i = 0; i < 3; i++)
 	{
-		const int disp = 1280 * 180 * (i+1);
+		const int disp = 1280 * 180 * (i + 1);
 		for (int j = 0; j < 1280 * 2; j++)
 		{
-			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v-min)/(max-min) };
+			float tuple[] = { texCord[disp + j].u, (texCord[disp + j].v - min) / (max - min) };
 			textureCoordinates[4]->InsertNextTuple(tuple);
-			of << texCord[disp + j].v<<" "<<tuple[1] << max<<" "<<min<<"\n";
+			of << texCord[disp + j].v << " " << tuple[1] << max << " " << min << "\n";
 		}
 	}
 
@@ -255,7 +255,7 @@ void Scan::ReleaseModel()
 		points->Delete();
 		points = NULL;
 	}
-	
+
 	points = vtkPoints::New();
 	frames.clear();
 
@@ -333,7 +333,7 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 		for (vtkIdType i = 0; i < threadPoint->GetNumberOfPoints(); i++)
 		{
-		
+
 			if (i + 1 + width > threadPoint->GetNumberOfPoints())continue;
 			if ((i + 1) % width == 0)continue;
 
@@ -350,7 +350,7 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 			double _down = getDistane(orign, down);
 			double _right = getDistane(orign, right);
 
-		//	if (_right > alpha)continue;
+			//	if (_right > alpha)continue;
 
 			if (_down < _dia)
 			{
@@ -375,7 +375,7 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 		}
 
-		#pragma omp critical
+#pragma omp critical
 		{
 			//if (omp_get_thread_num() == 0 || omp_get_thread_num() == 1)
 			{
@@ -445,7 +445,7 @@ void  Scan::MeshConstructWithOMP(MeshPreview *viewer, vtkPoints *point, int save
 
 	boundary->Delete();
 	cellBoundary->Delete();
-	
+
 
 	viewer->GetRenderWindow()->Modified();
 	//viewer->GetRenderWindow()->Render();
@@ -561,7 +561,7 @@ void Scan::frame2Points(const rs2::frame& frame)
 
 	for (auto i = 0; i < width*height; i++)
 	{
-		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)points->InsertNextPoint((i % 1280)/1280.0, i / 1280.0 / 720.0, 0);
+		if (v[i].z >= 1 || v[i].z <= -1 || v[i].z == 0)points->InsertNextPoint((i % 1280) / 1280.0, i / 1280.0 / 720.0, 0);
 		else points->InsertNextPoint(v[i].x, v[i].y, v[i].z);
 	}
 
