@@ -231,6 +231,7 @@ void AlignModule::registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPol
 
 void AlignModule::slotAlign()
 {
+	
 	if (left == nullptr || front == nullptr || right == nullptr)
 	{
 		std::cout << "사진 3장 제대로 찍어요\n";
@@ -238,6 +239,12 @@ void AlignModule::slotAlign()
 	}
 	else
 	{
+
+		vtkCellArray *aqwe = vtkCellArray::New();
+		
+		vtkIdList*id = vtkIdList::New();
+		resultMesh->GetPolyDataAt(0)->GetPolys()->GetCell(1, id);
+
 		if (!resultMesh)
 		{
 			resultMesh->ReleaseModel();
@@ -352,18 +359,53 @@ void AlignModule::slotAlign()
 			resultMesh->GetActorAt(i)->SetTexture(resultMesh->GetTextureAt(i));
 			resultMesh->GetActorAt(i)->Modified();
 		}
-
 		p.setXYZPoints(*resultMesh);
 		//p.writePoints();
-		std::cout << "Init Overlap,ZIppering";
+		//std::cout << "Init Overlap,ZIppering";
 		//p.deleteOverlap();
 		//p.zipperMesh();
-		deleteCell();
+
+		/***************************************************/
+		for (int i=0;i<15;i++)
+		{
+			std::cout << "전\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+			for (int j = 0; j < NumCellToRemove; j++)
+				RemoveCell(resultMesh->GetPolyDataAt(i), cellToRemove[j]);//ID에 지울 놈들 cell ID 넣기			
+			resultMesh->GetPolyDataAt(i)->RemoveDeletedCells();
+			std::cout << "후\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+		}
+		/***************************************************/
+		for (int i = 0; i < 15; i++)
+			InsertCell(resultMesh->GetPolyDataAt(i),array_of_pointIndex);
+
+
+		std::cout << "Init Overlap,ZIppering";
+		p.deleteOverlap();
+		p.zipperMesh();
+
 		std::cout << "Saved";
+		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
 	}
 }
+
+void AlignModule::RemoveCell(vtkPolyData *poly, int CellID)
+{
+	//std::cout << poly->GetNumberOfCells() << "<-전";
+	poly->BuildLinks();//<polyData에서 buildLink
+	poly->DeleteCell(CellID);//지울 Cell ID
+	//std::cout << poly->GetNumberOfCells() << "<-후";
+}
+
+/*point의 index랑 polyData 입력. 삼각형임 pts index 3개 입력*/
+void AlignModule::InsertCell(vtkPolyData *poly, int triID[])
+{
+	poly->GetPolys()->InsertNextCell(3);
+	for(int i=0;i<3;i++)
+		poly->GetPolys()->InsertNextCell(triID[i]);
+}
+
 vtkSmartPointer<vtkDataArray> AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *land)
 {
 	if (land != nullptr) {
@@ -500,54 +542,4 @@ Pos* AlignModule::XYZ2Index(double3 a, int page) {
 	std::cout << "\t" << (a.X) << " " << (a.Y) << " " << (a.Z) << "\n";
 	std::cout << "\n";
 	return new Pos(row, col);
-}
-void AlignModule::deleteCell () {
-	int cell_pos[3];
-	int subPOINTS = 0;
-	int page = 0;
-	int dp;
-	unsigned int deleted = 0;
-	std::cout << "\ndeleteCell \n";
-	vtkIdList *cellid_list = vtkIdList::New();
-	bool isdelete = false;
-	int tmp_p[3];
-	//for (page = 0; page < 3; page++) {
-	//	for (int k = 0; k < 4; k++) {
-	//		subPOINTS = resultMesh->GetPolyDataAt(page * 5 + k)->GetPolys()->GetSize();
-	//		//for (int j = 0; j < subPOINTS; j++) {
-	//		//	resultMesh->GetPolyDataAt(page * 5 + k)->GetPolys()->GetCell(j, cellid_list);
-
-	//			//for (int i = 0; i < 3; i++) {
-	//			//	tmp_p[i] = cellid_list->GetId(i);
-	//			//}
-	//			//for (dp = 0; dp < (*(p.part_del_point_ALL[RI])).size(); dp++) {
-	//			//	int didx = (p.getPointIdx((*(p.part_del_point_ALL[RI]))[dp]));
-	//			//	if (tmp_p[0]== didx || tmp_p[1] == didx || tmp_p[2] == didx){
-	//			//		isdelete = true;
-	//			//		break;
-	//			//	}
-	//			//}
-	//			//if (isdelete) {
-	//			//	resultMesh->GetPolyDataAt(page * 5 + k)->DeleteCell(j);
-	//			//	deleted++;
-	//			//}
-	//		resultMesh->GetPolyDataAt(page * 5 + k)->RemoveDeletedCells();
-	//	}
-	//	page++;
-	//}
-	page = RI;
-	for (int k = 0; k < 4; k++) {
-		subPOINTS = resultMesh->GetPolyDataAt(page * 5 + k)->GetPolys()->GetSize();
-		int idx = p.getPointIdx(p.R1);
-		if (subPOINTS*k <= idx && idx < subPOINTS*(k + 1)) {
-			idx -= subPOINTS*k;
-			for (int m = 0; m < WIDTH; m++) {
-				if ((idx + m) % WIDTH != 0)
-					resultMesh->GetPolyDataAt(page * 5 + k)->DeleteCell(idx + m);
-				else
-					break;
-			}
-		}
-	}
-	std::cout << "\t End: "<< deleted<<"\n";
 }

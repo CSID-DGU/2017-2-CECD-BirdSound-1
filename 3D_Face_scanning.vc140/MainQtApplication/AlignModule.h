@@ -36,11 +36,11 @@
 #include"vtkImageAppend.h"
 
 #include "OverlapZippering.h"
-
+#include"vtkIdList.h"
 //이 이하 include는 test용임. 삭제할 것.
 #include"vtkImageActor.h"
 #include"vtkFloatArray.h"
-#include"vtkCellData.h"
+#include"vtkCellArray.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -74,13 +74,13 @@ public:
 	void InitializeUi();
 	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
 	Pos* AlignModule::XYZ2Index(double3 a, int page);
-	void AlignModule::deleteCell();
+
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 	void Copy(MeshPreview* src, MeshPreview* des);
 	vtkSmartPointer<vtkDataArray> setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
-
-
+	void RemoveCell(vtkPolyData *poly, int CellID);
+	void InsertCell(vtkPolyData *poly, int triID[]);
 public slots:
 	void slotAlign();
 	void slotLanMarkLeft();
