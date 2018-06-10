@@ -183,6 +183,8 @@ public:
 	std::vector<Pos>* part_del_point_frri_FR;
 	std::vector<Pos>* part_del_point_frri_RI;
 
+	std::vector<Pos>* part_del_point_ALL[3];
+
 	int A_ct;
 	int B_ct;
 	int C_ct;
@@ -705,6 +707,25 @@ public:
 		}
 		return ct_list;
 	}
+	void setpart_del_point_ALL() {
+		for (int i = 0; i < 3; i++) {
+			part_del_point_ALL[i] = new std::vector<Pos>;
+		}
+		for (int i = 0; i < (*part_del_point_frri_RI).size(); i++) {
+			(*(part_del_point_ALL[RI])).push_back((*part_del_point_frri_RI)[i]);
+		}
+		for (int i = 0; i < (*part_del_point_frle_FR).size(); i++) {
+			(*(part_del_point_ALL[FR])).push_back((*part_del_point_frle_FR)[i]);
+		}
+
+		for (int i = 0; i < (*part_del_point_frri_FR).size(); i++) {
+			(*(part_del_point_ALL[FR])).push_back((*part_del_point_frri_FR)[i]);
+		}
+
+		for (int i = 0; i < (*part_del_point_frle_LE).size(); i++) {
+			(*(part_del_point_ALL[LE])).push_back((*part_del_point_frle_LE)[i]);
+		}
+	}
 	void deleteOverlap() {
 		std::vector<Pos>* F_LL = getF_LL();
 		std::vector<Pos>* F_RL = getF_RL();
@@ -717,13 +738,13 @@ public:
 		del_tmp_point_frri = getDeleteIndex2(FR, RI, new Pos(L1[0] + 3, L1[1] - 3), *F_RL);
 
 		//for (auto i = p.del_tmp_point_frle->cbegin(); i != p.del_tmp_point_frle->cend(); i++) {	std::cout << *i << "\n";}
-
+		
 		part_del_point_frle_FR = getDeletePoint(frle_point_page_FR, *del_tmp_point_frle, "deletePositive");
 		part_del_point_frle_LE = getDeletePoint(frle_point_page_LE, *del_tmp_point_frle, "deleteNagative");//  #deleteNagative / deletePositive
 
 		part_del_point_frri_FR = getDeletePoint(frri_point_page_FR, *del_tmp_point_frri, "deleteNagative");
 		part_del_point_frri_RI = getDeletePoint(frri_point_page_RI, *del_tmp_point_frri, "deletePositive");//  #deleteNagative / deletePositive
-
+		setpart_del_point_ALL();
 		std::cout << part_del_point_frle_FR->size() << " " << part_del_point_frle_LE->size() << "\n";
 		std::cout << part_del_point_frri_FR->size() << " " << part_del_point_frri_RI->size() << "\n";
 		//for (auto i = p.part_del_point_frle_FR->cbegin(); i != p.part_del_point_frle_FR->cend(); i++) { std::cout <<*i<<"\n"; }
@@ -756,7 +777,6 @@ public:
 		B_ct = confirmMeshNumber(A[FR]);
 		C_ct = confirmMeshNumber(A[LE]);
 
-
 		A_ct_list = makeMesh(A[RI], POINTS*RI);
 		B_ct_list = makeMesh(A[FR], POINTS*FR);
 		C_ct_list = makeMesh(A[LE], POINTS*LE);
@@ -766,6 +786,7 @@ public:
 		getXYZPoints();
 		//str »ý¼º 
 		
+		/*
 		fout.open("resulttmp.vtk");
 		fout << "# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS " << POINTS*PAGE << " float\n";
 		std::cout << "\ttranslate points to string\n";
@@ -795,7 +816,7 @@ public:
 		for (int i = 0; i < addedmesh_frri->size(); i++) {
 			fout << (*(*addedmesh_frri)[i]) << "\n";
 		}
-		
+		*/
 	}
 };
 #endif

@@ -40,6 +40,7 @@
 //이 이하 include는 test용임. 삭제할 것.
 #include"vtkImageActor.h"
 #include"vtkFloatArray.h"
+#include"vtkCellData.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
@@ -73,7 +74,7 @@ public:
 	void InitializeUi();
 	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
 	Pos* AlignModule::XYZ2Index(double3 a, int page);
-
+	void AlignModule::deleteCell();
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 	void Copy(MeshPreview* src, MeshPreview* des);
