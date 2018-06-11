@@ -245,6 +245,8 @@ public:
 		int base;
 		for (int page = 0; page < 3; page++)
 		{
+			if (page == 1)
+				continue;
 			vtkPoints *value[4];
 			for (int k = 0; k < 4; k++) {
 				value[k] = resultMesh->GetPolyDataAt(page*5 + k)->GetPoints();//이러면 좌측 0째 Mesh에 있는 point다 가져옴	
@@ -713,7 +715,6 @@ public:
 						ct_list->push_back(makeStrMeshFromArr(makeIntMesh(base + i + 1, base + i + WIDTH, base + i)));
 					if (A[i + WIDTH][0] != 0 && A[i + 1][0] != 0 && A[i + WIDTH + 1][0] != 0)
 						ct_list->push_back(makeStrMeshFromArr(makeIntMesh(base + i + WIDTH, base + i + 1, base + i + WIDTH + 1)));
-
 				}
 				else {
 					if (A[i][0] != 0 && A[i + WIDTH][0] != 0 && A[i + WIDTH + 1][0] != 0)
