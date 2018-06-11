@@ -238,13 +238,7 @@ void AlignModule::slotAlign()
 		return;
 	}
 	else
-	{
-
-		vtkCellArray *aqwe = vtkCellArray::New();
-		
-		vtkIdList*id = vtkIdList::New();
-		resultMesh->GetPolyDataAt(0)->GetPolys()->GetCell(1, id);
-
+	{	
 		if (!resultMesh)
 		{
 			resultMesh->ReleaseModel();
@@ -361,39 +355,23 @@ void AlignModule::slotAlign()
 		}
 		p.setXYZPoints(*resultMesh);
 		//p.writePoints();
-		//std::cout << "Init Overlap,ZIppering";
-		//p.deleteOverlap();
-		//p.zipperMesh();
-
-		/***************************************************/
-		for (int i=0;i<15;i++)
-		{
-			std::cout << "전\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
-			for (int j = 0; j < NumCellToRemove; j++)
-				RemoveCell(resultMesh->GetPolyDataAt(i), cellToRemove[j]);//ID에 지울 놈들 cell ID 넣기			
-			resultMesh->GetPolyDataAt(i)->RemoveDeletedCells();
-			std::cout << "후\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
-		}
-		/***************************************************/
-		for (int i = 0; i < 15; i++)
-			InsertCell(resultMesh->GetPolyDataAt(i),array_of_pointIndex);
-
-
-		std::cout << "Init Overlap,ZIppering";
+		std::cout << "Init Overlap,ZIppering\n";
 		p.deleteOverlap();
 		p.zipperMesh();
-
-		std::cout << "Saved";
+		deleteCell();
+		//zipperCell();
+		std::cout << "Saved\n";
 		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
+
 	}
 }
 
 void AlignModule::RemoveCell(vtkPolyData *poly, int CellID)
 {
 	//std::cout << poly->GetNumberOfCells() << "<-전";
-	poly->BuildLinks();//<polyData에서 buildLink
+	
 	poly->DeleteCell(CellID);//지울 Cell ID
 	//std::cout << poly->GetNumberOfCells() << "<-후";
 }
@@ -542,4 +520,99 @@ Pos* AlignModule::XYZ2Index(double3 a, int page) {
 	std::cout << "\t" << (a.X) << " " << (a.Y) << " " << (a.Z) << "\n";
 	std::cout << "\n";
 	return new Pos(row, col);
+}
+void AlignModule::deleteCell() {
+	///***************************************************/
+	//const int NumCellToRemove = 500;
+	//int cellToRemove[NumCellToRemove];
+	//for (int i = 0; i < NumCellToRemove; i++)
+	//	cellToRemove[i] = i;
+	//deleteCell();
+	//for (int i = 0; i<15; i++)
+	//{
+	//	std::cout << "전\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+	//	resultMesh->GetPolyDataAt(i)->BuildLinks();//<polyData에서 buildLink
+
+	//	for (int j = 0; j < resultMesh->GetPolyDataAt(i)->GetNumberOfCells() / 2; j++)
+	//		resultMesh->GetPolyDataAt(i)->DeleteCell(j);// 
+	//													//for (int j = 0; j < NumCellToRemove; j++)
+	//													//RemoveCell(resultMesh->GetPolyDataAt(i), cellToRemove[j]);//ID에 지울 놈들 cell ID 넣기
+	//	resultMesh->GetPolyDataAt(i)->RemoveDeletedCells();
+	//	std::cout << "후\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+	//}
+	//////////////////////////////////////////////////////////
+
+	/*
+	int sub_points = resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints();
+	int pidx = 0;
+	int sub_page = 0,cellnum;
+	vtkPoints *value[4];
+	vtkCell* cell;
+	int pid[3];
+	for (int page = 0; page < 3; page++) {
+		for (int i = 0; i < (*(p.part_del_point_ALL[page])).size(); i++) {
+			pidx = p.getPointIdx((*(p.part_del_point_ALL[page]))[i]);
+			sub_page = pidx / sub_points;
+			pidx -= sub_page*sub_points;
+			cellnum = resultMesh->GetPolyDataAt(page * 5 + sub_page)->GetNumberOfCells();
+			//sub_page --- pidx
+
+			value[k] = resultMesh->GetPolyDataAt(page * 5 + k)->GetPoints();
+			for (int cellidx = 0; cellidx < cellnum; cellidx++) {
+				cell = resultMesh->GetPolyDataAt(page * 5 + sub_page)->GetCell(cellidx);
+				if (cell->PointIds->GetNumberOfIds() == 3) {
+					for (int m = 0; m < 3; m++) {
+						if (cell->GetPointId(m) == pidx) {
+							resultMesh->GetPolyDataAt(page * 5 + sub_page)->DeleteCell(cellidx);
+							break;
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			resultMesh->GetPolyDataAt(page * 5 + i)->RemoveDeletedCells();
+		}
+	}*//////////////////////////////
+	int sub_points = resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints();
+	int pidx = 0;
+	int sub_page = 0, cellnum;
+	vtkPoints *value[4];
+	vtkCell* cell;
+	double _t[3];
+	for (int page = 0; page < 3; page++) {
+		for (int k = 0; k < 4; k++) {
+			value[k] = resultMesh->GetPolyDataAt(page * 5 + k)->GetPoints();
+		}
+		for (int k = 0; k < 4; k++) {
+			cellnum = resultMesh->GetPolyDataAt(page * 5 + k)->GetNumberOfCells();
+			for (int cellidx = 0; cellidx < cellnum; cellidx++) {
+				cell = resultMesh->GetPolyDataAt(page * 5 + k)->GetCell(cellidx);
+				if (cell->PointIds->GetNumberOfIds() == 3) {
+					for (int m = 0; m < 3; m++) {
+						pidx = cell->GetPointId(m);
+						if (value[k]->GetPoint(pidx)[0]  == 0.0) {
+							resultMesh->GetPolyDataAt(page * 5 + k)->DeleteCell(cellidx);
+							break;
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			resultMesh->GetPolyDataAt(page * 5 + i)->RemoveDeletedCells();
+		}
+	}
+}
+void AlignModule::zipperCell() {
+	//LE = 0
+	//RI = 1
+	const int SUBPOINTS = resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints();
+	int *p3;
+	p3 = (*(p.addedmeshInt[0]))[0];
+	POINTS;
+	for (int i = 0; i < 15; i++){
+		int array_of_pointIndex[3] = { 1,2,3 };
+		InsertCell(resultMesh->GetPolyDataAt(i), array_of_pointIndex);
+	}
 }

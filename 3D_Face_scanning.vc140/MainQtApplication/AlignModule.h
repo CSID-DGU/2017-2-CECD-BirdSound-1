@@ -74,6 +74,8 @@ public:
 	void InitializeUi();
 	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
 	Pos* AlignModule::XYZ2Index(double3 a, int page);
+	void deleteCell();
+	void zipperCell();
 
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
