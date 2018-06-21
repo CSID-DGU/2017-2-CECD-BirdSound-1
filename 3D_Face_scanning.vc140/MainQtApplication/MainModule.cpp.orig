@@ -1,7 +1,11 @@
 #include "MainModule.hpp"
+<<<<<<< HEAD
 #include "CalibrationModule.hpp"
-//#include "ScanModule.hpp"
+#include "ScanModule.hpp"
+=======
+#include "../../CalibrationModule/CalibrationModule.hpp"
 #include "scanmodule.h"
+>>>>>>> origin/AlignModule
 #include "RegistrationModule.hpp"
 #include "iomodule.h"
 #include "ApplicationConfig.hpp"

@@ -106,13 +106,9 @@ void ScanModuleQT::InitializeUi()
 	m_MiniMeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RIGHT->winId()), sizeX, sizeY);
 }
 
-
-
-
 void ScanModuleQT::slotCapBtn() 
 {
 
-	
 	if (m_ScannedMeshViewer)
 	{
 		m_ScannedMeshViewer->ReleaseModel();
@@ -179,6 +175,7 @@ void Copy(MeshPreview* src, MeshPreview* des)
 	des->GetRenderer()->Modified();
 	des->GetRenderWindow()->Render();
 }
+
 void ScanModuleQT::slotCapPicBtn()
 {
 	/*

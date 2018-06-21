@@ -76,7 +76,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="CapBtn">
     <property name="geometry">
      <rect>
-      <x>1150</x>
+      <x>1130</x>
       <y>690</y>
       <width>91</width>
       <height>31</height>
@@ -197,7 +197,7 @@ border-color: rgb(255, 0, 0);</string>
       <x>480</x>
       <y>10</y>
       <width>450</width>
-      <height>600</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -213,14 +213,14 @@ border-color: rgb(255, 0, 0);</string>
    <widget class="QPushButton" name="NextBtn">
     <property name="geometry">
      <rect>
-      <x>1260</x>
-      <y>690</y>
+      <x>1160</x>
+      <y>730</y>
       <width>91</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>NEXT</string>
+     <string>Next</string>
     </property>
    </widget>
    <widget class="QLabel" name="TitleRight">
@@ -265,7 +265,7 @@ border-color: rgb(255, 0, 0);</string>
    <widget class="QPushButton" name="StreamingBtn">
     <property name="geometry">
      <rect>
-      <x>1040</x>
+      <x>950</x>
       <y>720</y>
       <width>101</width>
       <height>51</height>
@@ -278,8 +278,8 @@ border-color: rgb(255, 0, 0);</string>
    <widget class="QPushButton" name="MultiCapBtn">
     <property name="geometry">
      <rect>
-      <x>1150</x>
-      <y>730</y>
+      <x>1060</x>
+      <y>740</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -295,7 +295,7 @@ border-color: rgb(255, 0, 0);</string>
      <x>0</x>
      <y>0</y>
      <width>1372</width>
-     <height>31</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

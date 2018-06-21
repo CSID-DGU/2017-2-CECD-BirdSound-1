@@ -1,6 +1,6 @@
 #include "ui_mainmodule.h"
 #include "ui_calibrationmodule.h"
-#include "ui_scanmodule.h"
+#include "ui_scanmoduleqt.h"
 #include "ui_registrationmodule.h"
 #include "Data.cpp"
 #include <list>

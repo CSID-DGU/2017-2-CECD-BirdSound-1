@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainQtApplication", "MainQtApplication\MainQtApplication.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModuleTest", "ModuleTest", "{370091BA-D623-47E7-A349-70D714C6F351}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DepthModule", "DepthModule\DepthModule.vcxproj", "{FDE2C5C4-ADEC-42B7-97A8-9999F8E93A2C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C51C2D9-F472-4BD7-B8C9-5DBCDB7CDB01}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanModuleQT", "ScanModuleQT\ScanModuleQT.vcxproj", "{C614D17B-AC10-4CB6-8C64-3016DD27C67F}"
 EndProject
@@ -81,5 +79,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		Qt5Version = $(DefaultQtVersion)
+		SolutionGuid = {17A36EE9-6FFC-4E4E-9533-7A23AA3958A0}
 	EndGlobalSection
 EndGlobal
