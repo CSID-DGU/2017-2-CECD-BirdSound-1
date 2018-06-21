@@ -67,7 +67,7 @@ void Scan::frames2PointsCutOutlier()
 
 void Scan::meshSmooth(MeshPreview *viewer, double Relaxation)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		std::cout << i << " ";
 		vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();

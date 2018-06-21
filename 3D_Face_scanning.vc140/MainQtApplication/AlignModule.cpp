@@ -361,6 +361,34 @@ void AlignModule::slotAlign()
 		deleteCell();
 		//zipperCell();
 		std::cout << "Saved\n";
+
+		//Scan test;
+
+		//test.meshSmooth(resultMesh,0.01);
+
+		/*smooth?????*/
+		/*std::cout << resultMesh->size << "\n";
+		for (int i = 0; i < resultMesh->size; i++)
+		{
+			if (resultMesh->GetPolyDataAt(i) == NULL || resultMesh->GetPolyDataAt(i)==nullptr)
+				continue;
+			resultMesh->GetPolyDataAt(i)->Modified();
+			vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();
+			smoothFilter->SetInputData(resultMesh->GetPolyDataAt(i));
+			smoothFilter->SetNumberOfIterations(30);
+			smoothFilter->SetRelaxationFactor(0.1);
+			smoothFilter->FeatureEdgeSmoothingOff();
+			smoothFilter->BoundarySmoothingOn();
+			smoothFilter->Update();
+
+			resultMesh->m_PolyData[i]->DeepCopy(smoothFilter->GetOutput());
+			resultMesh->m_PolyData[i]->Modified();
+
+			resultMesh->GetMapperAt(i)->SetInputData(resultMesh->m_PolyData[i]);
+			resultMesh->GetMapperAt(i)->Modified();
+		}*/
+
+
 		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();

@@ -41,10 +41,11 @@
 #include"vtkImageActor.h"
 #include"vtkFloatArray.h"
 #include"vtkCellArray.h"
+#include"vtkSmoothPolyDataFilter.h"
 enum { LEFT, FRONT, RIGHT };
 class AlignModule : public QMainWindow
 {
-	Q_OBJECT
+	Q_OBJECT 
 private:
 	MeshPreview *left;
 	MeshPreview *front;
