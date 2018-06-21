@@ -13,7 +13,7 @@ MainModule::MainModule(QWidget *parent) : QWidget(parent) {
 	connect(ui.runCalibrationModule, &QPushButton::clicked, [this] {runCalibrationModule(); });
 	connect(ui.runScanModule, &QPushButton::clicked, [this] {runScanModule(); });
 	connect(ui.runViewerModule, &QPushButton::clicked, [this] {runViewerModule(); });
-	connect(ui.runExpModule, &QPushButton::clicked, [this] {runExpModule(); }); 
+	//connect(ui.runExpModule, &QPushButton::clicked, [this] {runExpModule(); }); 
 
 
 	ui.RecentTable->setShowGrid(false);

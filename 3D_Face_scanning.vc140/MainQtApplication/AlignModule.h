@@ -73,12 +73,14 @@ public:
 	void InitializeUi();
 	void registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPolyData* rightFront, vtkPolyData* right);
 	Pos* AlignModule::XYZ2Index(double3 a, int page);
-
+	void AlignModule::deleteCell();
+	void AlignModule::zipperCell();
 private:
 	vtkSmartPointer<vtkPolyData> point2mesh(vtkPoints *pts, vtkMatrix4x4 *Mat);
 	void Copy(MeshPreview* src, MeshPreview* des);
 	vtkSmartPointer<vtkDataArray> setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *trans);
-
+	void RemoveCell(vtkPolyData *poly, int CellID);
+	void InsertCell(vtkPolyData *poly, int trilD[]);
 
 public slots:
 	void slotAlign();

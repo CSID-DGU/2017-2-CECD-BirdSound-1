@@ -33,9 +33,7 @@ public:
     QFrame *Viewer_cad_RIGHT;
     QFrame *Viewer_cad_FRONT;
     QPushButton *CapBtn;
-    QPushButton *FrontSaveBtn;
     QFrame *Viewer_cad_3D;
-    QPushButton *LeftSaveBtn;
     QFrame *Viewer_cad_LEFT;
     QLabel *TitleFront;
     QLabel *Title3D;
@@ -44,8 +42,6 @@ public:
     QPushButton *NextBtn;
     QLabel *TitleRight;
     QLabel *Title2D;
-    QPushButton *RightSaveBtn;
-    QPushButton *StreamingBtn;
     QPushButton *MultiCapBtn;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
@@ -54,12 +50,12 @@ public:
     {
         if (ScanModuleQTClass->objectName().isEmpty())
             ScanModuleQTClass->setObjectName(QStringLiteral("ScanModuleQTClass"));
-        ScanModuleQTClass->resize(1372, 839);
+        ScanModuleQTClass->resize(1115, 826);
         centralWidget = new QWidget(ScanModuleQTClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         OutPutText = new QTextBrowser(centralWidget);
         OutPutText->setObjectName(QStringLiteral("OutPutText"));
-        OutPutText->setGeometry(QRect(20, 680, 911, 91));
+        OutPutText->setGeometry(QRect(20, 680, 911, 101));
         Viewer_cad_RIGHT = new QFrame(centralWidget);
         Viewer_cad_RIGHT->setObjectName(QStringLiteral("Viewer_cad_RIGHT"));
         Viewer_cad_RIGHT->setGeometry(QRect(950, 480, 150, 200));
@@ -74,19 +70,13 @@ public:
         Viewer_cad_FRONT->setFrameShadow(QFrame::Raised);
         CapBtn = new QPushButton(centralWidget);
         CapBtn->setObjectName(QStringLiteral("CapBtn"));
-        CapBtn->setGeometry(QRect(1130, 690, 91, 31));
-        FrontSaveBtn = new QPushButton(centralWidget);
-        FrontSaveBtn->setObjectName(QStringLiteral("FrontSaveBtn"));
-        FrontSaveBtn->setGeometry(QRect(1030, 450, 71, 20));
+        CapBtn->setGeometry(QRect(380, 280, 91, 51));
         Viewer_cad_3D = new QFrame(centralWidget);
         Viewer_cad_3D->setObjectName(QStringLiteral("Viewer_cad_3D"));
-        Viewer_cad_3D->setGeometry(QRect(20, 10, 450, 600));
+        Viewer_cad_3D->setGeometry(QRect(480, 10, 450, 600));
         Viewer_cad_3D->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
         Viewer_cad_3D->setFrameShape(QFrame::StyledPanel);
         Viewer_cad_3D->setFrameShadow(QFrame::Raised);
-        LeftSaveBtn = new QPushButton(centralWidget);
-        LeftSaveBtn->setObjectName(QStringLiteral("LeftSaveBtn"));
-        LeftSaveBtn->setGeometry(QRect(1030, 210, 71, 20));
         Viewer_cad_LEFT = new QFrame(centralWidget);
         Viewer_cad_LEFT->setObjectName(QStringLiteral("Viewer_cad_LEFT"));
         Viewer_cad_LEFT->setGeometry(QRect(950, 10, 150, 200));
@@ -97,41 +87,35 @@ public:
         Viewer_cad_LEFT->setFrameShadow(QFrame::Raised);
         TitleFront = new QLabel(centralWidget);
         TitleFront->setObjectName(QStringLiteral("TitleFront"));
-        TitleFront->setGeometry(QRect(960, 450, 61, 16));
+        TitleFront->setGeometry(QRect(950, 450, 151, 16));
         Title3D = new QLabel(centralWidget);
         Title3D->setObjectName(QStringLiteral("Title3D"));
-        Title3D->setGeometry(QRect(30, 620, 431, 41));
+        Title3D->setGeometry(QRect(480, 620, 181, 41));
         TitleLeft = new QLabel(centralWidget);
         TitleLeft->setObjectName(QStringLiteral("TitleLeft"));
-        TitleLeft->setGeometry(QRect(960, 210, 61, 16));
+        TitleLeft->setGeometry(QRect(950, 210, 151, 20));
         Viewer_cad_2D = new QFrame(centralWidget);
         Viewer_cad_2D->setObjectName(QStringLiteral("Viewer_cad_2D"));
-        Viewer_cad_2D->setGeometry(QRect(480, 10, 450, 251));
+        Viewer_cad_2D->setGeometry(QRect(10, 10, 460, 258));
         Viewer_cad_2D->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
         Viewer_cad_2D->setFrameShape(QFrame::StyledPanel);
         Viewer_cad_2D->setFrameShadow(QFrame::Raised);
         NextBtn = new QPushButton(centralWidget);
         NextBtn->setObjectName(QStringLiteral("NextBtn"));
-        NextBtn->setGeometry(QRect(1160, 730, 91, 31));
+        NextBtn->setGeometry(QRect(950, 720, 151, 61));
         TitleRight = new QLabel(centralWidget);
         TitleRight->setObjectName(QStringLiteral("TitleRight"));
-        TitleRight->setGeometry(QRect(960, 690, 61, 16));
+        TitleRight->setGeometry(QRect(950, 690, 151, 16));
         Title2D = new QLabel(centralWidget);
         Title2D->setObjectName(QStringLiteral("Title2D"));
-        Title2D->setGeometry(QRect(480, 620, 441, 41));
-        RightSaveBtn = new QPushButton(centralWidget);
-        RightSaveBtn->setObjectName(QStringLiteral("RightSaveBtn"));
-        RightSaveBtn->setGeometry(QRect(1030, 690, 71, 20));
-        StreamingBtn = new QPushButton(centralWidget);
-        StreamingBtn->setObjectName(QStringLiteral("StreamingBtn"));
-        StreamingBtn->setGeometry(QRect(950, 720, 101, 51));
+        Title2D->setGeometry(QRect(10, 280, 441, 41));
         MultiCapBtn = new QPushButton(centralWidget);
         MultiCapBtn->setObjectName(QStringLiteral("MultiCapBtn"));
-        MultiCapBtn->setGeometry(QRect(1060, 740, 91, 31));
+        MultiCapBtn->setGeometry(QRect(840, 620, 91, 51));
         ScanModuleQTClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ScanModuleQTClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1372, 21));
+        menuBar->setGeometry(QRect(0, 0, 1115, 21));
         ScanModuleQTClass->setMenuBar(menuBar);
         statusBar = new QStatusBar(ScanModuleQTClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -155,17 +139,13 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">parameter changed : 00000 -&gt; 00000<br />... (focus on tail)<br />saving LEFT CAPT"
                         "URE DATA ....<br />saved $PATH !</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", Q_NULLPTR));
-        CapBtn->setText(QApplication::translate("ScanModuleQTClass", "CAPTURE", Q_NULLPTR));
-        FrontSaveBtn->setText(QApplication::translate("ScanModuleQTClass", "SAVE", Q_NULLPTR));
-        LeftSaveBtn->setText(QApplication::translate("ScanModuleQTClass", "SAVE", Q_NULLPTR));
-        TitleFront->setText(QApplication::translate("ScanModuleQTClass", "FRONT", Q_NULLPTR));
+        CapBtn->setText(QApplication::translate("ScanModuleQTClass", "Capture", Q_NULLPTR));
+        TitleFront->setText(QApplication::translate("ScanModuleQTClass", "\342\226\262 FRONT", Q_NULLPTR));
         Title3D->setText(QApplication::translate("ScanModuleQTClass", "3D View", Q_NULLPTR));
-        TitleLeft->setText(QApplication::translate("ScanModuleQTClass", "LEFT", Q_NULLPTR));
+        TitleLeft->setText(QApplication::translate("ScanModuleQTClass", "\342\226\262 LEFT", Q_NULLPTR));
         NextBtn->setText(QApplication::translate("ScanModuleQTClass", "Next", Q_NULLPTR));
-        TitleRight->setText(QApplication::translate("ScanModuleQTClass", "RIGHT", Q_NULLPTR));
+        TitleRight->setText(QApplication::translate("ScanModuleQTClass", "\342\226\262 RIGHT", Q_NULLPTR));
         Title2D->setText(QApplication::translate("ScanModuleQTClass", "2D View <1920x1080 / RGB8 / 30FPS>", Q_NULLPTR));
-        RightSaveBtn->setText(QApplication::translate("ScanModuleQTClass", "SAVE", Q_NULLPTR));
-        StreamingBtn->setText(QApplication::translate("ScanModuleQTClass", "Streaming", Q_NULLPTR));
         MultiCapBtn->setText(QApplication::translate("ScanModuleQTClass", "SavePic", Q_NULLPTR));
     } // retranslateUi
 

@@ -231,6 +231,7 @@ void AlignModule::registration(vtkPolyData *left, vtkPolyData *leftFront, vtkPol
 
 void AlignModule::slotAlign()
 {
+
 	if (left == nullptr || front == nullptr || right == nullptr)
 	{
 		std::cout << "사진 3장 제대로 찍어요\n";
@@ -241,7 +242,7 @@ void AlignModule::slotAlign()
 		if (!resultMesh)
 		{
 			resultMesh->ReleaseModel();
-			resultMesh->CreateModel("",0);
+			resultMesh->CreateModel("", 0);
 		}
 		std::vector<double3>leftMark;
 		std::vector<double3>frontMark;
@@ -274,21 +275,21 @@ void AlignModule::slotAlign()
 			*XYZ2Index(frontMark[0 + base_front], FRONT), *XYZ2Index(frontMark[2 + base_front], FRONT));
 		////////////////////////////////////		////////////////////////////////////
 
-	
+
 		vtkSmartPointer<vtkPoints>leftPts = vtkSmartPointer<vtkPoints>::New();
 		vtkSmartPointer<vtkPoints>rightPts = vtkSmartPointer<vtkPoints>::New();
 		vtkSmartPointer<vtkPoints>frontNleft = vtkSmartPointer<vtkPoints>::New();
 		vtkSmartPointer<vtkPoints>frontNright = vtkSmartPointer<vtkPoints>::New();
 
 		for (int i = 0; i < leftMark.size(); i++)
-			leftPts->InsertNextPoint(leftMark[i].X,leftMark[i].Y,leftMark[i].Z);
+			leftPts->InsertNextPoint(leftMark[i].X, leftMark[i].Y, leftMark[i].Z);
 		for (int i = 0; i < frontMark.size() / 2; i++)
 			frontNleft->InsertNextPoint(frontMark[i].X, frontMark[i].Y, frontMark[i].Z);
 		for (int i = frontMark.size() / 2; i < frontMark.size(); i++)
 			frontNright->InsertNextPoint(frontMark[i].X, frontMark[i].Y, frontMark[i].Z);
 		for (int i = 0; i < rightMark.size(); i++)
 			rightPts->InsertNextPoint(rightMark[i].X, rightMark[i].Y, rightMark[i].Z);
-		
+
 
 		vtkSmartPointer<vtkLandmarkTransform>left2front = vtkSmartPointer<vtkLandmarkTransform>::New();
 		left2front->SetSourceLandmarks(leftPts);
@@ -321,12 +322,12 @@ void AlignModule::slotAlign()
 			leftFilt->Update();
 
 
-			vtkSmartPointer<vtkDataArray>coord=setTransformedCord(left->GetPolyDataAt(i), left2front);
+			vtkSmartPointer<vtkDataArray>coord = setTransformedCord(left->GetPolyDataAt(i), left2front);
 			resultMesh->GetPolyDataAt(index)->DeepCopy(leftFilt->GetOutput());
 			index++;
 			//resultMesh->GetPolyDataAt(index++)->GetPointData()->SetTCoords(coord);
 		}
-		
+
 		for (int i = 0; i < 5; i++)
 			resultMesh->GetPolyDataAt(index++)->DeepCopy(front->GetPolyDataAt(i));
 
@@ -344,7 +345,7 @@ void AlignModule::slotAlign()
 			//resultMesh->GetPolyDataAt(index++)->DeepCopy(rightFilt->GetOutput());
 		}
 
-	
+
 		for (int i = 0; i < resultMesh->size; i++)
 		{
 			resultMesh->GetTextureAt(i)->SetInputData(resultMesh->m_ImageData[i]);
@@ -354,16 +355,62 @@ void AlignModule::slotAlign()
 		}
 		p.setXYZPoints(*resultMesh);
 		//p.writePoints();
-		std::cout << "Init Overlap,ZIppering";
+		std::cout << "Init Overlap,ZIppering\n";
 		p.deleteOverlap();
 		p.zipperMesh();
-		std::cout << "Saved";
+		deleteCell();
+		//zipperCell();
+		std::cout << "Saved\n";
+
+		//Scan test;
+
+		//test.meshSmooth(resultMesh,0.01);
+
+		/*smooth?????*/
+		/*std::cout << resultMesh->size << "\n";
+		for (int i = 0; i < resultMesh->size; i++)
+		{
+		if (resultMesh->GetPolyDataAt(i) == NULL || resultMesh->GetPolyDataAt(i)==nullptr)
+		continue;
+		resultMesh->GetPolyDataAt(i)->Modified();
+		vtkSmoothPolyDataFilter* smoothFilter = vtkSmoothPolyDataFilter::New();
+		smoothFilter->SetInputData(resultMesh->GetPolyDataAt(i));
+		smoothFilter->SetNumberOfIterations(30);
+		smoothFilter->SetRelaxationFactor(0.1);
+		smoothFilter->FeatureEdgeSmoothingOff();
+		smoothFilter->BoundarySmoothingOn();
+		smoothFilter->Update();
+
+		resultMesh->m_PolyData[i]->DeepCopy(smoothFilter->GetOutput());
+		resultMesh->m_PolyData[i]->Modified();
+
+		resultMesh->GetMapperAt(i)->SetInputData(resultMesh->m_PolyData[i]);
+		resultMesh->GetMapperAt(i)->Modified();
+		}*/
+
+
+		resultMesh->GetRenderWindow()->Modified();
 		resultMesh->GetRenderWindow()->Render();
 		resultMesh->GetRenderWindow()->Start();
+
 	}
 }
 
+void AlignModule::RemoveCell(vtkPolyData *poly, int CellID)
+{
+	//std::cout << poly->GetNumberOfCells() << "<-전";
 
+	poly->DeleteCell(CellID);//지울 Cell ID
+							 //std::cout << poly->GetNumberOfCells() << "<-후";
+}
+
+/*point의 index랑 polyData 입력. 삼각형임 pts index 3개 입력*/
+void AlignModule::InsertCell(vtkPolyData *poly, int triID[])
+{
+	poly->GetPolys()->InsertNextCell(3);
+	for (int i = 0; i<3; i++)
+		poly->GetPolys()->InsertNextCell(triID[i]);
+}
 
 vtkSmartPointer<vtkDataArray> AlignModule::setTransformedCord(vtkPolyData *poly, vtkLandmarkTransform *land)
 {
@@ -371,7 +418,7 @@ vtkSmartPointer<vtkDataArray> AlignModule::setTransformedCord(vtkPolyData *poly,
 		vtkSmartPointer<vtkTransform>trans = vtkSmartPointer<vtkTransform>::New();
 		trans->SetMatrix(land->GetMatrix());
 
-	
+
 		vtkSmartPointer<vtkTransformTextureCoords> transCoord = vtkSmartPointer<vtkTransformTextureCoords>::New();
 		transCoord->SetInputData(poly);
 
@@ -397,7 +444,7 @@ std::vector<double3> AlignModule::extractLandMark(vtkRenderer *rend)
 	for (vtkIdType i = 0; i < actorCol->GetNumberOfItems(); i++)
 	{
 		vtkActor *nextActor = actorCol->GetNextActor();
-		
+
 		if (i >= 5)//나머지 0~4는 그림임 그림
 		{
 			double *pos = nextActor->GetCenter();
@@ -418,7 +465,7 @@ void AlignModule::Copy(MeshPreview* src, MeshPreview* des)
 	}
 
 	des->CreateModel("", 0);
-	
+
 	for (int i = 0; i < 5; i++)
 	{
 		des->m_PolyData[i]->DeepCopy(src->GetPolyDataAt(i));
@@ -426,7 +473,7 @@ void AlignModule::Copy(MeshPreview* src, MeshPreview* des)
 		des->m_ImageData[i]->Modified();
 		des->m_Texture[i]->SetInputData(des->m_ImageData[i]);
 		des->GetActorAt(i)->SetTexture(des->m_Texture[i]);
-		des->GetTextureAt(i)->Update(); 
+		des->GetTextureAt(i)->Update();
 		des->GetActorAt(i)->Modified();
 	}
 
@@ -501,4 +548,99 @@ Pos* AlignModule::XYZ2Index(double3 a, int page) {
 	std::cout << "\t" << (a.X) << " " << (a.Y) << " " << (a.Z) << "\n";
 	std::cout << "\n";
 	return new Pos(row, col);
+}
+void AlignModule::deleteCell() {
+	///***************************************************/
+	//const int NumCellToRemove = 500;
+	//int cellToRemove[NumCellToRemove];
+	//for (int i = 0; i < NumCellToRemove; i++)
+	//	cellToRemove[i] = i;
+	//deleteCell();
+	//for (int i = 0; i<15; i++)
+	//{
+	//	std::cout << "전\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+	//	resultMesh->GetPolyDataAt(i)->BuildLinks();//<polyData에서 buildLink
+
+	//	for (int j = 0; j < resultMesh->GetPolyDataAt(i)->GetNumberOfCells() / 2; j++)
+	//		resultMesh->GetPolyDataAt(i)->DeleteCell(j);// 
+	//													//for (int j = 0; j < NumCellToRemove; j++)
+	//													//RemoveCell(resultMesh->GetPolyDataAt(i), cellToRemove[j]);//ID에 지울 놈들 cell ID 넣기
+	//	resultMesh->GetPolyDataAt(i)->RemoveDeletedCells();
+	//	std::cout << "후\t" << resultMesh->GetPolyDataAt(i)->GetNumberOfCells() << "\n";
+	//}
+	//////////////////////////////////////////////////////////
+
+	/*
+	int sub_points = resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints();
+	int pidx = 0;
+	int sub_page = 0,cellnum;
+	vtkPoints *value[4];
+	vtkCell* cell;
+	int pid[3];
+	for (int page = 0; page < 3; page++) {
+	for (int i = 0; i < (*(p.part_del_point_ALL[page])).size(); i++) {
+	pidx = p.getPointIdx((*(p.part_del_point_ALL[page]))[i]);
+	sub_page = pidx / sub_points;
+	pidx -= sub_page*sub_points;
+	cellnum = resultMesh->GetPolyDataAt(page * 5 + sub_page)->GetNumberOfCells();
+	//sub_page --- pidx
+
+	value[k] = resultMesh->GetPolyDataAt(page * 5 + k)->GetPoints();
+	for (int cellidx = 0; cellidx < cellnum; cellidx++) {
+	cell = resultMesh->GetPolyDataAt(page * 5 + sub_page)->GetCell(cellidx);
+	if (cell->PointIds->GetNumberOfIds() == 3) {
+	for (int m = 0; m < 3; m++) {
+	if (cell->GetPointId(m) == pidx) {
+	resultMesh->GetPolyDataAt(page * 5 + sub_page)->DeleteCell(cellidx);
+	break;
+	}
+	}
+	}
+	}
+	}
+	for (int i = 0; i < 5; i++) {
+	resultMesh->GetPolyDataAt(page * 5 + i)->RemoveDeletedCells();
+	}
+	}*//////////////////////////////
+	int sub_points = resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints();
+	int pidx = 0;
+	int sub_page = 0, cellnum;
+	vtkPoints *value[4];
+	vtkCell* cell;
+	double _t[3];
+	for (int page = 0; page < 3; page++) {
+		for (int k = 0; k < 4; k++) {
+			value[k] = resultMesh->GetPolyDataAt(page * 5 + k)->GetPoints();
+		}
+		for (int k = 0; k < 4; k++) {
+			cellnum = resultMesh->GetPolyDataAt(page * 5 + k)->GetNumberOfCells();
+			for (int cellidx = 0; cellidx < cellnum; cellidx++) {
+				cell = resultMesh->GetPolyDataAt(page * 5 + k)->GetCell(cellidx);
+				if (cell->PointIds->GetNumberOfIds() == 3) {
+					for (int m = 0; m < 3; m++) {
+						pidx = cell->GetPointId(m);
+						if (value[k]->GetPoint(pidx)[0] == 0.0) {
+							resultMesh->GetPolyDataAt(page * 5 + k)->DeleteCell(cellidx);
+							break;
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			resultMesh->GetPolyDataAt(page * 5 + i)->RemoveDeletedCells();
+		}
+	}
+}
+void AlignModule::zipperCell() {
+	//LE = 0
+	//RI = 1
+	const int SUBPOINTS = resultMesh->GetPolyDataAt(0)->GetPoints()->GetNumberOfPoints();
+	int *p3;
+	p3 = (*(p.addedmeshInt[0]))[0];
+	POINTS;
+	for (int i = 0; i < 15; i++) {
+		int array_of_pointIndex[3] = { 1,2,3 };
+		InsertCell(resultMesh->GetPolyDataAt(i), array_of_pointIndex);
+	}
 }
