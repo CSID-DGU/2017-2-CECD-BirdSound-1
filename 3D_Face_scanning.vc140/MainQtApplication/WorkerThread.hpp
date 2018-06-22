@@ -8,14 +8,14 @@
 using namespace realsense;
 
 class WorkerThread: public QThread {
-	Q_OBJECT
+	Q_OBJECT 
 public:
-		WorkerThread(Device *device, RS_400_STREAM_TYPE stream) {
-		isSetDetect = false;
-		m_stream = stream;
-		m_device = device;
-		//connect(workerColor, &WorkerThread::updateColorPixmap, this, &CalibrationModule::updateColor);
-		
+		WorkerThread(Device *device, RS_400_STREAM_TYPE stream, int max_shot_num) {
+			m_max_shot_num = max_shot_num;
+			isSetDetect = false;
+			m_stream = stream;
+			m_device = device;
+			//connect(workerColor, &WorkerThread::updateColorPixmap, this, &CalibrationModule::updateColor);
 		}
 
 		//stop streaming
@@ -42,6 +42,9 @@ public:
 		}	
 		void run() override;
 
+		void stop() {
+			m_threadLife = false;
+		}
 public slots:
 	
 	void setDetection() {
@@ -59,15 +62,21 @@ public slots:
 		endImage.fill(QColor(Qt::red).rgb());
 		if ((isSetDetect == true)&&(true)) {
 			vector<cv::Point3f> obj;
-			for (int j = 0; j<m_numSquares; j++)
-				obj.push_back(cv::Point3f(j / m_numCornersHor, j%m_numCornersHor, 0.0f));
+
+
+			for (int i = 0; i < m_numCornersVer; i++)
+				for (int j = 0; j < m_numCornersHor; j++)
+					obj.push_back(cv::Point3f((float)j * 24.0f, (float)i * 24.0f, 0));
+			
+			/*for (int j = 0; j<m_numSquares; j++)
+				obj.push_back(cv::Point3f(j / m_numCornersVer, j%m_numCornersHor, 0.0f));*/
 			std::string str;
 			image_points.push_back(m_pointBuf);
 			object_points.push_back(obj);
 			m_captureNum++;
 			emit updateCapture(m_captureNum, m_stream);
 			emit syncIRCam();
-			if (m_captureNum == 20) {
+			if (m_captureNum == m_max_shot_num) {
 				m_threadLife = false;
 				wait(500);
 				QPixmap buf = QPixmap::fromImage(endImage);
@@ -104,6 +113,7 @@ private:
 	std::vector<std::vector<cv::Point2f>> image_points;
 	std::vector<std::vector<cv::Point3f>> object_points;
 	int m_captureNum = 0;
+	int m_max_shot_num;
 	int m_numCornersHor = 7, m_numCornersVer = 9;
 	int m_numSquares = m_numCornersHor * m_numCornersVer;
 	cv::Size m_board_sz = cv::Size(m_numCornersHor, m_numCornersVer);

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AlignModuleClass</class>
+ <widget class="QWidget" name="AlignModuleClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1450</width>
+    <height>743</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QPushButton" name="LandMarkBtn_3">
+   <property name="geometry">
+    <rect>
+     <x>1290</x>
+     <y>20</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Landmark</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="DefaultBtn_2">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>20</y>
+     <width>140</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Unset Landmark</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ToOrignBtn_2">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>640</y>
+     <width>140</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>처음으로...</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="cadLeft">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>60</y>
+     <width>431</width>
+     <height>571</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0, 0, 0);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="LandMarkBtn_1">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>20</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Landmark</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="cadRight">
+   <property name="geometry">
+    <rect>
+     <x>1000</x>
+     <y>60</y>
+     <width>431</width>
+     <height>571</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0, 0, 0);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ToOrignBtn_3">
+   <property name="geometry">
+    <rect>
+     <x>1290</x>
+     <y>640</y>
+     <width>140</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>처음으로...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="DefaultBtn_3">
+   <property name="geometry">
+    <rect>
+     <x>1140</x>
+     <y>20</y>
+     <width>140</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Unset Landmark</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="LandMarkBtn_2">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>20</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Landmark</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="cadFront">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>60</y>
+     <width>431</width>
+     <height>571</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0, 0, 0);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="AlignBtn">
+   <property name="geometry">
+    <rect>
+     <x>1260</x>
+     <y>690</y>
+     <width>181</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Align</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ToOrignBtn_1">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>640</y>
+     <width>140</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>처음으로...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="DefaultBtn_1">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>20</y>
+     <width>140</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Unset Landmark</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>1431</width>
+     <height>671</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 2px solid gray;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>20</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>MODE:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>20</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>MODE:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>1090</x>
+     <y>20</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>MODE:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>640</y>
+     <width>56</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>FRONT</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>640</y>
+     <width>56</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>LEFT</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>1000</x>
+     <y>640</y>
+     <width>56</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>RIGHT</string>
+   </property>
+  </widget>
+  <zorder>label</zorder>
+  <zorder>LandMarkBtn_3</zorder>
+  <zorder>DefaultBtn_2</zorder>
+  <zorder>ToOrignBtn_2</zorder>
+  <zorder>cadLeft</zorder>
+  <zorder>LandMarkBtn_1</zorder>
+  <zorder>cadRight</zorder>
+  <zorder>ToOrignBtn_3</zorder>
+  <zorder>DefaultBtn_3</zorder>
+  <zorder>LandMarkBtn_2</zorder>
+  <zorder>cadFront</zorder>
+  <zorder>AlignBtn</zorder>
+  <zorder>ToOrignBtn_1</zorder>
+  <zorder>DefaultBtn_1</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label_3</zorder>
+  <zorder>label_4</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_6</zorder>
+  <zorder>label_7</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

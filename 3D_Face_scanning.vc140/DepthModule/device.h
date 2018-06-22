@@ -115,6 +115,7 @@ namespace realsense {
 	class Device {
 	public:
 		Device(string serialNumber);
+		bool is_connected = true;
 		void setOption(RS_400_SENSOR, rs2_option, float value);
 		void printDeviceInfo();
 		void printSensorInfo();

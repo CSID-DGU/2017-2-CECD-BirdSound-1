@@ -34,7 +34,6 @@ public:
     QPushButton *runScanModule;
     QPushButton *runViewerModule;
     QPushButton *runCalibrationModule;
-    QPushButton *runExpModule;
     QWidget *MainImg;
 
     void setupUi(QWidget *MainModule)
@@ -111,11 +110,6 @@ public:
 
         verticalLayout->addWidget(runCalibrationModule);
 
-        runExpModule = new QPushButton(layoutWidget1);
-        runExpModule->setObjectName(QStringLiteral("runExpModule"));
-
-        verticalLayout->addWidget(runExpModule);
-
         MainImg = new QWidget(widget_1);
         MainImg->setObjectName(QStringLiteral("MainImg"));
         MainImg->setGeometry(QRect(10, 10, 331, 161));
@@ -144,7 +138,6 @@ public:
         runScanModule->setText(QApplication::translate("MainModule", "Start a new Face Scan", Q_NULLPTR));
         runViewerModule->setText(QApplication::translate("MainModule", "Open an existing Face Scan", Q_NULLPTR));
         runCalibrationModule->setText(QApplication::translate("MainModule", "Camera calibration", Q_NULLPTR));
-        runExpModule->setText(QApplication::translate("MainModule", "Data Validation", Q_NULLPTR));
     } // retranslateUi
 
 };

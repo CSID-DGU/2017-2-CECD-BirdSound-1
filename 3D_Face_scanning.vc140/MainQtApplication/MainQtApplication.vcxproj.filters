@@ -125,7 +125,28 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_CalibrationModule.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationModule.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="..\DepthModule\device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_RegistrationModule.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_RegistrationModule.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RegistrationModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_iomodule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScanModule.cpp">
@@ -137,47 +158,35 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ScanModule.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_RegistrationModule.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_AlignModule.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_RegistrationModule.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_AlignModule.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_scanmoduleqt.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_scanmoduleqt.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="RegistrationModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_iomodule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="scanmoduleqt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_WorkerThread.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_WorkerThread.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="WorkerThread.cpp">
+    <ClCompile Include="qrc_iomodule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CalibrationModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationModule.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_scanmoduleqt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_WorkerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_scanmoduleqt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_WorkerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scanmoduleqt.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,12 +214,6 @@
     <CustomBuild Include="calibrationmodule.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="scanmodule.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ScanModule.hpp">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="registrationmodule.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
@@ -220,15 +223,17 @@
     <CustomBuild Include="scanmoduleqt.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="scanmoduleqt.h">
+    <CustomBuild Include="ScanModule.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="WorkerThread.hpp">
+    <CustomBuild Include="AlignModule.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="CalibrationModule.hpp">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="Align.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="WorkerThread.hpp" />
+    <CustomBuild Include="CalibrationModule.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_iomodule.h">
@@ -285,9 +290,6 @@
     <ClInclude Include="STLImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AlignModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="double3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -303,9 +305,6 @@
     <ClInclude Include="GeneratedFiles\ui_mainmodule.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_scanmodule.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\DepthModule\device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -315,11 +314,16 @@
     <ClInclude Include="RelalSensePreviewer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_scanmoduleqt.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_scanmoduleqt.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OverlapZippering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteCalibration.hpp" />
+    <ClInclude Include="ApplicationConfig.hpp" />
   </ItemGroup>
 </Project>

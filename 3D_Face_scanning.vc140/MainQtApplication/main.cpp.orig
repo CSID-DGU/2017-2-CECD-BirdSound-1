@@ -1,18 +1,42 @@
 #pragma warning (disable : 4996)
+<<<<<<< HEAD
 
 #include "iomodule.h"
-<<<<<<< HEAD
 #include "InitializeModule.hpp" //초기화 부분 모듈 및 ui include
 #include "MainModule.hpp"
+#include <QtWidgets/QApplication>
 =======
+>>>>>>> origin/AlignModule
 
->>>>>>> origin/ScanModule
+#include "iomodule.h"
+#include "InitializeModule.hpp" //초기화 부분 모듈 및 ui include
+#include "MainModule.hpp"
 #include <QtWidgets/QApplication>
 
+VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
+VTK_MODULE_INIT(vtkInteractionStyle);
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
+<<<<<<< HEAD
+	_CrtDumpMemoryLeaks();
+	
+	//Program Init Process
+	InitializeModule i;
+	i.show();
+	/*if (i.Init() == false) {
+		exit(-1);
+	}*/
+	i.close();
+
+	//Run main module after initialize
+	MainModule m;
+	m.show();
+
+	return a.exec();
+}
+=======
 	//초기화 진행..
 	InitializeModule i;
 	i.show();
@@ -22,11 +46,12 @@ int main(int argc, char *argv[])
 	i.close();
 	//초기화 끝!
 	m.show();
-	
-	
+
+
 	//메인윈도우 진행
 	//IOModule w;
 	//w.show();
 	//메인윈도우 끝
 	return a.exec();
 }
+>>>>>>> origin/AlignModule

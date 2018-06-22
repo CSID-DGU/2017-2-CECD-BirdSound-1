@@ -121,13 +121,6 @@ color: &quot;#F00000&quot;;
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="runExpModule">
-          <property name="text">
-           <string>Data Validation</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="MainImg" native="true">

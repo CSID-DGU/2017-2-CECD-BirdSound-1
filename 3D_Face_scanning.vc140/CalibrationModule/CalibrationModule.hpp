@@ -17,6 +17,7 @@ class CalibrationModule : public QWidget
 {
 	Q_OBJECT
 		enum class streamType { infrared_left, infrared_right, color };
+	const int max_shot_num = 5;
 public:
 	QString toQstr(std::string);
 	CalibrationModule(QWidget *parent = Q_NULLPTR);
@@ -42,9 +43,6 @@ public:
 			emit stopIR2Detect();
 		}
 	};
-
-	
-
 
 	void startStreaming();
 	void startStreaming(RS_400_STREAM_TYPE stream);

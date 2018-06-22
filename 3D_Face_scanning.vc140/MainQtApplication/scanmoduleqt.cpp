@@ -80,10 +80,10 @@ void ScanModuleQT::InitializeUi()
 	//ADD-HHS
 	connect(ui.CapBtn, SIGNAL(clicked()), this, SLOT(slotCapBtn()));
 	connect(ui.NextBtn, SIGNAL(clicked()), this, SLOT(slotNextBtn()));
-	connect(ui.LeftSaveBtn, SIGNAL(clicked()), this, SLOT(slotLeftSaveBtn()));
-	connect(ui.RightSaveBtn, SIGNAL(clicked()), this, SLOT(slotRightSaveBtn()));
-	connect(ui.FrontSaveBtn, SIGNAL(clicked()), this, SLOT(slotFrontSaveBtn()));
-	connect(ui.StreamingBtn, SIGNAL(clicked()), this, SLOT(slotStreamingBtn()));
+	//connect(ui.LeftSaveBtn, SIGNAL(clicked()), this, SLOT(slotLeftSaveBtn()));
+	//connect(ui.RightSaveBtn, SIGNAL(clicked()), this, SLOT(slotRightSaveBtn()));
+	//connect(ui.FrontSaveBtn, SIGNAL(clicked()), this, SLOT(slotFrontSaveBtn()));
+	//connect(ui.StreamingBtn, SIGNAL(clicked()), this, SLOT(slotStreamingBtn()));
 	connect(ui.MultiCapBtn, SIGNAL(clicked()), this, SLOT(slotCapPicBtn()));
 	
 	int sizeX = 0;	int sizeY = 0;
@@ -106,13 +106,9 @@ void ScanModuleQT::InitializeUi()
 	m_MiniMeshPreviewer[2]->ConnectSceneToCtrl(reinterpret_cast<void*>(this->ui.Viewer_cad_RIGHT->winId()), sizeX, sizeY);
 }
 
-
-
-
 void ScanModuleQT::slotCapBtn() 
 {
 
-	
 	if (m_ScannedMeshViewer)
 	{
 		m_ScannedMeshViewer->ReleaseModel();
@@ -144,7 +140,10 @@ void ScanModuleQT::slotNextBtn()
 	qwe->setRight(m_MiniMeshPreviewer[2]);
 
 	//qwe->mergeActors();
-	qwe->align();
+	//qwe->alig
+	//qwe->align();
+	qwe->Rendering();
+	qwe->show();
 }
 void ScanModuleQT::slotLeftSaveBtn() 
 {
@@ -179,6 +178,7 @@ void Copy(MeshPreview* src, MeshPreview* des)
 	des->GetRenderer()->Modified();
 	des->GetRenderWindow()->Render();
 }
+
 void ScanModuleQT::slotCapPicBtn()
 {
 	/*
